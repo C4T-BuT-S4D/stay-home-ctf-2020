@@ -1,0 +1,9 @@
+version: "2.4"
+
+services:
+  test:
+    build: .
+    ports: 
+      - "31337:31337"
+    restart: on-failure
+    tty: true
