@@ -9,8 +9,6 @@
 *.bc
 
 ### C ###
-# Prerequisites
-*.d
 
 # Object files
 *.ko
