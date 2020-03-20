@@ -88,35 +88,101 @@ end_wct:
 	popl	%ebx
 	retl
 
+copy_file_contents:
+	pushl	%ebx
+xmm_cfc:
+	cmpl	$16,%edx
+	jl	int_cfc
+	movups	(%ecx),%xmm0
+	movups	%xmm0,(%eax)
+	subl	$16,%edx
+	addl	$16,%eax
+	addl	$16,%ecx
+	jmp	xmm_cfc
+
+int_cfc:
+	cmpl	$4,%edx
+	jl	left_cfc
+	movl	(%ecx),%ebx
+	movl	%ebx,(%eax)
+	subl	$4,%edx
+	addl	$4,%eax
+	addl	$4,%ecx
+	jmp	int_cfc
+
+left_cfc:
+	test	%edx,%edx
+	jz	end_cfc
+	movb	(%ecx),%bl
+	movb	%bl,(%eax)
+	decl	%edx
+	incl	%eax
+	incl	%ecx
+	jmp	left_cfc
+
+end_cfc:
+	popl	%ebx
+	retl
+
 write_file_contents:
+	pushl	%ebp
 	pushl	%ebx
 	pushl	%esi
+	pushl	%edi
 
-	movl	%ecx,%esi
+	movl	%ecx,%ebx
+	movl	%edx,%edi
 
+	xorl	%ebp,%ebp
+	subl	%edi,%esp
 	subl	$4096,%esp
 read_wfc:
 	movl	$3,%eax
-	movl	%esi,%ebx
 	movl	%esp,%ecx
 	movl	$4096,%edx
 	int	$0x80
 
 	cmpl	$0,%eax
-	jle	end_wfc
+	jle	end_read_wfc
 
+	movl	%esp,%ecx
 	movl	%eax,%edx
+
+	addl	%eax,%ebp
+	neg	%eax
+	addl	%ebp,%eax
+	addl	%esp,%eax
+	addl	$4096,%eax
+
+	call	copy_file_contents
+	jmp	read_wfc
+
+end_read_wfc:
+	addl	$4096,%esp
+
+	movl	%esp,%esi
+write_wfc:
+	test	%ebp,%ebp
+	jz	end_wfc
+
 	movl	$4,%eax
 	movl	$1,%ebx
-	movl	%esp,%ecx
+	movl	%esi,%ecx
+	movl	%ebp,%edx
 	int	$0x80
-	jmp	read_wfc
+
+	subl	%eax,%ebp
+	addl	%eax,%esi
+	jmp write_wfc
 
 end_wfc:
 	xorl	%eax,%eax
-	addl	$4096,%esp
+	addl	%edi,%esp
+
+	popl	%edi
 	popl	%esi
 	popl	%ebx
+	popl	%ebp
 	retl
 
 get_file_size:
@@ -184,6 +250,7 @@ ok_file:
 	call	simple_write
 
 	movl	%edi,%ecx
+	movl	%ebx,%edx
 	call	write_file_contents
 
 end_rfr:
