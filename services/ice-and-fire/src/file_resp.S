@@ -41,7 +41,7 @@ label_js:
 label_html:
 	movl	%esi,%ebx
 	addl	%edi,%ebx
-	subl	$3,%ebx
+	subl	$5,%ebx
 	movl	%ebx,%ecx
 	movl	$html_e,%edx
 	call	gstrcmp
@@ -54,7 +54,7 @@ label_html:
 label_png:
 	movl	%esi,%ebx
 	addl	%edi,%ebx
-	subl	$3,%ebx
+	subl	$4,%ebx
 	movl	%ebx,%ecx
 	movl	$png_e,%edx
 	call	gstrcmp
@@ -67,7 +67,7 @@ label_png:
 label_jpg:
 	movl	%esi,%ebx
 	addl	%edi,%ebx
-	subl	$3,%ebx
+	subl	$4,%ebx
 	movl	%ebx,%ecx
 	movl	$jpg_e,%edx
 	call	gstrcmp

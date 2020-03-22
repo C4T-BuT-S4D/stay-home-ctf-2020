@@ -1,5 +1,5 @@
 	.data
-f_pth:	.asciz	"hello.S"
+f_pth:	.asciz	"/proc/self/fd/0"
 
 	.text
 	.global	main
