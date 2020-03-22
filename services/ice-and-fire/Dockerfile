@@ -1,10 +1,11 @@
 FROM ubuntu:18.04
 
-RUN apt update && apt install -y gcc-multilib binutils fcgiwrap
+RUN apt update && apt install -y gcc-multilib make fcgiwrap
 
-ADD ./src /app
+ADD ./Makefile /app/Makefile
+ADD ./src /app/src
 WORKDIR /app
 
-RUN gcc -m32 -O3 *.S -o hello
+RUN make all
 
-CMD ["fcgiwrap", "-c", "32", "-s", "tcp:0.0.0.0:31337", "-p", "/app/hello"]
+CMD ["fcgiwrap", "-c", "32", "-s", "tcp:0.0.0.0:31337", "-p", "/app/main"]
