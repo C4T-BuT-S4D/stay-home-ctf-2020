@@ -17,16 +17,46 @@ return_404:
 
 	.global	return_400
 return_400:
+	pushl	%esi
+	movl	%ecx,%esi
 	movl	$br_s,%ecx
 	call	simple_write
-	movl	$br_m,%ecx
+
+	testl	%esi,%esi
+	jnz	custom_400
+
+default_400:
+	movl	$br_m,%ecx	
+	jmp	ret_400
+
+custom_400:
+	movl	%esi,%ecx
+	jmp	ret_400
+
+ret_400:
 	call	return_html_response
+	popl	%esi
 	retl
 
 	.global	return_500
 return_500:
+	pushl	%esi
+	movl	%ecx,%esi
 	movl	$ie_s,%ecx
 	call	simple_write
-	movl	$ie_m,%ecx
+
+	testl	%esi,%esi
+	jnz	custom_500
+
+default_500:
+	movl	$ie_m,%ecx	
+	jmp	ret_500
+
+custom_500:
+	movl	%esi,%ecx
+	jmp	ret_500
+
+ret_500:
 	call	return_html_response
+	popl	%esi
 	retl
