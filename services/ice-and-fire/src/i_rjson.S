@@ -5,10 +5,12 @@ cntl:	.asciz	"Content-Length: "
 nlnl:	.asciz	"\r\n\r\n"
 
 	.text
-	.global	return_json_response
-return_json_response:
+	.global	wjson
+wjson:
 	push	esi
+	push	edi
 	push	ecx
+	mov	edi, ecx
 	call	cJSON_PrintUnformatted
 	add	esp, 4
 	mov	esi, eax
@@ -34,5 +36,9 @@ return_json_response:
 	call	free
 	add	esp, 4
 
-	pop esi
-	ret
+	push	edi
+	call	cJSON_Delete
+	add	esp, 4
+
+	push	0
+	call	exit

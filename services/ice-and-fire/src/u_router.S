@@ -50,11 +50,5 @@ lp:
 	sub	esi, 4
 	mov	ebp, edx
 	call	DWORD PTR [esi]
-	jmp	end
-
 lpe:
 	call	return_404
-end:
-	pop	ebp
-	pop	esi
-	ret

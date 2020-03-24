@@ -14,6 +14,4 @@ routes:
 	.int	serve_static
 	.int	register
 	.int	register_route
-	.int	root
-	.int	test_route
 	.int	0

@@ -1,4 +1,5 @@
 	.data
+ok_s:	.asciz	"HTTP/1.0 200 OK\r\n"
 cntt:	.asciz	"Content-Type: "
 cntl:	.asciz	"Content-Length: "
 nl:	.asciz	"\r\n"
@@ -197,8 +198,8 @@ get_file_size:
 	popl	%ebx
 	retl
 
-	.global	return_file_response
-return_file_response:
+	.global	return_file
+return_file:
 	pushl	%ebx
 	pushl	%esi
 	pushl	%edi
@@ -215,7 +216,6 @@ return_file_response:
 
 no_file:
 	call	return_404
-	jmp	end_rfr
 
 ok_file:
 	movl	%eax,%edi
@@ -228,7 +228,7 @@ ok_file:
 	movl	44(%esp),%ebx
 	addl	$88,%esp
 
-	movl	$httpok,%ecx
+	movl	$ok_s,%ecx
 	call	simple_write
 
 	movl	$cntt,%ecx
@@ -253,8 +253,5 @@ ok_file:
 	movl	%ebx,%edx
 	call	write_file_contents
 
-end_rfr:
-	popl	%edi
-	popl	%esi
-	popl	%ebx
-	retl
+	pushl	0
+	call	exit

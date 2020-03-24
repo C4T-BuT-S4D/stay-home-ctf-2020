@@ -4,8 +4,8 @@ cntl:	.asciz	"Content-Length: "
 nlnl:	.asciz	"\r\n\r\n"
 
 	.text
-	.global	return_html_response
-return_html_response:
+	.global	whtml
+whtml:
 	pushl	%esi
 	movl	%ecx,%esi
 
@@ -26,5 +26,5 @@ return_html_response:
 	movl	%esi,%ecx
 	call	simple_write
 
-	popl	%esi
-	retl
+	pushl	0
+	call	exit

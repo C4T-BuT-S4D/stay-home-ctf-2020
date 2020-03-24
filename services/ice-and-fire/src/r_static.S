@@ -22,9 +22,4 @@ serve_static:
 	call	strcat
 	add	esp, 8
 	mov	ecx, esp
-	call	return_file_response
-	add	esp, 8
-	mov	ecx, ebp
-	call	gstrlen
-	add	esp, eax
-	ret
+	call	return_file

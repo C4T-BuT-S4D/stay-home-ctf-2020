@@ -57,21 +57,15 @@ add_user:
 
 usr_exists:
 	movl	$exists,%ecx
-	call	return_400
-	xorl	%eax,%eax
-	incl	%eax
-	jmp	end_au
+	call	return_400_str
 
 cmd_err_au:
 	movl	redctx,%ecx
 	addl	$4,%ecx
-	jmp	err_au
+	call	return_500_str
 
 err_au:
-	call	return_500
-	xorl	%eax,%eax
-	incl	%eax
-	jmp	end_au
+	call	return_500_str
 
 end_au:
 	movl	%ebx,%esp
@@ -116,13 +110,10 @@ br_gup:
 cmd_err_gup:
 	movl	redctx,%ecx
 	addl	$4,%ecx
-	jmp	err_gup
+	call	return_500_str
 
 err_gup:
-	call	return_500
-	xorl	%eax,%eax
-	incl	%eax
-	jmp	end_gup
+	call	return_500_str
 
 end_gup:
 	movl	%esi,%esp
