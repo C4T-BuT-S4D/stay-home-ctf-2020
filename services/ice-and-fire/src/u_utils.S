@@ -70,7 +70,7 @@ simple_write:
 gstrcmp:
 	pushl	%esi
 	pushl	%edi
-	
+
 	movl	%ecx,%esi
 	movl	%edx,%edi
 
@@ -80,7 +80,7 @@ loop_strcmp:
 
 	test	%ecx,%ecx
 	jz	rcmp
-	
+
 	test	%edx,%edx
 	jz	rcmp
 
@@ -89,7 +89,7 @@ loop_strcmp:
 	cmpl	%ecx,%edx
 	jz 	loop_strcmp
 
-rcmp:	
+rcmp:
 	subl	%edx,%ecx
 	movl	%ecx,%eax
 

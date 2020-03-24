@@ -4,9 +4,9 @@ username:
 password:
 	.asciz	"test_password"
 data:	.asciz	"test_data"
-data_len:	
+data_len:
 	.int	9
-	
+
 
 	.text
 	.global	test_route
