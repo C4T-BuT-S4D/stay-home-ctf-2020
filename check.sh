@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VULNS=4
+VULNS=(1 1 1)
 CHECKS=10
 
 print_output() {
@@ -10,8 +10,9 @@ print_output() {
   cat /tmp/checker_stderr
 }
 
-find . -name 'checker.py' | while read -r CHECKER; do
-  echo "Processing checker '$CHECKER'"
+CURN=0
+find . -name 'checker.py' | sort | while read -r CHECKER; do
+  echo "Processing checker '$CHECKER', ${VULNS[CURN]} vulns"
   for ((i = 1; i <= CHECKS; i++)); do
     echo "Running test $i..."
 
@@ -27,7 +28,7 @@ find . -name 'checker.py' | while read -r CHECKER; do
       true
     fi
 
-    for ((j = 1; j <= VULNS; j++)); do
+    for ((j = 1; j <= VULNS[CURN]; j++)); do
       echo "Testing vuln $j..."
       # shellcheck disable=SC2018
       # shellcheck disable=SC2019
@@ -63,5 +64,6 @@ find . -name 'checker.py' | while read -r CHECKER; do
 
     echo "Test $i successful!"
   done
+  ++CURN
 done
 
