@@ -174,7 +174,7 @@ write_wfc:
 
 	subl	%eax,%ebp
 	addl	%eax,%esi
-	jmp write_wfc
+	jmp	write_wfc
 
 end_wfc:
 	xorl	%eax,%eax
