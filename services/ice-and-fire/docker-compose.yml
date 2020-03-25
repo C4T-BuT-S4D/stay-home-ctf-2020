@@ -4,6 +4,8 @@ services:
   test:
     build: .
     restart: on-failure
+    volumes: 
+      - ./:/osx
 
   nginx:
     image: nginx:1.15.11-alpine
