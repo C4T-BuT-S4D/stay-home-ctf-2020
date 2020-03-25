@@ -1,4 +1,4 @@
-FROM pomomondreganto/ice-and-fire-base:latest
+FROM fl3x3dd/ice-and-fire-base
 
 ADD ./static /app/static
 ADD ./Makefile /app/Makefile

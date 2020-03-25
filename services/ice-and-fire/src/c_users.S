@@ -65,7 +65,8 @@ cmd_err_au:
 	call	return_500_str
 
 err_au:
-	call	return_500_str
+	xorl	%ecx,%ecx
+	call	return_500
 
 end_au:
 	movl	%ebx,%esp
@@ -102,7 +103,7 @@ get_user_password:
 br_gup:
 	movl	redctx,%ecx
 	addl	$4,%ecx
-	call	return_400
+	call	return_400_str
 	xorl	%eax,%eax
 	incl	%eax
 	jmp	end_gup
@@ -113,7 +114,8 @@ cmd_err_gup:
 	call	return_500_str
 
 err_gup:
-	call	return_500_str
+	xorl	%ecx,%ecx
+	call	return_500
 
 end_gup:
 	movl	%esi,%esp

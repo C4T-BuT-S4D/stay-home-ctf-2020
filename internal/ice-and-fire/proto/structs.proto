@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+    repeated double coordinates = 3;
+}
+
+message ErrorResponse {
+    string text = 1;
+}

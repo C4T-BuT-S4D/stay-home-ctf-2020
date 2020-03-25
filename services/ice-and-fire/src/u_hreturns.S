@@ -18,10 +18,12 @@ return_404:
 	.global	return_200
 return_200:
 	movl	%ecx,%esi
+	movl	%edx,%edi
 	movl	$ok_s,%ecx
 	call	simple_write
 	movl	%esi,%ecx
-	call	wjson
+	movl	%edi,%edx
+	call	wrhtml
 
 	.global	return_200_str
 return_200_str:
@@ -29,12 +31,12 @@ return_200_str:
 	movl	$ok_s,%ecx
 	call	simple_write
 	movl	%esi,%ecx
-	call	wjokstr
+	call	wpstr
 
 	.global	return_400
 return_400:
-	pushl	%esi
 	movl	%ecx,%esi
+	movl	%edx,%edi
 	movl	$br_s,%ecx
 	call	simple_write
 
@@ -42,25 +44,25 @@ return_400:
 	jnz	custom_400
 
 default_400:
-	movl	$br_m,%ecx
-	call	wjerrstr
+	movl	$br_m,%esi
+	call	wpstr
 
 custom_400:
 	movl	%esi,%ecx
-	call	wjson
+	movl	%edi,%edx
+	call	wrhtml
 
 	.global	return_400_str
 return_400_str:
 	movl	%ecx,%esi
 	movl	$br_s,%ecx
 	call	simple_write
-	movl	%esi,%ecx
-	call	wjerrstr
+	call	wpstr
 
 	.global	return_500
 return_500:
-	pushl	%esi
 	movl	%ecx,%esi
+	movl	%edx,%edi
 	movl	$ie_s,%ecx
 	call	simple_write
 
@@ -68,17 +70,17 @@ return_500:
 	jnz	custom_500
 
 default_500:
-	movl	$ie_m,%ecx
-	call	wjerrstr
+	movl	$ie_m,%esi
+	call	wpstr
 
 custom_500:
 	movl	%esi,%ecx
-	call	wjson
+	movl	%edi,%edx
+	call	whtml
 
 	.global	return_500_str
 return_500_str:
 	movl	%ecx,%esi
 	movl	$ie_s,%ecx
 	call	simple_write
-	movl	%esi,%ecx
-	call	wjerrstr
+	call	wpstr
