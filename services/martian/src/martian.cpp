@@ -18,7 +18,6 @@ Martian::Martian( std::string _name, std::string _password )
 
 	actions = INIT_ACTIONS_POINTS;
 
-	//ViewUserStats(); // debug only
 };
 
 void Martian::ViewUserStats( void )
@@ -100,12 +99,6 @@ bool Martian::SaveFile( void )
 	_filename += name;
 
 	const char* Filename = _filename.c_str();
-	
-	std::cout << "prefix = " << USER_STORAGE_PREFIX << std::endl;
-	std::cout << "name = " << name << std::endl;
-	std::cout << "_filename = " << _filename << std::endl;
-	std::cout << "Filename = " << Filename << std::endl;
-
 	std::ofstream UserSaveFile( Filename );
 
 	if ( !UserSaveFile )
@@ -281,9 +274,15 @@ bool Martian::EatPotatoes( void )
 	}
 
 	hunger -= 0.25;
+	health += 5.5;
+
+	CheckHealth();
+
 	potato->del( 1 );
 
 	std::cout << "{+} Now your <hunger> is <" << hunger << ">" << std::endl;
+	std::cout << "{+} Now your <health> is <" << health << ">" << std::endl;
+
 	return true;
 };
 
@@ -403,6 +402,16 @@ bool Martian::ReadBook( void )
 	{
 		intelligence += 2.5;
 		actions -= READ_BOOK;
+		std::cout << "Reading ";
+		for ( int i = 0; i < 7; i++ )
+		{
+			std::cout << ".";
+			usleep( 90000 );
+		}
+		std::cout << std::endl;
+
+		std::cout << "{+} You read the book. Intellect increased by <";
+		std::cout << 2.5 << ">" << std::endl; 
 	}
 	else
 	{
@@ -434,6 +443,11 @@ bool Martian::CheckHealth( void )
 		std::cout << "{-} You died!" << std::endl;
 		Die();
 		exit( -1 );
+	}
+
+	if ( health > INIT_HP )
+	{
+		health = INIT_HP;
 	}
 
 	return true;
@@ -485,7 +499,7 @@ bool Martian::MakeRaid( void )
 		}
 		case 3:
 		{
-			if ( intelligence >= 100.0 )
+			if ( intelligence <= 100.0 )
 			{
 				std::cout << "{-} You don't have <intelligence> !" << std::endl;
 				return false;
@@ -545,8 +559,6 @@ void Martian::MakeRandomEvent( void )
 {
 	int EventId = GetRandomEventId();
 
-	//std::cout << "night event: " << EventId << std::endl;
-
 	if ( EventId == NIGHT_DESTINY )
 	{
 		std::cout << "{..} At night, a storm suddenly rose and demolished your house" << std::endl;
@@ -581,9 +593,37 @@ void Martian::MakeRandomEvent( void )
 	std::cout << "{..} Nothing happened" << std::endl;
 };
 
-std::string Martian::GetName( void )
+inline std::string Martian::GetName( void )
 {
 	return name;
+};
+
+inline double Martian::GetHP( void )
+{
+	return health;
+};
+
+inline int Martian::GetAP( void )
+{
+	int ap = 0.001 * (stamina + intelligence);
+
+	return ap;
+};
+
+inline void Martian::RegenHP( void )
+{
+	health += stamina * 0.001;
+	CheckHealth();
+};
+
+inline void Martian::AddStamina( double value )
+{
+	stamina += value;
+};
+
+inline int Martian::GetINT( void )
+{
+	return (int) intelligence;
 };
 
 inline std::vector<double> Martian::get( void )
@@ -595,7 +635,7 @@ inline std::vector<double> Martian::get( void )
 	stats.push_back( thirst ); // 2
 	stats.push_back( stamina ); // 3 
 	stats.push_back( intelligence ); // 4 
-	stats.push_back( repair_skill );
+	stats.push_back( repair_skill ); // 5 
 
 	return stats;
 };
@@ -614,10 +654,12 @@ int EasyRaid( Martian* player )
 {
 	std::vector<double> stats = player->get();
 
+	// check int
 	if ( stats[ 4 ] <= 20.0 )
 	{
 		std::cout << "{-} During the raid, you found a chest";
 		std::cout << "but you weren’t smart enough to open it";
+		std::cout << std::endl;
 
 		player->Damage( 5.0 );
 		player->SubStamina( 1.0 );
@@ -645,15 +687,18 @@ int EasyRaid( Martian* player )
 
 	std::cin >> answer;
 
-	if ( (int) time( NULL ) - start_time > 3 )
+	if ( ( (int) time( NULL ) - start_time ) > 3 )
 	{
-		std::cout << "{-} Time out!" << std::endl;
+		std::cout << "{-} Time is out!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+		player->Damage( 15.0 );
+
 		return 0;
 	}
 
 	if ( answer == ( value1 + value2 ) )
 	{
-		std::cout << "{+} You managed to open the chest and there you found" << std::endl;
+		std::cout << "{+} You managed to open the chest and there you found:" << std::endl;
 
 		int potatoes_cnt = 1 + ( dis( gen ) % 3 );
 		int water_cnt = 1 + ( dis( gen ) % 3 );
@@ -675,7 +720,7 @@ int EasyRaid( Martian* player )
 		std::cout << "{-} Incorrect code!" << std::endl;
 		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
 
-		player->Damage( 5.0 );  
+		player->Damage( 15.0 );  
 	}
 
 	return 1;
@@ -683,10 +728,373 @@ int EasyRaid( Martian* player )
 
 int MediumRaid( Martian* player )
 {
-	std::cout << "todo!" << std::endl;
+	std::vector<double> stats = player->get();
+
+	// check INT
+	if ( stats[ 4 ] <= 55.0 )
+	{
+		std::cout << "{-} During the raid, you found a chest";
+		std::cout << "but you weren’t smart enough to open it";
+		std::cout << "and it exploded and damaged you!" << std::endl;
+
+		player->Damage( 25.0 );
+		player->SubStamina( 5.0 );
+
+		return 1;
+	}
+
+	BYTE monster_hp = 120;
+	BYTE monster_attack = 12;
+	BYTE monster_regen = 8;
+
+	std::random_device rd;
+	std::mt19937 gen( rd() );
+	std::uniform_int_distribution<> dis( 1, 100 );
+
+	std::cout << "{?} You found a chest, but it is guarded by some strange animals." << std::endl;
+	std::cout << "{?} You were not able to get around it and it noticed you." << std::endl;
+	std::cout << "{?} You have to fight." << std::endl;
+
+	DWORD valid_code = (int) monster_hp + (int) monster_attack + (int) monster_regen;
+	valid_code += (int) player->GetHP();
+	valid_code = valid_code << 2;
+	valid_code = player->GetINT();
+
+	bool runaway = false;
+
+	while ( monster_hp > 0 && !runaway )
+	{
+		std::cout << "Monster HP: " << (int) monster_hp << std::endl;
+		std::cout << "Player HP: " << player->GetHP() << std::endl;
+
+		std::cout << "--- Actions ---" << std::endl;
+		std::cout << "1. Attack" << std::endl;
+		std::cout << "2. Defence" << std::endl;
+		std::cout << "3. Run away" << std::endl;
+		std::cout << "> ";
+
+		int option;
+		std::cin >> option;
+
+		int monster_move = dis( gen ) % 2;
+
+		if ( option <= 0 || option > 3 )
+		{
+			std::cout << "{-} Incorrect option" << std::endl;
+			continue;
+		}
+
+		switch ( option )
+		{
+			case 1:
+			{
+				std::cout << "{..} You attack!" << std::endl;
+
+				if ( monster_move == 1 )
+				{
+					std::cout << "{..} The monster is also attacking!" << std::endl;
+					monster_hp -= (BYTE) player->GetHP();
+					player->Damage( (double) monster_attack );
+				}
+				else
+				{
+					std::cout << "{..} Monster defends itself!" << std::endl;
+					monster_hp -= (BYTE) player->GetHP() / 2;
+				}
+				break;
+			}
+			case 2:
+				std::cout << "{..} You defend" << std::endl;
+
+				if ( monster_move == 1 )
+				{
+					std::cout << "{..} The monster attacks!" << std::endl;
+					player->Damage( (double) monster_attack / 2 );
+				}
+				else
+				{
+					std::cout << "{..} Monster is also defends itself!" << std::endl;
+				}
+
+				break;
+			case 3:
+			{
+				std::cout << "{-} You ran away but lost a lot of health!" << std::endl;
+				player->SubStamina( 10.0 );
+				player->Damage( player->GetHP() / 2.0 );
+
+				runaway = true;
+				break;
+			}
+			default:
+				break;
+		}
+
+		if ( monster_hp < 80 )
+		{
+			std::cout << "{...} Monster is raging! Attack power increase!" << std::endl;
+			monster_attack += 50;
+		}
+
+		valid_code += 13;
+		monster_hp += monster_regen;
+		player->RegenHP();
+	}
+	
+	if ( runaway )
+	{
+		return 1;
+	}
+
+	std::cout << "{+++} You killed a monster!!!" << std::endl;
+	player->AddStamina( 15.0 );
+
+	std::cout << "{?} You got a chest, but this time you";
+	std::cout << " need to enter the password immediately";
+	std::cout << " within 5 seconds" << std::endl;
+
+	//std::cout << "valid_code: " << valid_code << std::endl; // DEBUG only
+	std::cout << "Code: ";
+
+	int start_time = (int) time( NULL );
+
+	DWORD user_code;
+	std::cin >> user_code;
+
+	if ( ( (int) time( NULL ) - start_time ) > 5 )
+	{
+		std::cout << "{-} Time is out!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+		player->Damage( 25.0 );
+
+		return 1;
+	}
+
+	if ( user_code == valid_code )
+	{
+		std::cout << "{+} You managed to open the chest and there you found:" << std::endl;
+
+		int potatoes_cnt = 3 + ( dis( gen ) % 10 );
+		int water_cnt = 3 + ( dis( gen ) % 10 );
+		int iron_cnt = 2 + ( dis( gen ) % 5 );
+		int ground_cnt = 2 + ( dis( gen ) % 5 );
+
+		std::cout << "potato: " << potatoes_cnt << std::endl;
+		std::cout << "drink water: " << water_cnt << std::endl;
+		std::cout << "iron: " << iron_cnt << std::endl;
+		std::cout << "ground: " << ground_cnt << std::endl;
+
+		Item _potato = storage->GetItemByName( "potato" );
+		_potato.add( potatoes_cnt - 1 );
+
+		Item _drink_water = storage->GetItemByName( "drink water" );
+		_drink_water.add( water_cnt - 1 );
+
+		Item _ground = storage->GetItemByName( "ground" );
+		_ground.add( ground_cnt - 1 );
+
+		Item _iron = storage->GetItemByName( "iron" );
+		_iron.add( iron_cnt - 1 );
+
+		player->AddItemToHomeStock( _potato );
+		player->AddItemToHomeStock( _drink_water );
+		player->AddItemToHomeStock( _ground );
+		player->AddItemToHomeStock( _iron );
+	}
+	else
+	{
+		std::cout << "{-} Incorrect code!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+
+		player->Damage( 25.0 );  
+	}
+
+	return 0;
 };
 
 int HardRaid( Martian* player )
 {
-	std::cout << "todo!" << std::endl;
+	std::vector<double> stats = player->get();
+
+	// check INT
+	if ( stats[ 4 ] <= 110.0 )
+	{
+		std::cout << "{-} During the raid, you found a chest";
+		std::cout << "but you weren’t smart enough to open it";
+		std::cout << "and it exploded and damaged you!" << std::endl;
+
+		player->Damage( 35.0 );
+		player->SubStamina( 10.0 );
+
+		return 1;
+	}
+
+	std::string boss_HP = "Boss Hp: ||||||||||||||||||||||||||||||";
+	std::string round_msg;
+
+	double boss_AP = 13.37;
+
+	std::cout << "{?} You found a chest, but it is guarded by strange Boss." << std::endl;
+	std::cout << "{?} You were not able to get around it and it noticed you." << std::endl;
+	std::cout << "{?} You have to fight." << std::endl;
+
+	bool runaway = false;
+	int monster_hp = boss_HP.size() - 9;
+	char* ptr_round_msg;
+
+	while ( monster_hp > 0 && !runaway )
+	{
+
+		std::random_device rd;
+		std::mt19937 gen( rd() );
+		std::uniform_int_distribution<> dis( 1, 100 );
+
+		int monster_round_val = dis( gen ) % 4;
+
+		round_msg.reserve( msgs[ monster_round_val ].size() );
+		round_msg.resize( msgs[ monster_round_val ].size() );
+		round_msg.shrink_to_fit();
+
+		round_msg = msgs[ monster_round_val ];
+		ptr_round_msg = (char*) round_msg.c_str();
+		
+		// memcpy( ptr_round_msg, 
+		// 	(void*) msgs[ monster_round_val ].c_str(),
+		// 	(int) msgs[ monster_round_val ].size() 
+		// );
+
+		// // debug
+		// std::cout << "monster_round_val = " << monster_round_val << std::endl;
+		// std::cout << "msg = " << ptr_round_msg << std::endl;
+		// std::printf( "str_ptr = %p\n", ptr_round_msg );
+		// std::printf( "local_var = %p\n", &monster_hp );
+
+		std::cout << "Boss says: " << round_msg << std::endl;
+
+		std::cout << boss_HP << std::endl;
+		std::cout << "Player HP: " << player->GetHP() << std::endl;
+
+		std::cout << "--- Actions ---" << std::endl;
+		std::cout << "1. Light attack" << std::endl;
+		std::cout << "2. Medium attack" << std::endl;
+		std::cout << "3. Difficult attack" << std::endl;
+		std::cout << "4. Run away!" << std::endl;
+		std::cout << "> ";
+
+		int option;
+		std::cin >> option;
+
+		if ( option <= 0 || option > 4 )
+		{
+			std::cout << "{-} Incorrect option" << std::endl;
+			continue;
+		}
+
+		switch ( option )
+		{
+			case 1:
+			{	
+				if ( player->GetINT() > 125.0 )
+				{
+					boss_HP.pop_back();
+				}
+				break;
+			}
+			case 2:
+			{
+				if ( player->GetINT() > 200.0 )
+				{
+					boss_HP.pop_back();
+					boss_HP.pop_back();
+				}
+				else
+				{
+					std::cout << "{-} You could not complete this attack!" << std::endl;
+				}
+				break;
+			}
+			case 3:
+			{
+				if ( player->GetINT() > 250.0 )
+				{
+					if ( stats[ 3 ] > 90 )
+					{
+						for ( int i = 0; i < 5; i++ )
+						{
+							boss_HP.pop_back();
+						}
+					}
+				}
+				else
+				{
+					std::cout << "{-} You could not complete this attack!" << std::endl;
+				}
+				break;
+			}
+			case 4:
+			{
+				std::cout << "{-} You ran away but lost a lot of health!" << std::endl;
+				player->SubStamina( 25.0 );
+				player->Damage( player->GetHP() / 1.75 );
+
+				runaway = true;
+				break;
+			}
+			default:
+				break;
+		}
+
+		if ( runaway )
+			break;
+
+		double damage = boss_AP * ((double) (monster_round_val+1) * 1.337 );
+		damage -= stats[ 3 ] * 0.2337;
+		
+		if ( damage < 0 )
+			damage = 0;
+
+		std::cout << "{.} Boss damage on this round: " << damage << std::endl;
+		player->Damage( damage );
+
+		player->RegenHP();
+		monster_hp = boss_HP.size() - 9;
+	}
+	
+	if ( runaway )
+	{
+		std::cout << "{?} You can say a few words last: ";
+		std::cin >> ptr_round_msg;
+		return 1;
+	}
+
+	std::cout << "{+} Wooooow you win!" << std::endl;
+	player->AddStamina( 30.0 );
+
+	std::cout << "{?} You got a chest, but this time you";
+	std::cout << " need to enter the password immediately";
+	std::cout << " within 3 seconds" << std::endl;
+
+	std::cout << "Code: ";
+
+	int start_time = (int) time( NULL );
+
+	std::string user_code;
+	std::cin >> user_code;
+
+	if ( ( (int) time( NULL ) - start_time ) > 3 )
+	{
+		std::cout << "{-} Time is out!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+		player->Damage( 25.0 );
+
+		return 1;
+	}
+
+	// check user code correction!
+	if ( user_code.size() < 8 || user_code.size() > 16 )
+	{
+		std::cout << "(todo)" << std::endl;
+	}
+
+	return 0;
 };

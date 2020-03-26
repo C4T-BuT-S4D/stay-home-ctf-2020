@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include <time.h>
+#include <cstdio>
 
 #include <sys/stat.h>
 #include <unistd.h>
