@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres:12-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: msp
+      POSTGRES_PASSWORD: msp
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d/
