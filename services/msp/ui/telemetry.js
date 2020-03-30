@@ -2,7 +2,7 @@ window.serverState = {}
 
 window.trackedObjects = [
 "a00cb030-4d7b-4e2f-bdfa-bdab27927202",
-"a00cb030-4d7b-4e2f-bdfa-bdab27927201",
+ "a00cb030-4d7b-4e2f-bdfa-bdab27927201",
 ]
 
 function fetch_data() {

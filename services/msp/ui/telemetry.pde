@@ -1,15 +1,12 @@
 int size_x = 640;
 int size_y = 480;
-
 int center_x = size_x / 2;
 int center_y = size_y / 2;
-
 float scaleFactor = 1;
-
 float aligmentAngle = 92;
 bool relative = true;
-
 float GM = 50000; 
+bool debug=false;
 
 void setup() {  // this is run once.   
     
@@ -69,6 +66,10 @@ void keyPressed() {
 
   if (keyCode == 'L') {
     cycle_target();
+  }
+
+  if (keyCode == 'B') {
+    debug = !debug;
   }
 
   if (keyCode == 'K') {
@@ -246,7 +247,6 @@ void draw_object(Object obj) {
     while (abs(pos_x * get_scale()) > size_x / 2) {
       scaleFactor -= 0.5;
     }
-
     while (abs(pos_y * get_scale()) > size_y / 2) {
       scaleFactor -= 0.5;
     }
@@ -258,6 +258,8 @@ void draw_object(Object obj) {
     );
 
     // draw the object
+    fill(255);
+    strokeWeight(1);
     ellipse(0, 0, 10, 10);
 
     float velocity = dist(0, 0, vel_x, vel_y) ;
@@ -269,15 +271,28 @@ void draw_object(Object obj) {
     float Ra = (1 - e) * a;
     float Rb = (1 + e) * a;
     float center_offset = ((Ra+Rb)/2-Ra);
+    float mx = height * velocity * velocity / GM;
+    float tanU = mx * sin(ta) * cos(ta) / ( mx * sin(ta) * sin(ta) - 1);
+    float flatAngle = atan2(pos_x, pos_y) + PI/2;
+    float orbitAngle = -atan(tanU)-flatAngle;
+
+    if (Ra < Rb) {
+      float tmp = Ra;
+      Ra = Rb;
+      Rb = tmp;
+    }
 
     textAlign(CENTER);
     text(obj.idx, 0, 15);
-    text("v=" + nf(velocity, 0, 2), 0, -15);
-    text("H=" + nf(height, 0, 2), 0, -25);
-    text("a=" + a, 0, -35);
-    text("Ah=" + Ra, 0, -45);
-    text("Ph=" + Rb, 0, -55);
-    text("e=" + e, 0, -65);
+
+    if (debug) {
+      text("v=" + nf(velocity, 0, 2), 0, -15);
+      text("H=" + nf(height, 0, 2), 0, -25);
+      text("a=" + a, 0, -35);
+      text("Ah=" + Ra, 0, -45);
+      text("Ph=" + Rb, 0, -55);
+      text("e=" + e, 0, -65);
+    }
 
     if (source_id() == obj.idx) {
       text("[source]", 0, 25);
@@ -308,6 +323,17 @@ void draw_object(Object obj) {
     }
 
     popMatrix();
+
+    pushMatrix();
+    rotate(orbitAngle);
+    translate((center_offset)*get_scale(), 0);
+    noFill();
+    stroke(255, 255, 255, 16);
+    strokeWeight(5);
+    ellipse(0, 0, (Ra+Rb)*get_scale(), b * 2 * get_scale());
+    popMatrix();
+
+
 }
 
 

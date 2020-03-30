@@ -210,7 +210,8 @@ class Webserver():
         async with self.conn.acquire() as conn:
             rows = await conn.fetch(
                 """select narrow_beam_response from objects where
-                    polygon($1::text::path) @> position""", pathStr)
+                    polygon($1::text::path) @> position
+                    limit 128 order by created_at desc""", pathStr)
 
         responses = [row['narrow_beam_response'] for row in rows]
         self.logger.debug('Got {} narrow beam responses from {}'.format(
