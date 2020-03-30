@@ -8,6 +8,7 @@
 
 class Home {
 	private:
+		bool is_trophy;
 		double health;
 		double max_capacity;
 		double current_capacity;
@@ -17,7 +18,7 @@ class Home {
 		std::vector<Item> stock;
 
 		Garden* garden;
-
+		std::string trophy;
 		bool can_add_items;
 
 	public:
@@ -54,6 +55,10 @@ class Home {
 		void PlantPotatoes( DWORD );
 		bool CheckGarden( DWORD );
 		void ViewGarden( void );
-
 		int GardenTick( void );
+
+		// trophy
+		void SetTrophy( std::string _trophy );
+		bool ViewTrophy( void );
+		bool GetTrophyStatus( void );
 };

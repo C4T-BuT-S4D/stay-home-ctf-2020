@@ -193,8 +193,15 @@ bool CheckUserStatus( std::string status )
 	return true;
 };
 
-void Die( void )
+void Die( std::string username )
 {
-	std::cout << "die!! (todo)" << std::endl;
+
+	std::cout << "{-} You died, your character is deleted!" << std::endl;
+
+	std::string filename( USER_STORAGE_PREFIX );
+	filename += username;
+
+	std::remove( filename.c_str() );
+	
 	exit( -1 );
 };

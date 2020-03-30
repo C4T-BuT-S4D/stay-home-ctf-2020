@@ -11,6 +11,7 @@ Home::Home( double _health,
 	health = _health;
 	max_capacity = _max_capacity;
 	current_capacity = 0;
+	is_trophy = false;
 	energy = _energy;
 	temperature = _temperature;
 
@@ -18,6 +19,7 @@ Home::Home( double _health,
 
 	InitDeafultGarden();
 	InitDefaultStock();
+
 };
 
 Home::Home()
@@ -25,6 +27,7 @@ Home::Home()
 	health = INIT_HP;
 	max_capacity = INIT_CAPACITY;
 	current_capacity = 0;
+	is_trophy = false;
 	energy = INIT_ENERGY;
 	temperature = INIT_TEMPERATURE;
 
@@ -37,13 +40,6 @@ Home::Home()
 void Home::Damage( double _damage )
 {
 	health -= _damage;
-
-	if ( health <= 0.0 )
-	{
-		std::cout << "{-} Your house is completely destroyed!" << std::endl;
-		std::cout << "{-} You died!" << std::endl;
-		Die();
-	}
 };
 
 std::pair<bool,double> Home::Repair( double skill )
@@ -81,6 +77,50 @@ std::pair<bool,double> Home::Repair( double skill )
 
 			if ( health > INIT_HP )
 				health = INIT_HP;
+
+			std::cout << "{+} The house has been successfully repaired!" << std::endl;
+
+			int changed = 0;
+
+			if ( energy < 85.0 )
+			{
+				int tmp_scheme[ 8 ];
+				std::cout << "{?} Change the power scheme? [y\\n]: ";
+				BYTE user_input;
+				std::cin >> user_input;
+
+				if ( user_input == 'y' )
+				{
+					std::string new_scheme( "New scheme is: " );
+
+					std::cout << "{?} for continue enter 1337" << std::endl;
+
+					for ( int i = 0; i < 16; i++ )
+					{
+						std::cout << "enter new voltage: ";
+						scanf( "%d", &tmp_scheme[ i ] );
+						changed++;
+
+						if ( tmp_scheme[ i ] == 1337 )
+						{
+							changed--;
+							break;
+						}
+					}
+
+					std::cout << new_scheme << std::endl;
+
+					for ( int i = 0; i < changed; i++ )
+					{
+						std::cout << "voltage[" << i << "] = " << tmp_scheme[ i ] << std::endl;
+					}
+				}
+
+				energy += 10.0;
+
+				if ( energy > INIT_ENERGY )
+					energy = INIT_ENERGY;
+			}
 		}
 	}
 	else
@@ -306,5 +346,72 @@ bool Home::CheckGarden( DWORD count )
 
 void Home::EnergyTick( void )
 {
-	energy -= 0.5;
+	energy -= 5;
+};
+
+void Home::SetTrophy( std::string _trophy )
+{
+	trophy = _trophy;
+	is_trophy = true;
+};
+
+bool Home::ViewTrophy( void )
+{
+	int local_var = 1;
+	if ( trophy.size() <= 0 || !is_trophy )
+	{
+		std::cout << "{-} You have no trophies" << std::endl;
+		return false;
+	}
+
+	std::cout << "{?} Here is a magnificent box with a display, ";
+	std::cout << "however, you can’t open it in any way. There ";
+	std::cout << "is no interface to enter. Some chars  are har";
+	std::cout << "dly distinguishable on the display, but you ca";
+	std::cout << "nnot comprehend their meaning." << std::endl;
+
+	void* ptr = (void*) trophy.c_str();
+	QWORD x = static_cast<QWORD>(reinterpret_cast<std::uintptr_t>(ptr));
+
+	//memcpy( &x, &ptr, 8 );
+	x ^= 0xcafebabedeadbeef;
+	x = x >> 1;
+
+	BYTE bytes[ 8 ];
+	bytes[ 0 ] = (BYTE) ( x >> 56);
+	bytes[ 1 ] = (BYTE) ( ( x >> 48 ) & 0xff );
+	bytes[ 2 ] = (BYTE) ( ( x >> 40 ) & 0xff );
+	bytes[ 3 ] = (BYTE) ( ( x >> 32 ) & 0xff );
+	bytes[ 4 ] = (BYTE) ( ( x >> 24 ) & 0xff );
+	bytes[ 5 ] = (BYTE) ( ( x >> 16 ) & 0xff );
+	bytes[ 6 ] = (BYTE) ( ( x >> 8  ) & 0xff );
+	bytes[ 7 ] = (BYTE) ( x & 0xff );
+
+	std::swap( bytes[ 0 ], bytes[ 4 ] );
+	std::swap( bytes[ 7 ], bytes[ 2 ] );
+	std::swap( bytes[ 1 ], bytes[ 3 ] );
+	std::swap( bytes[ 5 ], bytes[ 6 ] );
+
+	for ( int i = 0; i < 8; i++ )
+	{
+		std::cout << std::hex << (int) bytes[ i ];
+
+		if ( i == 7 )
+			continue;
+
+		std::cout << "-";
+	}
+
+	std::cout << std::endl;
+
+	//QWORD value = (int)ptr;
+	//std::printf( "%x\n", value );
+	// write( 1, ptr, 128 );
+
+	return true;
+};
+
+bool Home::GetTrophyStatus( void )
+{
+	return is_trophy;
 };

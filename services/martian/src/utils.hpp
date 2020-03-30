@@ -17,7 +17,7 @@ int GetElementId( const std::vector<T>  & TargetVector, const T  & Elem );
 
 std::string GetStrTypeById( ITEM_TYPE _type );
 int GetRandomEventId( void );
-void Die( void );
+void Die( std::string );
 
 bool CheckUserStatus( std::string status );
 

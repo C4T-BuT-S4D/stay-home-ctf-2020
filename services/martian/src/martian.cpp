@@ -25,6 +25,7 @@ void Martian::ViewUserStats( void )
 	std::cout << "***--- Profile ---***" << std::endl; 
 	std::cout << "User: " << name << std::endl;
 	std::cout << "Status: " << status << std::endl;
+	std::cout << "Action points: " << actions << std::endl; 
 
 	std::cout << "Health: " << health << std::endl;
 	std::cout << "Hunger: " << hunger << std::endl;
@@ -58,6 +59,15 @@ void Martian::ViewUserStats( void )
 	{
 		std::cout << "|||---(((ITEMS)))---|||" << std::endl;
 		home->ViewStock();	
+	}
+
+	if ( home->GetTrophyStatus() )
+	{
+		std::cout << "{?} View trophy? [y\\n]: ";
+		std::cin >> inp;
+
+		if ( inp == 'y' )
+			home->ViewTrophy();
 	}
 
 	std::cout << "{?} View graden? [y\\n]: ";
@@ -174,6 +184,15 @@ bool Martian::SaveFile( void )
 
 	str.clear();
 
+	// write actions points
+	str = std::to_string( actions );
+	tmp = (const char*) str.c_str();
+
+	UserSaveFile.write( tmp, str.size() );
+	UserSaveFile.write( &delimeter, sizeof( char ) );
+
+	str.clear();
+
 	UserSaveFile.close();  
 
 	return true;
@@ -252,6 +271,15 @@ bool Martian::LoadSaveFile( void )
 	}
 
 	repair_skill = std::stod( tmp_buf );
+	tmp_buf.clear();
+	data_idx++;
+	
+	while ( UserFileData[ data_idx ] != '\n' )
+	{
+		tmp_buf.push_back( UserFileData[ data_idx++ ] );
+	}
+
+	actions = std::stoi( tmp_buf );
 	tmp_buf.clear();
 
 	return true;
@@ -441,7 +469,7 @@ bool Martian::CheckHealth( void )
 	if ( health <= 0.0 )
 	{
 		std::cout << "{-} You died!" << std::endl;
-		Die();
+		Die( name );
 		exit( -1 );
 	}
 
@@ -534,6 +562,13 @@ bool Martian::GoToNextDay( void )
 	CheckHealth();
 
 	home->Damage( 1.0 + ( repair_skill * 0.33 ) );
+
+	if ( home->GetHealth() <= 0.0 )
+	{
+		std::cout << "{-} Your house is completely destroyed!" << std::endl;
+		Die( name );
+	}
+
 	home->EnergyTick();
 	actions = INIT_ACTIONS_POINTS;
 
@@ -563,7 +598,7 @@ void Martian::MakeRandomEvent( void )
 	{
 		std::cout << "{..} At night, a storm suddenly rose and demolished your house" << std::endl;
 		std::cout << "{-} You died!" << std::endl;
-		Die();
+		Die( name );
 	}
 
 	if ( EventId > NIGHT_INT_IS_POWER && intelligence < 55.0 )
@@ -572,14 +607,14 @@ void Martian::MakeRandomEvent( void )
 		std::cout << "the work of the energy block, and at night"; 
 		std::cout << "it exploded from overloading.";
 		std::cout << "{-} You died!" << std::endl;
-		Die();
+		Die( name );
 	}
 
 	if ( EventId == NIGHT_CHOKED )
 	{
 		std::cout << "{..} In a dream, you choked and suffocated" << std::endl;
 		std::cout << "{-} You died!" << std::endl;
-		Die();
+		Die( name );
 	}
 
 	if ( intelligence <= 0.0 )
@@ -587,7 +622,7 @@ void Martian::MakeRandomEvent( void )
 		std::cout << "{..} At night you decided to take a walk ...";
 		std::cout << "and forgot to put on a spacesuit" << std::endl;
 		std::cout << "{-} You died!" << std::endl;
-		Die();
+		Die( name );
 	}
 
 	std::cout << "{..} Nothing happened" << std::endl;
@@ -608,6 +643,11 @@ inline int Martian::GetAP( void )
 	int ap = 0.001 * (stamina + intelligence);
 
 	return ap;
+};
+
+inline int  Martian::GetStamina( void )
+{
+	return (int) stamina;
 };
 
 inline void Martian::RegenHP( void )
@@ -648,6 +688,11 @@ bool Martian::CanDoAction( ACTION_TYPE Action )
 void Martian::AddItemToHomeStock( Item _new_item )
 {
 	home->AddItem( _new_item );
+};
+
+void Martian::SetTroph( std::string _troph )
+{
+	home->SetTrophy( _troph );
 };
 
 int EasyRaid( Martian* player )
@@ -912,12 +957,13 @@ int MediumRaid( Martian* player )
 	return 0;
 };
 
+// отладить проверку кода
 int HardRaid( Martian* player )
 {
-	std::vector<double> stats = player->get();
+	//std::vector<double> stats = player->get();
 
 	// check INT
-	if ( stats[ 4 ] <= 110.0 )
+	if ( player->GetINT() <= 110.0 )
 	{
 		std::cout << "{-} During the raid, you found a chest";
 		std::cout << "but you weren’t smart enough to open it";
@@ -929,7 +975,7 @@ int HardRaid( Martian* player )
 		return 1;
 	}
 
-	std::string boss_HP = "Boss Hp: ||||||||||||||||||||||||||||||";
+	int boss_HP = 30;
 	std::string round_msg;
 
 	double boss_AP = 13.37;
@@ -939,10 +985,10 @@ int HardRaid( Martian* player )
 	std::cout << "{?} You have to fight." << std::endl;
 
 	bool runaway = false;
-	int monster_hp = boss_HP.size() - 9;
 	char* ptr_round_msg;
+	BYTE fight_signature = 0;
 
-	while ( monster_hp > 0 && !runaway )
+	while ( boss_HP > 0 && !runaway )
 	{
 
 		std::random_device rd;
@@ -951,27 +997,24 @@ int HardRaid( Martian* player )
 
 		int monster_round_val = dis( gen ) % 4;
 
+		fight_signature += monster_round_val;
+
 		round_msg.reserve( msgs[ monster_round_val ].size() );
 		round_msg.resize( msgs[ monster_round_val ].size() );
 		round_msg.shrink_to_fit();
 
 		round_msg = msgs[ monster_round_val ];
 		ptr_round_msg = (char*) round_msg.c_str();
-		
-		// memcpy( ptr_round_msg, 
-		// 	(void*) msgs[ monster_round_val ].c_str(),
-		// 	(int) msgs[ monster_round_val ].size() 
-		// );
-
-		// // debug
-		// std::cout << "monster_round_val = " << monster_round_val << std::endl;
-		// std::cout << "msg = " << ptr_round_msg << std::endl;
-		// std::printf( "str_ptr = %p\n", ptr_round_msg );
-		// std::printf( "local_var = %p\n", &monster_hp );
 
 		std::cout << "Boss says: " << round_msg << std::endl;
 
-		std::cout << boss_HP << std::endl;
+		std::cout << "Boss HP: ";
+		
+		for ( int i = 0; i < boss_HP; i++ )
+			std::cout << "|";
+		
+		std::cout << std::endl;
+
 		std::cout << "Player HP: " << player->GetHP() << std::endl;
 
 		std::cout << "--- Actions ---" << std::endl;
@@ -990,13 +1033,15 @@ int HardRaid( Martian* player )
 			continue;
 		}
 
+		fight_signature += option;
+
 		switch ( option )
 		{
 			case 1:
 			{	
 				if ( player->GetINT() > 125.0 )
 				{
-					boss_HP.pop_back();
+					boss_HP -= 1;
 				}
 				break;
 			}
@@ -1004,8 +1049,7 @@ int HardRaid( Martian* player )
 			{
 				if ( player->GetINT() > 200.0 )
 				{
-					boss_HP.pop_back();
-					boss_HP.pop_back();
+					boss_HP -= 2;
 				}
 				else
 				{
@@ -1017,12 +1061,9 @@ int HardRaid( Martian* player )
 			{
 				if ( player->GetINT() > 250.0 )
 				{
-					if ( stats[ 3 ] > 90 )
+					if ( player->GetStamina() > 90 )
 					{
-						for ( int i = 0; i < 5; i++ )
-						{
-							boss_HP.pop_back();
-						}
+						boss_HP -= 5;
 					}
 				}
 				else
@@ -1047,17 +1088,15 @@ int HardRaid( Martian* player )
 		if ( runaway )
 			break;
 
-		double damage = boss_AP * ((double) (monster_round_val+1) * 1.337 );
-		damage -= stats[ 3 ] * 0.2337;
+		double damage = boss_AP * ( (double) ( monster_round_val + 1 ) * 1.337 );
+		damage -= (double)player->GetStamina() * 0.2337;
 		
-		if ( damage < 0 )
-			damage = 0;
+		if ( damage < 0.0 )
+			damage = 0.0;
 
 		std::cout << "{.} Boss damage on this round: " << damage << std::endl;
 		player->Damage( damage );
-
 		player->RegenHP();
-		monster_hp = boss_HP.size() - 9;
 	}
 	
 	if ( runaway )
@@ -1067,12 +1106,12 @@ int HardRaid( Martian* player )
 		return 1;
 	}
 
-	std::cout << "{+} Wooooow you win!" << std::endl;
+	std::cout << "{+} Wooooow you win the boss!" << std::endl;
 	player->AddStamina( 30.0 );
 
 	std::cout << "{?} You got a chest, but this time you";
-	std::cout << " need to enter the password immediately";
-	std::cout << " within 3 seconds" << std::endl;
+	std::cout << " need to enter the code immediately";
+	std::cout << " within 15 seconds" << std::endl;
 
 	std::cout << "Code: ";
 
@@ -1081,20 +1120,234 @@ int HardRaid( Martian* player )
 	std::string user_code;
 	std::cin >> user_code;
 
-	if ( ( (int) time( NULL ) - start_time ) > 3 )
+	if ( ( (int) time( NULL ) - start_time ) > 15 )
 	{
 		std::cout << "{-} Time is out!" << std::endl;
 		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
-		player->Damage( 25.0 );
+		player->Damage( 35.0 );
 
 		return 1;
 	}
 
+	bool lose = false;
 	// check user code correction!
-	if ( user_code.size() < 8 || user_code.size() > 16 )
+	if ( user_code.size() < 16 || user_code.size() > 32 )
 	{
-		std::cout << "(todo)" << std::endl;
+		std::cout << "{-} Incorrect code!" << std::endl;
+		lose = true;
 	}
+
+	// check delimeters
+	if ( user_code[ 5 ] != '-' || user_code[ 11 ] != '-' )
+	{
+		std::cout << "{-} Incorrect code!" << std::endl;
+		lose = true;
+	}
+
+	if ( lose )
+	{
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+		player->Damage( 35.0 );
+		return 1;
+	}
+
+	WORD first_part; 
+	char tmp[ 5 ];
+	memcpy( (void*) tmp, (void*) user_code.c_str(), 5 );
+	first_part = std::atoi( (const char*)&tmp[ 0 ] );
+
+	std::string second_part;
+	std::string third_part;
+
+	for ( int i = 6; i < 11; i++ )
+		second_part.push_back( user_code[ i ] );
+
+	for ( int i = 12; i < 17; i++ )
+		third_part.push_back( user_code[ i ] );
+	
+	// check first value 
+	//unsigned short crc_ccitt_update (unsigned short crc, unsigned char data)
+
+	WORD t;
+	WORD crc = 0xffff;
+	BYTE data = fight_signature;
+
+	data ^= crc & 255;
+	data ^= data << 4;
+
+	t = (((WORD)data << 8) | ((crc>>8)&255));
+	t ^= (WORD)(data >> 4);
+	t ^= ((WORD)data << 3);
+		
+	if ( first_part != t )  
+	{
+		std::cout << "{-} Incorrect code!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
+		player->Damage( 35.0 );
+
+		return 1;
+	}
+
+	// check second value 
+	int xor_res = 0;
+
+	for ( int i = 0; i < 5; i++ )
+	{
+		xor_res ^= (int) second_part[ i ];
+	}
+
+	if ( xor_res != ( fight_signature & 0x7f ) ) // debug condition 
+	{
+		std::cout << "{-} Incorrect code!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you" << std::endl;
+		player->Damage( 35.0 );
+
+		return 1;
+	}
+
+	// check third value
+	std::string _name = player->GetName();
+	std::string NameHash = _hash( _name );
+	std::string third_part_correct; 
+
+	bool flags[ 5 ] = { true, true, true, true, true };
+
+	for ( int i = 1; i < 1000; i++ )
+	{	
+		// 273 
+		if ( ( i % 3 == 0 ) && ( i % 7 == 0 ) && ( i % 13 == 0 ) && flags[ 0 ] )
+		{
+			// idx = 8 
+			int idx = ( ( ( i ^ 0x7f ) >> 3 ) ^ 13 ) / 4;
+			third_part_correct.push_back( (char) NameHash[ idx ] );
+			flags[ 0 ] = false;
+			continue;
+		}
+
+		// 391
+		else if ( ( i % 17 == 0 ) && ( i % 23 == 0 ) && flags[ 1 ] )
+		{
+			// idx = 7 
+			int idx = i & 0x7f;
+			third_part_correct.push_back( (char) NameHash[ idx ] );
+			flags[ 1 ] = false;
+			continue;
+		}
+
+		// 374 
+		else if ( ( i % 11 == 0 ) && ( i % 34 == 0 ) && flags[ 2 ] )
+		{
+			// idx = 0
+			int idx = ( ( ( i ^ 137 ) & 0xff ) ^ 0x7f ) % 16;
+			third_part_correct.push_back( (char) NameHash[ idx ] );
+			flags[ 2 ] = false;
+			continue;
+		}
+
+		// 902 
+		else if ( ( i % 22 == 0 ) && ( i % 41 == 0 ) && flags[ 3 ] ) 
+		{
+			// idx = 16 
+			int idx = ( ( ( i / 2 ) & 0xff ) ^ 127 ) % 16;
+			third_part_correct.push_back( (char) NameHash[ idx ] );
+			flags[ 3 ] = false;
+			continue;
+		}
+
+		else if ( ( i % 111 == 0 ) && ( i % 9 == 0 ) && flags[ 4 ] ) 
+		{
+			// idx = 31 
+			int idx = ( i >> 5 );
+			third_part_correct.push_back( (char) NameHash[ idx ] );
+			flags[ 4 ] = false;
+			continue;
+		}
+	}
+	
+	bool incorrect_code = false;
+
+	for ( int i = 0; i < 5; i++ )
+	{
+		if ( third_part[ i ] != third_part_correct[ i ] )
+		{
+			incorrect_code = true;
+		}
+	}
+
+	if ( incorrect_code )
+	{
+		std::cout << "{-} Incorrect code!" << std::endl;
+		std::cout << "{-} The chest exploded and damaged you" << std::endl;
+		player->Damage( 35.0 );
+
+		return 1;
+	}
+
+	// CORRECT CODE ENTERED
+	std::cout << "{+} You managed to open the chest and there you found:" << std::endl;
+
+	std::random_device rd;
+	std::mt19937 gen( rd() );
+	std::uniform_int_distribution<> dis( 1, 100 );
+
+	int potatoes_cnt = 7 + ( dis( gen ) % 15 );
+	int water_cnt = 5 + ( dis( gen ) % 15 );
+	int iron_cnt = 5 + ( dis( gen ) % 10 );
+	int ground_cnt = 5 + ( dis( gen ) % 10 );
+
+	std::cout << "potato: " << potatoes_cnt << std::endl;
+	std::cout << "drink water: " << water_cnt << std::endl;
+	std::cout << "iron: " << iron_cnt << std::endl;
+	std::cout << "ground: " << ground_cnt << std::endl;
+
+	Item _potato = storage->GetItemByName( "potato" );
+	_potato.add( potatoes_cnt - 1 );
+
+	Item _drink_water = storage->GetItemByName( "drink water" );
+	_drink_water.add( water_cnt - 1 );
+
+	Item _ground = storage->GetItemByName( "ground" );
+	_ground.add( ground_cnt - 1 );
+
+	Item _iron = storage->GetItemByName( "iron" );
+	_iron.add( iron_cnt - 1 );
+
+	// add all Items* file context in stock
+	std::string great_trophy( "Ancient knowledge: " );
+
+	std::string path( USER_STORAGE_PREFIX );
+    for (const auto & entry :  std::filesystem::directory_iterator(path))
+    {
+    	std::string file_path = entry.path();
+        
+        if ( file_path[ 6 ] != 'I' )
+        	if ( file_path[ 7 ] != 't' )
+        		if ( file_path[ 8 ] != 'e' )
+        			if ( file_path[ 9 ] != 'm' )
+        				continue;
+
+        std::vector<BYTE> FileData = ReadFile( file_path );
+        int idx = 0;
+
+        while ( FileData[ idx++ ] != '\n' )
+        	continue;
+
+       	idx++;
+
+       	std::string ItemStatus;
+
+       	while ( FileData[ idx ] != '\n' )
+       		ItemStatus.push_back( FileData[ idx++ ] );
+
+       	great_trophy += ItemStatus;
+       	great_trophy += '\n';
+    }
+
+	player->AddItemToHomeStock( _potato );
+	player->AddItemToHomeStock( _drink_water );
+	player->SetTroph( great_trophy );
+	player->AddItemToHomeStock( _ground );
+	player->AddItemToHomeStock( _iron );
 
 	return 0;
 };

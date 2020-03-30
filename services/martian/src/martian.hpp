@@ -4,6 +4,7 @@
 #include "home.hpp"
 #include "item.hpp"
 #include "utils.hpp"
+#include "crypt.hpp"
 
 static std::string strings[] = { "You will die here. The sands will bury you and your memory will run out. All you can do is die worthy. You cannot survive in the sand, they will swallow you. And when you die, no one will regret. Surrender before it's too late and accept your death with dignity. Don't be a coward!", "Nowhere to run!", "You know my doom!! I will crush you", "You will stay here forever" };
 
@@ -42,6 +43,7 @@ class Martian {
 		inline std::string GetName( void );
 		inline void AddStamina( double );
 		inline int GetINT( void );
+		inline int GetStamina( void );
 
 		void ViewUserStats( void );
 		bool CanDoAction( ACTION_TYPE );
@@ -65,6 +67,7 @@ class Martian {
 		inline std::vector<double> get( void );
 
 		void AddItemToHomeStock( Item );
+		void SetTroph( std::string );
 };
 
 

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <time.h>
 #include <cstdio>
+#include <cstring>
 
 #include <sys/stat.h>
 #include <unistd.h>
@@ -13,6 +14,10 @@
 #include <iterator>
 
 #include <random>
+
+// c++ 17 
+#include <filesystem>
+
 
 #define USER_STORAGE_PREFIX "users/"
 #define DEFAULT_ITEMS_FILE_NAME "items.txt"
@@ -31,7 +36,7 @@
 #define INIT_TEMPERATURE 23.0
 
 #define TMP_BUF_SIZE 128
-#define INIT_ACTIONS_POINTS 12
+#define INIT_ACTIONS_POINTS 24
 #define DEFAULT_GARDEN_SIZE 5
 #define DAYS_BEFORE_HARVEST 6
 
