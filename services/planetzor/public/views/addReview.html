@@ -1,0 +1,40 @@
+{{define "addReview"}}
+    {{template "header" .Error}}
+    <div class="ui text container">
+        <h1 class="ui header">Add new review</h1>
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui message">
+                    <h4 class="ui header">Add your review</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="ui text container">
+        <form class="ui form" method="post" action="">
+            <select name="planet" class="ui dropdown">
+                {{range $index, $element := .Planets}}
+                    <option value="{{$element}}">{{$element}}</option>
+                {{end}}
+            </select>
+            <div class="field">
+                <label>Your review</label>
+                <textarea required rows="3" style="width: 30%" name="content" placeholder="Some text"></textarea>
+            </div>
+
+            <div class="ui rating" data-rating="3" data-max-rating="5" data-min-rating="1"></div>
+            <input type="hidden" id="scoreInput" name="score" value="3">
+            <div class="field">
+                <div class="ui checkbox">
+                    <input name="private" type="checkbox" tabindex="0" class="hidden">
+                    <label>Make review private (only for your subscribers)</label>
+                </div>
+            </div>
+
+            <button class="ui button" type="submit">Submit</button>
+        </form>
+    </div>
+
+    {{template "footer"}}
+{{ end }}
