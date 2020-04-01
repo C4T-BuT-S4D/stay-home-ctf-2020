@@ -1,16 +1,18 @@
 version: '3'
+
 services:
-  #  tiktak:
-  #    build: .
-  #    ports:
-  #      - "4000:4000"
-  #    restart: always
-  #    volumes:
-  #      - ./public:/app/public
-  #    depends_on:
-  #      - db
+  planetzor:
+    build: .
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./data/go:/data
+    restart: always
+    depends_on:
+      - db
   db:
     image: redislabs/redisgraph
     restart: always
+    command: ["redis-server", "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", "--appendonly", "yes"]
     ports:
       - 6379:6379

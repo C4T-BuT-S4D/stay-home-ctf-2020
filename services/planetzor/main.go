@@ -1,15 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"crypto/rand"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"planetzor/db"
+	"planetzor/tokens"
 	"strconv"
 )
 
@@ -21,13 +24,13 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-type ErrorResponse struct {
+type ErrorContext struct {
 	Error string
 }
 
 type PlanetContext struct {
 	Planets []string
-	ErrorResponse
+	ErrorContext
 }
 
 type ReviewContext struct {
@@ -37,6 +40,12 @@ type ReviewContext struct {
 type HomeContext struct {
 	ReviewContext
 	Token string
+	User  string
+}
+
+type PlanetReviewsContext struct {
+	ReviewContext
+	Planet string
 }
 
 func loginSession(c echo.Context, login string) *sessions.Session {
@@ -75,8 +84,10 @@ func addReviewPage(c echo.Context) error {
 
 func homePage(c echo.Context) error {
 	ctx := HomeContext{}
-	ctx.Reviews = db.UserReviews(getLoginFromSession(c))
-	fmt.Println(ctx)
+	login := getLoginFromSession(c)
+	ctx.Reviews = db.UserReviews(login)
+	ctx.Token = tokens.GenerateToken(login)
+	ctx.User = login
 	return c.Render(http.StatusOK, "home", ctx)
 }
 
@@ -87,13 +98,19 @@ func feedPage(c echo.Context) error {
 }
 
 func planetPage(c echo.Context) error {
-	planet := c.QueryParam("planet")
+	planet := c.Param("planet")
 	if !db.ValidatePlanet(planet) {
 		return c.HTML(http.StatusNotFound, "404. <b>Planet not found.</b>")
 	}
-	ctx := ReviewContext{}
+	ctx := PlanetReviewsContext{}
 	ctx.Reviews = db.PlanetReviews(planet)
+	ctx.Planet = planet
 	return c.Render(http.StatusOK, "planet", ctx)
+}
+
+func latestReviews(c echo.Context) error {
+	ctx := ReviewContext{Reviews: db.LatestPublicReviews(200)}
+	return c.Render(http.StatusOK, "latestReviews", ctx)
 }
 
 func listPage(c echo.Context) error {
@@ -105,12 +122,12 @@ func handleRegister(c echo.Context) error {
 	password := c.FormValue("password")
 	if login == "" || password == "" {
 		return c.Render(http.StatusUnprocessableEntity, "register",
-			ErrorResponse{"please provide login and password"},
+			ErrorContext{"please provide login and password"},
 		)
 	}
 	p, err := db.GetUser(login)
 	if err != nil || p != "" {
-		resp := ErrorResponse{"user with such login already exists"}
+		resp := ErrorContext{"user with such login already exists"}
 		if err != nil {
 			resp.Error += err.Error()
 		}
@@ -119,14 +136,14 @@ func handleRegister(c echo.Context) error {
 	err = db.AddUser(login, password)
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "register",
-			ErrorResponse{err.Error()},
+			ErrorContext{err.Error()},
 		)
 	}
 
 	sess := loginSession(c, login)
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "register",
-			ErrorResponse{err.Error()},
+			ErrorContext{err.Error()},
 		)
 	}
 	return c.Redirect(http.StatusFound, "/home")
@@ -137,25 +154,25 @@ func handleLogin(c echo.Context) error {
 	password := c.FormValue("password")
 	if login == "" || password == "" {
 		return c.Render(http.StatusUnprocessableEntity, "login",
-			ErrorResponse{"please provide login and password"},
+			ErrorContext{"please provide login and password"},
 		)
 	}
 	p, err := db.GetUser(login)
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "login",
-			ErrorResponse{err.Error()},
+			ErrorContext{err.Error()},
 		)
 	}
 	if p != password {
 		return c.Render(http.StatusUnprocessableEntity, "login",
-			ErrorResponse{"failed to find user with this login and password"},
+			ErrorContext{"failed to find user with this login and password"},
 		)
 	}
 
 	sess := loginSession(c, login)
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "login",
-			ErrorResponse{err.Error()},
+			ErrorContext{err.Error()},
 		)
 	}
 	return c.Redirect(http.StatusFound, "/home")
@@ -171,7 +188,7 @@ func handleAddReview(c echo.Context) error {
 
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "addReview",
-			PlanetContext{db.ListPlanets(), ErrorResponse{err.Error()}},
+			PlanetContext{db.ListPlanets(), ErrorContext{err.Error()}},
 		)
 	}
 
@@ -185,19 +202,39 @@ func handleAddReview(c echo.Context) error {
 
 	if !db.ValidateReview(r) {
 		return c.Render(http.StatusUnprocessableEntity, "addReview",
-			PlanetContext{db.ListPlanets(), ErrorResponse{"invalid data"}},
+			PlanetContext{db.ListPlanets(), ErrorContext{"invalid data"}},
 		)
 	}
 
 	err = db.AddReview(r)
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "addReview",
-			PlanetContext{db.ListPlanets(), ErrorResponse{err.Error()}},
+			PlanetContext{db.ListPlanets(), ErrorContext{err.Error()}},
 		)
 	}
 
-	// OK.
 	return c.Redirect(http.StatusFound, "/")
+}
+
+func handlePublicToken(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]string{"token": tokens.Public()})
+}
+
+func handleSubscribe(c echo.Context) error {
+	user := c.QueryParam("user")
+	self := getLoginFromSession(c)
+	token := c.QueryParam("token")
+	if self == user {
+		return c.HTML(http.StatusForbidden, "your own token")
+	}
+	if tokens.CheckToken(user, token) {
+		err := db.AddFollower(user, self)
+		if err != nil {
+			return c.HTML(http.StatusForbidden, err.Error())
+		}
+		return c.Redirect(http.StatusFound, "/feed")
+	}
+	return c.HTML(http.StatusForbidden, "invalid token")
 }
 
 func loginRequired(next echo.HandlerFunc) echo.HandlerFunc {
@@ -209,11 +246,33 @@ func loginRequired(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func sessionToken(tokenFile string) ([]byte, error) {
+	if _, err := os.Stat(tokenFile); err != nil && os.IsNotExist(err) {
+		bytes := make([]byte, 30)
+		rand.Read(bytes)
+		if err = ioutil.WriteFile(tokenFile, bytes, 0644); err != nil {
+			return nil, err
+		}
+	}
+	key, err := ioutil.ReadFile(tokenFile)
+	if err != nil {
+		return nil, err
+	}
+	return key, err
+}
+
 func main() {
-	db.Init("localhost:6379")
+	db.Init("db:6379")
+	if err := tokens.Init("/data/private.key"); err != nil {
+		panic(err)
+	}
 
 	e := echo.New()
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+	sessionKey, err := sessionToken("/data/token.txt")
+	if err != nil {
+		panic(err)
+	}
+	e.Use(session.Middleware(sessions.NewCookieStore(sessionKey)))
 	// Init views.
 	t := &Template{
 		templates: template.Must(template.ParseGlob("public/views/*.html")),
@@ -235,7 +294,11 @@ func main() {
 	e.POST("/add", handleAddReview, loginRequired)
 	e.GET("/home", homePage, loginRequired)
 	e.GET("/feed", feedPage, loginRequired)
+	e.GET("/subscribe", handleSubscribe, loginRequired)
 	e.GET("/planets", listPage)
+	e.GET("/reviews", latestReviews)
+	e.GET("/reviews/:planet", planetPage)
+	e.GET("/tokens/public", handlePublicToken)
 	e.Debug = true
 	e.Start(":4000")
 }

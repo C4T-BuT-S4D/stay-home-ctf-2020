@@ -33,7 +33,14 @@ func GetUser(login string) (string, error) {
 		return "", err
 	}
 	if res != nil {
-		return res.(string), err
+		resStr, ok := res.(string)
+		if ok {
+			return resStr, err
+		}
+		resUint, ok := res.([]uint8)
+		if ok {
+			return string(resUint), err
+		}
 	}
 	return "", err
 }
@@ -74,6 +81,7 @@ func AddReview(review Review) error {
 			"score":   review.Score,
 			"private": review.Private,
 			"planet":  review.Planet,
+			"created": int(time.Now().Unix()),
 		},
 	}
 	graph.AddNode(&n)
@@ -150,13 +158,19 @@ func LatestPublicReviews(limit int) []Review {
 	g, c := graph()
 	defer c()
 
-	query := `MATCH (r:Review) WHERE r.private = FALSE RETURN r ORDER BY r.ID DESC LIMIT %d`
+	query := `MATCH (r:Review) WHERE r.private = FALSE RETURN r ORDER BY r.created DESC LIMIT %d`
+	result, err := graphQuery(g, query, limit)
+	if err != nil {
+		return nil
+	}
+	return parseReviews(result)
 }
 
 func ListPlanetScores() map[string]float64 {
 	g, c := graph()
 	defer c()
-	result, err := graphQuery(g, "MATCH (r:Review) WHERE r.private = FALSE RETURN r.planet, AVG(r.score) ORDER BY AVG(r.score) DESC")
+	q := `MATCH (r:Review) WHERE r.private = FALSE RETURN r.planet, AVG(r.score) ORDER BY AVG(r.score) DESC`
+	result, err := graphQuery(g, q)
 	if err != nil {
 		return nil
 	}
@@ -178,7 +192,8 @@ func ListPlanetScores() map[string]float64 {
 func PlanetReviews(planet string) []Review {
 	g, c := graph()
 	defer c()
-	result, err := graphQuery(g, `MATCH (r:Review) WHERE r.planet = "%s" and r.private = FALSE RETURN r`, planet)
+	q := `MATCH (r:Review) WHERE r.planet = "%s" and r.private = FALSE RETURN r ORDER BY r.ID DESC`
+	result, err := graphQuery(g, q, planet)
 	if err != nil {
 		return nil
 	}
@@ -214,7 +229,7 @@ func SubscribeReviews(login string) []Review {
 	var inFilter strings.Builder
 	inFilter.WriteString("[")
 	i := 0
-	for v, _ := range subscriptions {
+	for v := range subscriptions {
 		if i != 0 {
 			inFilter.WriteString(",")
 		}
@@ -224,7 +239,7 @@ func SubscribeReviews(login string) []Review {
 	inFilter.WriteString("]")
 
 	q := `MATCH (u:User)-[:Wrote]->(r:Review) WHERE u.username IN ` + inFilter.String() +
-		` RETURN r ORDER BY r.ID DESC LIMIT 50`
+		` RETURN r ORDER BY r.created DESC LIMIT 50`
 	result, err := g.Query(q)
 
 	if err != nil {
