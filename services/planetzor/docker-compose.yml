@@ -1,0 +1,16 @@
+version: '3'
+services:
+  #  tiktak:
+  #    build: .
+  #    ports:
+  #      - "4000:4000"
+  #    restart: always
+  #    volumes:
+  #      - ./public:/app/public
+  #    depends_on:
+  #      - db
+  db:
+    image: redislabs/redisgraph
+    restart: always
+    ports:
+      - 6379:6379

@@ -1,0 +1,15 @@
+{{define "footer"}}
+
+    </body>
+    <script>
+        $('.ui.checkbox')
+            .checkbox()
+        ;
+        $('.ui.rating')
+            .rating('setting', 'onRate', function(value) {
+                document.getElementById('scoreInput').value = value;
+            })
+        ;
+    </script>
+    </html>
+{{ end }}

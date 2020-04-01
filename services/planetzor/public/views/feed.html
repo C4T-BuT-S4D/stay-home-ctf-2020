@@ -1,0 +1,10 @@
+{{define "feed"}}
+    {{template "header" }}
+
+    <div class="ui text container">
+        <p>Review feed:</p>
+        {{ template "reviews" .Reviews}}
+    </div>
+    {{ template "reviews" .Reviews}}
+    {{template "footer"}}
+{{ end }}

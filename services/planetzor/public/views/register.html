@@ -1,0 +1,30 @@
+{{define "register"}}
+    {{template "header" .Error}}
+    <div class="ui text container">
+        <h1 class="ui header">Register</h1>
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui message">
+                    <h4 class="ui header">Sign-up to planetzor, best planet-review service</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui text container">
+        <form class="ui form" method="post" action="">
+            <div class="field">
+                <label>Login</label>
+                <input type="text" required name="login" placeholder="admin">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" required name="password" placeholder="">
+            </div>
+            <button class="ui button" type="submit">Submit</button>
+        </form>
+    </div>
+
+
+
+    {{template "footer"}}
+{{ end }}
