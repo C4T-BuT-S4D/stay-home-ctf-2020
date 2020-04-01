@@ -44,7 +44,7 @@ return_400:
 	jnz	custom_400
 
 default_400:
-	movl	$br_m,%esi
+	movl	$br_m,%ecx
 	call	wpstr
 
 custom_400:
@@ -70,7 +70,7 @@ return_500:
 	jnz	custom_500
 
 default_500:
-	movl	$ie_m,%esi
+	movl	$ie_m,%ecx
 	call	wpstr
 
 custom_500:
@@ -83,4 +83,5 @@ return_500_str:
 	movl	%ecx,%esi
 	movl	$ie_s,%ecx
 	call	simple_write
+	movl	%esi,%ecx
 	call	wpstr
