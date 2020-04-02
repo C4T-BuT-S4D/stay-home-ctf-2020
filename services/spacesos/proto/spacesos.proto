@@ -22,9 +22,13 @@ message UserResponse {
   string username = 2;
 }
 
+message FriendsResponse {
+  repeated UserResponse friends = 1;
+}
+
 
 service SpaceSos {
   rpc Register(AuthRequest) returns (AuthResponse) {}
   rpc Login(AuthRequest) returns (AuthResponse) {}
-  rpc ListFriends(ListFriendsRequest) returns (UserResponse) {]}
+  rpc ListFriends(ListFriendsRequest) returns (FriendsResponse) {}
 }

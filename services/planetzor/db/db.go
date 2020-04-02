@@ -146,7 +146,7 @@ func UserReviews(login string) []Review {
 	g, c := graph()
 	defer c()
 
-	query := `MATCH (u:User)-[:Wrote]->(r:Review) WHERE u.username = "%s" RETURN r`
+	query := `MATCH (u:User {username: "%s"})-[:Wrote]->(r:Review) RETURN r`
 	result, err := graphQuery(g, query, login)
 	if err != nil {
 		return nil
@@ -176,7 +176,7 @@ func PublicReviews(planet string, rating string, limit int) []Review {
 func ListPlanetScores() map[string]float64 {
 	g, c := graph()
 	defer c()
-	q := `MATCH (r:Review) WHERE r.private = FALSE RETURN r.planet, AVG(r.score) ORDER BY AVG(r.score) DESC`
+	q := `MATCH (r:Review {private:FALSE}) RETURN r.planet, AVG(r.score) ORDER BY AVG(r.score) DESC`
 	result, err := graphQuery(g, q)
 	if err != nil {
 		return nil
@@ -201,7 +201,7 @@ func SubscribeReviews(login string) []Review {
 	defer c()
 
 	userResults, err := graphQuery(g,
-		`MATCH (u:User)-[:Follower]->(a:User) WHERE u.username = '%s' RETURN a.username`, login)
+		`MATCH (u:User {username: "%s"})-[:Follower]->(a:User) RETURN a.username`, login)
 	if err != nil {
 		return nil
 	}
