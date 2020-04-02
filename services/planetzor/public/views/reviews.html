@@ -1,0 +1,21 @@
+{{define "reviews"}}
+
+    {{range $index, $element := .}}
+        <div class="ui message">
+            <div class="header">
+                <div class="review-author">
+                    Review by {{ $element.Author }}
+                </div>
+                <div class="ui rating" data-rating="{{ .Score }}" data-max-rating="5"
+                     data-min-rating="1">
+                </div>
+                <p>Planet: {{ .Planet }}</p>
+            </div>
+            <p>{{ .Content }}</p>
+        </div>
+    {{end}}
+
+    <script>
+        $('.ui.rating').rating('disable');
+    </script>
+{{ end}}

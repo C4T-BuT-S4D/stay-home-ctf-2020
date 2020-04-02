@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package spacesos;
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string id = 1;
+  string sessionId = 2;
+  string error = 3;
+}
+
+message ListFriendsRequest {
+  string userId = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+}
+
+message FriendsResponse {
+  repeated UserResponse friends = 1;
+}
+
+
+service SpaceSos {
+  rpc Register(AuthRequest) returns (AuthResponse) {}
+  rpc Login(AuthRequest) returns (AuthResponse) {}
+  rpc ListFriends(ListFriendsRequest) returns (FriendsResponse) {}
+}

@@ -207,7 +207,7 @@ return_file:
 
 	movl	$5,%eax
 	movl	%ecx,%ebx
-	movl	$0,%ecx
+	xorl	%ecx,%ecx
 	xorl	%edx,%edx
 	int	$0x80
 

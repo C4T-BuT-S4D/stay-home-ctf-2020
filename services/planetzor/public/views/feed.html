@@ -1,0 +1,9 @@
+{{define "feed"}}
+    {{template "header" }}
+
+    <div class="ui text container">
+        <p>Your subscribe feed:</p>
+        {{ template "reviews" .Reviews}}
+    </div>
+    {{template "footer"}}
+{{ end }}

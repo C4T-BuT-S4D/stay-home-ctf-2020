@@ -21,7 +21,7 @@ add_user:
 
 	call	proc_redis_context
 	testl	%eax,%eax
-	jnz	err_au
+	jnz	throw_500
 
 	popl	%eax
 
@@ -34,11 +34,11 @@ add_user:
 	pushl	redctx
 	call	redisCommand
 	testl	%eax,%eax
-	jz	cmd_err_au
+	jz	throw_redis_500
 
 	movl	(%eax),%ecx
 	cmpl	$3,%ecx
-	jne	cmd_err_au
+	jne	throw_redis_500
 
 	movl	4(%eax),%ecx
 	testl	%ecx,%ecx
@@ -50,7 +50,7 @@ add_user:
 	pushl	redctx
 	call	redisCommand
 	testl	%eax,%eax
-	jz	cmd_err_au
+	jz	throw_redis_500
 
 	xorl	%eax,%eax
 	jmp	end_au
@@ -58,15 +58,6 @@ add_user:
 usr_exists:
 	movl	$exists,%ecx
 	call	return_400_str
-
-cmd_err_au:
-	movl	redctx,%ecx
-	addl	$4,%ecx
-	call	return_500_str
-
-err_au:
-	xorl	%ecx,%ecx
-	call	return_500
 
 end_au:
 	movl	%ebx,%esp
@@ -84,40 +75,20 @@ get_user_password:
 
 	call	proc_redis_context
 	testl	%eax,%eax
-	jnz	err_gup
+	jnz	throw_500
 
 	pushl	$gp_hir
 	pushl	redctx
 	call	redisCommand
 	testl	%eax,%eax
-	jz	cmd_err_gup
+	jz	throw_redis_500
 
 	movl	(%eax),%ecx
 	cmpl	$1,%ecx
-	jne	br_gup
+	jne	throw_redis_400
 
 	movl	16(%eax),%ecx
-	xorl	%eax,%eax
-	jmp	end_gup
 
-br_gup:
-	movl	redctx,%ecx
-	addl	$4,%ecx
-	call	return_400_str
-	xorl	%eax,%eax
-	incl	%eax
-	jmp	end_gup
-
-cmd_err_gup:
-	movl	redctx,%ecx
-	addl	$4,%ecx
-	call	return_500_str
-
-err_gup:
-	xorl	%ecx,%ecx
-	call	return_500
-
-end_gup:
 	movl	%esi,%esp
 	popl	%esi
 	retl
@@ -129,12 +100,9 @@ check_user_password:
 
 	pushl	%edx
 	call	get_user_password
-	testl	%eax,%eax
-	jnz	end_cup
 	popl	%edx
 	call	gstrcmp
 
-end_cup:
 	movl	%edi,%esp
 	popl	%edi
 	retl

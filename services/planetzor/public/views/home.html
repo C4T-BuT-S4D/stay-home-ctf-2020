@@ -1,0 +1,26 @@
+{{define "home"}}
+    {{template "header" }}
+
+    <div class="ui text container">
+        <p>You can add new review <a href="/add">here</a></p>
+    </div>
+    <br>
+
+
+    <div class="ui text container">
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui message">
+                    <p id="tokenLink"><a href="/subscribe?user={{ .User }}&token={{ .Token }}">This is your publisher link</a></p>
+                    Share it with users you want to give access to your private reviews.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui text container">
+        <p>Your reviews:</p>
+        {{ template "reviews" .Reviews}}
+    </div>
+
+    {{template "footer"}}
+{{ end }}

@@ -1,0 +1,24 @@
+{{define "list"}}
+    {{template "header" }}
+
+    <div class="ui text container">
+        <table class="ui celled table">
+            <thead>
+            <tr>
+                <th>Planet</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $element := .}}
+                <tr>
+                    <td data-label="Planet"><a href="/reviews?planet={{ $index }}">{{ $index }}</a></td>
+                    <td data-label="Score">{{ $element }}</td>
+                </tr>
+            {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    {{template "footer"}}
+{{ end }}

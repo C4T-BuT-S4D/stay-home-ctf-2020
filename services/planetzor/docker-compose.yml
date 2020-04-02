@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  planetzor:
+    build: .
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./data/go:/data
+    restart: always
+    depends_on:
+      - db
+  db:
+    image: redislabs/redisgraph
+    restart: always
+    command: ["redis-server", "--loadmodule", "/usr/lib/redis/modules/redisgraph.so", "--appendonly", "yes"]
+    ports:
+      - 6379:6379
