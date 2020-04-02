@@ -1,5 +1,7 @@
 package db
 
+import "regexp"
+
 type Review struct {
 	Author  string
 	Score   int
@@ -8,7 +10,8 @@ type Review struct {
 	Private bool
 }
 
-func ValidateReview(r Review) bool {
-	validScore := r.Score >= 1 && r.Score <= 5
-	return ValidatePlanet(r.Planet) && validScore
+var scoreValidator = regexp.MustCompile(`[1-5]`)
+
+func ValidateScore(score string) bool {
+	return scoreValidator.Match([]byte(score))
 }

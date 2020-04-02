@@ -154,12 +154,19 @@ func UserReviews(login string) []Review {
 	return parseReviews(result)
 }
 
-func LatestPublicReviews(limit int) []Review {
+func PublicReviews(planet string, rating string, limit int) []Review {
 	g, c := graph()
 	defer c()
 
-	query := `MATCH (r:Review) WHERE r.private = FALSE RETURN r ORDER BY r.created DESC LIMIT %d`
-	result, err := graphQuery(g, query, limit)
+	q := `MATCH (r:Review {private: FALSE})`
+	if planet != "" {
+		q = fmt.Sprintf(`MATCH (r:Review {private: FALSE, planet: "%s"})`, planet)
+	}
+	if rating != "" {
+		q += fmt.Sprintf(` WHERE r.score = %s`, rating)
+	}
+	q += fmt.Sprintf(` RETURN r ORDER BY r.created DESC LIMIT %d`, limit)
+	result, err := g.Query(q)
 	if err != nil {
 		return nil
 	}
@@ -187,17 +194,6 @@ func ListPlanetScores() map[string]float64 {
 	}
 	return res
 
-}
-
-func PlanetReviews(planet string) []Review {
-	g, c := graph()
-	defer c()
-	q := `MATCH (r:Review) WHERE r.planet = "%s" and r.private = FALSE RETURN r ORDER BY r.ID DESC`
-	result, err := graphQuery(g, q, planet)
-	if err != nil {
-		return nil
-	}
-	return parseReviews(result)
 }
 
 func SubscribeReviews(login string) []Review {

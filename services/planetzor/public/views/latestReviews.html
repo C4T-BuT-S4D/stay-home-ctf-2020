@@ -2,7 +2,26 @@
     {{template "header" }}
 
     <div class="ui text container">
-        <p>Check out latest reviews: </p>
+        <p>Check out some latest public reviews: </p>
+        <form method="get" action="">
+            <select name="planet" class="ui dropdown">
+                <option value="">Planet</option>
+                {{$planet := .Planet }}
+                {{range .Planets}}
+                    <option value="{{.}}"
+                            {{if eq $planet .}}selected="selected"{{end}}>{{.}}</option>
+                {{end}}
+            </select>
+            <select name="score" class="ui dropdown">
+                <option value="">Score</option>
+                {{$score := .Score }}
+                {{range .Scores}}
+                    <option value="{{.}}"
+                            {{if eq $score .}}selected="selected"{{end}}>{{.}}</option>
+                {{end}}
+            </select>
+            <button type="submit" class="ui button">Filter</button>
+        </form>
         {{ template "reviews" .Reviews}}
     </div>
     {{template "footer"}}

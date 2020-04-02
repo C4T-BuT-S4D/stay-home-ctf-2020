@@ -12,7 +12,7 @@
             <tbody>
             {{range $index, $element := .}}
                 <tr>
-                    <td data-label="Planet"><a href="/reviews/{{ $index }}">{{ $index }}</a></td>
+                    <td data-label="Planet"><a href="/reviews?planet={{ $index }}">{{ $index }}</a></td>
                     <td data-label="Score">{{ $element }}</td>
                 </tr>
             {{ end }}

@@ -43,9 +43,12 @@ type HomeContext struct {
 	User  string
 }
 
-type PlanetReviewsContext struct {
+type PublicReviewsContext struct {
 	ReviewContext
+	PlanetContext
 	Planet string
+	Score  string
+	Scores []string
 }
 
 func loginSession(c echo.Context, login string) *sessions.Session {
@@ -97,19 +100,23 @@ func feedPage(c echo.Context) error {
 	return c.Render(http.StatusOK, "feed", ctx)
 }
 
-func planetPage(c echo.Context) error {
-	planet := c.Param("planet")
-	if !db.ValidatePlanet(planet) {
-		return c.HTML(http.StatusNotFound, "404. <b>Planet not found.</b>")
-	}
-	ctx := PlanetReviewsContext{}
-	ctx.Reviews = db.PlanetReviews(planet)
-	ctx.Planet = planet
-	return c.Render(http.StatusOK, "planet", ctx)
-}
-
 func latestReviews(c echo.Context) error {
-	ctx := ReviewContext{Reviews: db.LatestPublicReviews(200)}
+	planet := c.QueryParam("planet")
+	if planet != "" && !db.ValidatePlanet(planet) {
+		return c.HTML(http.StatusUnprocessableEntity, "Bad Planet")
+	}
+
+	score := c.QueryParam("score")
+	if score != "" && !db.ValidateScore(score) {
+		return c.HTML(http.StatusUnprocessableEntity, "Bad Score")
+	}
+
+	ctx := PublicReviewsContext{}
+	ctx.Reviews = db.PublicReviews(planet, score, 200)
+	ctx.Score = score
+	ctx.Planet = planet
+	ctx.Planets = db.ListPlanets()
+	ctx.Scores = []string{"1", "2", "3", "4", "5"}
 	return c.Render(http.StatusOK, "latestReviews", ctx)
 }
 
@@ -184,13 +191,20 @@ func handleAddReview(c echo.Context) error {
 	planet := c.FormValue("planet")
 	isPrivate := c.FormValue("private")
 	score := c.FormValue("score")
-	scoreInt, err := strconv.Atoi(score)
 
-	if err != nil {
+	if !db.ValidateScore(score) {
 		return c.Render(http.StatusUnprocessableEntity, "addReview",
-			PlanetContext{db.ListPlanets(), ErrorContext{err.Error()}},
+			PlanetContext{db.ListPlanets(), ErrorContext{"Failed to validate score"}},
 		)
 	}
+
+	if !db.ValidatePlanet(planet) {
+		return c.Render(http.StatusUnprocessableEntity, "addReview",
+			PlanetContext{db.ListPlanets(), ErrorContext{"Invalid planet"}},
+		)
+	}
+
+	scoreInt, _ := strconv.Atoi(score)
 
 	r := db.Review{
 		Author:  u,
@@ -200,13 +214,7 @@ func handleAddReview(c echo.Context) error {
 		Planet:  planet,
 	}
 
-	if !db.ValidateReview(r) {
-		return c.Render(http.StatusUnprocessableEntity, "addReview",
-			PlanetContext{db.ListPlanets(), ErrorContext{"invalid data"}},
-		)
-	}
-
-	err = db.AddReview(r)
+	err := db.AddReview(r)
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "addReview",
 			PlanetContext{db.ListPlanets(), ErrorContext{err.Error()}},
@@ -297,7 +305,6 @@ func main() {
 	e.GET("/subscribe", handleSubscribe, loginRequired)
 	e.GET("/planets", listPage)
 	e.GET("/reviews", latestReviews)
-	e.GET("/reviews/:planet", planetPage)
 	e.GET("/tokens/public", handlePublicToken)
 	e.Debug = true
 	e.Start(":4000")
