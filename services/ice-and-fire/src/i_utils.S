@@ -128,7 +128,7 @@ grand:
 
 	.global	throw_500
 throw_500:
-	call	return_500
+	call	return_500_str
 	retl
 
 	.global	throw_redis_500

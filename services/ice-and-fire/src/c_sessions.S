@@ -1,6 +1,4 @@
 	.data
-exists:	.asciz	"User already exists"
-
 ss_hir:	.asciz	"SET session:%s %s"
 
 gs_hir:	.asciz	"GET session:%s"
@@ -42,7 +40,7 @@ get_sess_username:
 	pushl	redctx
 	call	redisCommand
 	testl	%eax,%eax
-	jz	throw_redis_500	
+	jz	throw_redis_500
 
 	movl	(%eax),%ecx
 	cmpl	$1,%ecx
