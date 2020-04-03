@@ -22,4 +22,19 @@ serve_static:
 	call	strcat
 	add	esp, 8
 	mov	ecx, esp
+
+	call	gstrlen
+	dec	eax
+
+	push	ebx
+	xor	ebx, ebx
+	movb	bl, BYTE PTR [ecx + eax]
+	cmp	ebx, 0x2f
+	je	bad_file
+	pop	ebx
+
 	call	return_file
+
+bad_file:
+	xor	ecx, ecx
+	call	return_400

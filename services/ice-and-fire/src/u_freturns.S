@@ -9,6 +9,7 @@ js_e:	.asciz	".js"
 html_e:	.asciz	".html"
 png_e:	.asciz	".png"
 jpg_e:	.asciz	".jpg"
+dir_e:	.asciz	"/"
 
 js_t:	.asciz	"application/javascript"
 html_t:	.asciz	"text/html"
@@ -253,5 +254,7 @@ ok_file:
 	movl	%ebx,%edx
 	call	write_file_contents
 
-	pushl	0
-	call	exit
+	xorl	%eax,%eax
+	xorl	%ebx,%ebx
+	incl	%eax
+	int	$0x80
