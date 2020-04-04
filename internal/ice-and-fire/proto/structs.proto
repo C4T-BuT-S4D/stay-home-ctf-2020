@@ -1,11 +1,35 @@
 syntax = "proto3";
 
-message RegisterRequest {
-    string username = 1;
-    string password = 2;
-    repeated double coordinates = 3;
+message Contact {
+    string text = 1;
 }
 
-message ErrorResponse {
+message User {
+    string username = 1;
+    string password = 2;
+}
+
+message RegisterRequest {
+    User user = 1;
+    repeated double coordinates = 2;
+    Contact contact = 3;
+}
+
+message LoginRequest {
+    User user = 1;
+}
+
+message MyData {
+    User user = 1;
+}
+
+message Match {
+    bool ok = 1;
+    double distance = 2;
+    Contact secret = 3;
+}
+
+message Response {
+    bool ok = 2;
     string text = 1;
 }

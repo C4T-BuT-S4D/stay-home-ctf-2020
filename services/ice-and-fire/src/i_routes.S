@@ -7,8 +7,8 @@ root:
 	.asciz	"/"
 register:
 	.asciz	"/register/"
-test_p:	
-	.asciz	"/test/"
+login:
+	.asciz	"/login/"
 
 	.global	routes
 routes:
@@ -16,6 +16,6 @@ routes:
 	.int	serve_static
 	.int	register
 	.int	register_route
-	.int	test_p
-	.int	test_route
+	.int	login
+	.int	login_route
 	.int	0

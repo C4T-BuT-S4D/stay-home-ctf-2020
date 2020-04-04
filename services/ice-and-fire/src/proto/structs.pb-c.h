@@ -15,8 +15,13 @@ PROTOBUF_C__BEGIN_DECLS
 #endif
 
 
+typedef struct _Contact Contact;
+typedef struct _User User;
 typedef struct _RegisterRequest RegisterRequest;
-typedef struct _ErrorResponse ErrorResponse;
+typedef struct _LoginRequest LoginRequest;
+typedef struct _MyData MyData;
+typedef struct _Match Match;
+typedef struct _Response Response;
 
 
 /* --- enums --- */
@@ -24,29 +29,121 @@ typedef struct _ErrorResponse ErrorResponse;
 
 /* --- messages --- */
 
-struct  _RegisterRequest
-{
-  ProtobufCMessage base;
-  char *username;
-  char *password;
-  size_t n_coordinates;
-  double *coordinates;
-};
-#define REGISTER_REQUEST__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&register_request__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  _ErrorResponse
+struct  _Contact
 {
   ProtobufCMessage base;
   char *text;
 };
-#define ERROR_RESPONSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&error_response__descriptor) \
+#define CONTACT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&contact__descriptor) \
     , (char *)protobuf_c_empty_string }
 
 
+struct  _User
+{
+  ProtobufCMessage base;
+  char *username;
+  char *password;
+};
+#define USER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&user__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
+
+
+struct  _RegisterRequest
+{
+  ProtobufCMessage base;
+  User *user;
+  size_t n_coordinates;
+  double *coordinates;
+  Contact *contact;
+};
+#define REGISTER_REQUEST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&register_request__descriptor) \
+    , NULL, 0,NULL, NULL }
+
+
+struct  _LoginRequest
+{
+  ProtobufCMessage base;
+  User *user;
+};
+#define LOGIN_REQUEST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&login_request__descriptor) \
+    , NULL }
+
+
+struct  _MyData
+{
+  ProtobufCMessage base;
+  User *user;
+};
+#define MY_DATA__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&my_data__descriptor) \
+    , NULL }
+
+
+struct  _Match
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean ok;
+  double distance;
+  Contact *secret;
+};
+#define MATCH__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&match__descriptor) \
+    , 0, 0, NULL }
+
+
+struct  _Response
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean ok;
+  char *text;
+};
+#define RESPONSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&response__descriptor) \
+    , 0, (char *)protobuf_c_empty_string }
+
+
+/* Contact methods */
+void   contact__init
+                     (Contact         *message);
+size_t contact__get_packed_size
+                     (const Contact   *message);
+size_t contact__pack
+                     (const Contact   *message,
+                      uint8_t             *out);
+size_t contact__pack_to_buffer
+                     (const Contact   *message,
+                      ProtobufCBuffer     *buffer);
+Contact *
+       contact__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   contact__free_unpacked
+                     (Contact *message,
+                      ProtobufCAllocator *allocator);
+/* User methods */
+void   user__init
+                     (User         *message);
+size_t user__get_packed_size
+                     (const User   *message);
+size_t user__pack
+                     (const User   *message,
+                      uint8_t             *out);
+size_t user__pack_to_buffer
+                     (const User   *message,
+                      ProtobufCBuffer     *buffer);
+User *
+       user__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   user__free_unpacked
+                     (User *message,
+                      ProtobufCAllocator *allocator);
 /* RegisterRequest methods */
 void   register_request__init
                      (RegisterRequest         *message);
@@ -66,32 +163,104 @@ RegisterRequest *
 void   register_request__free_unpacked
                      (RegisterRequest *message,
                       ProtobufCAllocator *allocator);
-/* ErrorResponse methods */
-void   error_response__init
-                     (ErrorResponse         *message);
-size_t error_response__get_packed_size
-                     (const ErrorResponse   *message);
-size_t error_response__pack
-                     (const ErrorResponse   *message,
+/* LoginRequest methods */
+void   login_request__init
+                     (LoginRequest         *message);
+size_t login_request__get_packed_size
+                     (const LoginRequest   *message);
+size_t login_request__pack
+                     (const LoginRequest   *message,
                       uint8_t             *out);
-size_t error_response__pack_to_buffer
-                     (const ErrorResponse   *message,
+size_t login_request__pack_to_buffer
+                     (const LoginRequest   *message,
                       ProtobufCBuffer     *buffer);
-ErrorResponse *
-       error_response__unpack
+LoginRequest *
+       login_request__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   error_response__free_unpacked
-                     (ErrorResponse *message,
+void   login_request__free_unpacked
+                     (LoginRequest *message,
+                      ProtobufCAllocator *allocator);
+/* MyData methods */
+void   my_data__init
+                     (MyData         *message);
+size_t my_data__get_packed_size
+                     (const MyData   *message);
+size_t my_data__pack
+                     (const MyData   *message,
+                      uint8_t             *out);
+size_t my_data__pack_to_buffer
+                     (const MyData   *message,
+                      ProtobufCBuffer     *buffer);
+MyData *
+       my_data__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   my_data__free_unpacked
+                     (MyData *message,
+                      ProtobufCAllocator *allocator);
+/* Match methods */
+void   match__init
+                     (Match         *message);
+size_t match__get_packed_size
+                     (const Match   *message);
+size_t match__pack
+                     (const Match   *message,
+                      uint8_t             *out);
+size_t match__pack_to_buffer
+                     (const Match   *message,
+                      ProtobufCBuffer     *buffer);
+Match *
+       match__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   match__free_unpacked
+                     (Match *message,
+                      ProtobufCAllocator *allocator);
+/* Response methods */
+void   response__init
+                     (Response         *message);
+size_t response__get_packed_size
+                     (const Response   *message);
+size_t response__pack
+                     (const Response   *message,
+                      uint8_t             *out);
+size_t response__pack_to_buffer
+                     (const Response   *message,
+                      ProtobufCBuffer     *buffer);
+Response *
+       response__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   response__free_unpacked
+                     (Response *message,
                       ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
+typedef void (*Contact_Closure)
+                 (const Contact *message,
+                  void *closure_data);
+typedef void (*User_Closure)
+                 (const User *message,
+                  void *closure_data);
 typedef void (*RegisterRequest_Closure)
                  (const RegisterRequest *message,
                   void *closure_data);
-typedef void (*ErrorResponse_Closure)
-                 (const ErrorResponse *message,
+typedef void (*LoginRequest_Closure)
+                 (const LoginRequest *message,
+                  void *closure_data);
+typedef void (*MyData_Closure)
+                 (const MyData *message,
+                  void *closure_data);
+typedef void (*Match_Closure)
+                 (const Match *message,
+                  void *closure_data);
+typedef void (*Response_Closure)
+                 (const Response *message,
                   void *closure_data);
 
 /* --- services --- */
@@ -99,8 +268,13 @@ typedef void (*ErrorResponse_Closure)
 
 /* --- descriptors --- */
 
+extern const ProtobufCMessageDescriptor contact__descriptor;
+extern const ProtobufCMessageDescriptor user__descriptor;
 extern const ProtobufCMessageDescriptor register_request__descriptor;
-extern const ProtobufCMessageDescriptor error_response__descriptor;
+extern const ProtobufCMessageDescriptor login_request__descriptor;
+extern const ProtobufCMessageDescriptor my_data__descriptor;
+extern const ProtobufCMessageDescriptor match__descriptor;
+extern const ProtobufCMessageDescriptor response__descriptor;
 
 PROTOBUF_C__END_DECLS
 

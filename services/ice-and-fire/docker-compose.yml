@@ -4,15 +4,18 @@ services:
   test:
     build: .
     restart: on-failure
-    volumes: 
+    volumes:
       - ./:/osx
+    security_opt:
+      - seccomp:unconfined
+    privileged: true
 
   nginx:
     image: nginx:1.15.11-alpine
     ports:
       - "31337:80"
     restart: on-failure
-    volumes: 
+    volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
 
   redis:
