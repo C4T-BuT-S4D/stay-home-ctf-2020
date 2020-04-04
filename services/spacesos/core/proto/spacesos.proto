@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+import 'google/protobuf/timestamp.proto';
+
+package spacesos;
+
+message Coordinates {
+  string nearest_planet = 1;
+  float longitude = 2;
+  float latitude = 3;
+  float distance = 4;
+}
+
+message Crash {
+  string spaceship_access_token = 1;
+  Coordinates coordinates = 2;
+  google.protobuf.Timestamp time = 3;
+}
+
+message PublicCrash {
+  string user_name = 1;
+  Coordinates coordinates = 2;
+}
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message CrashRequest {
+  string sessionId = 1;
+  Crash crash = 2;
+}
+
+message GetCrashesRequest {
+  string sessionId = 1;
+}
+
+message AddToFriendRequest {
+  string sessionId = 1;
+  string user_name = 2;
+}
+
+message FriendshipRequestsRequest {
+  string sessionId = 1;
+}
+
+message GetLatestCrashesRequest {
+
+}
+
+message AuthResponse {
+  string id = 1;
+  string sessionId = 2;
+  string error = 3;
+}
+
+message AddToFriendResponse {
+  bool mutual = 1;
+}
+
+message FriendshipRequestResponse {
+  repeated string users = 1;
+}
+
+message CrashResponse {
+  bool confirmed = 1;
+}
+
+message GetCrashesResponse {
+  repeated Crash crashes = 1;
+}
+
+message GetLatestCrashesResponse {
+  repeated PublicCrash crashes = 1;
+}
+
+
+service SpaceSos {
+  rpc Register(AuthRequest) returns (AuthResponse) {}
+  rpc Login(AuthRequest) returns (AuthResponse) {}
+  rpc AddToFriend(AddToFriendRequest) returns (AddToFriendResponse) {}
+  rpc FriendshipRequests(FriendshipRequestsRequest) returns (FriendshipRequestResponse) {}
+  // TODO(rpc for listing friends)
+  rpc Crash(CrashRequest) returns (CrashResponse) {}
+  rpc GetCrashes(GetCrashesRequest) returns (GetCrashesResponse) {}
+  rpc GetLatestCrashes(GetLatestCrashesRequest) returns (GetLatestCrashesResponse) {}
+}
