@@ -3,7 +3,7 @@ int size_y = 480;
 int center_x = size_x / 2;
 int center_y = size_y / 2;
 float scaleFactor = 1;
-float aligmentAngle = 92;
+float aligmentAngle = 0;
 bool relative = true;
 float GM = 50e8; 
 bool debug=false;
@@ -43,6 +43,8 @@ void keyPressed() {
   if (aligmentAngle < -360) {
     aligmentAngle += 360;
   }
+
+  window.aligmentAngle = aligmentAngle;
 
   if (keyCode == ' ') {
     fetch_data();
