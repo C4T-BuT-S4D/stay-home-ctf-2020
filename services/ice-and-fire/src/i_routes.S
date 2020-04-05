@@ -9,6 +9,8 @@ register:
 	.asciz	"/register/"
 login:
 	.asciz	"/login/"
+users:
+	.asciz	"/users/"
 
 	.global	routes
 routes:
@@ -18,4 +20,8 @@ routes:
 	.int	register_route
 	.int	login
 	.int	login_route
+	.int	users
+	.int	users_route
+	.int	root
+	.int	test_route
 	.int	0

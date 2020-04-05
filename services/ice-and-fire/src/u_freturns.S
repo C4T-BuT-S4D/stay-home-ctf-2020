@@ -9,6 +9,7 @@ js_e:	.asciz	".js"
 html_e:	.asciz	".html"
 png_e:	.asciz	".png"
 jpg_e:	.asciz	".jpg"
+dir_e:	.asciz	"/"
 
 js_t:	.asciz	"application/javascript"
 html_t:	.asciz	"text/html"
