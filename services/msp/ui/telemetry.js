@@ -1,9 +1,6 @@
-window.serverState = {}
+window.serverState = {};
 
-window.trackedObjects = [
-"a00cb030-4d7b-4e2f-bdfa-bdab27927202",
- "a00cb030-4d7b-4e2f-bdfa-bdab27927201",
-]
+window.trackedObjects = [];
 
 function fetch_data() {
 
@@ -28,11 +25,16 @@ function fetch_data() {
 
 window.beam_request = (from, angle) => {
 
-  let angleParam = encodeURI(String(angle))
+  const endpoint = `/beam/${from}`
 
-  const endpoint = `/beam/${from}?angle=${angleParam}`
+  let data = {
+    'angle': angle,
+  }
 
-  fetch(endpoint)
+  fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
     .then((response) => {
       return response.json()
     })
