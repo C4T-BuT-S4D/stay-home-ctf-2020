@@ -44,10 +44,6 @@ func Init(filename string) error {
 	return nil
 }
 
-func Public() string {
-	return publicKey.Text(16)
-}
-
 func sign(data []byte) (r, s *big.Int) {
 	hash := sha512.Sum384(data)
 	message := new(big.Int).SetBytes(hash[:])
