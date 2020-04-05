@@ -49,15 +49,15 @@ window.beam_request = (from, angle) => {
     })
 }
 
-window.launch_request = (height, on_success) => {
+window.launch_request = (height, radioResp, on_success) => {
 
   const endpoint = `/launch/`
 
   let data = {
     phase: window.aligmentAngle + 180,
     height: height,
+    narrow_beam_response: radioResp,
     antenna_focus: 1,
-    narrow_beam_response: "meow",
     mass: 100,
   }
 
@@ -91,11 +91,13 @@ window.onload = () => {
   })
 
   let launchRequest = document.getElementById("launch-request")
+  let radioResponse = document.getElementById("radio-response")
   launchRequest.addEventListener("keyup", event => {
     event.preventDefault();
     if (event.keyCode == 13) {
       const orbit = parseFloat(launchRequest.value);
-      launch_request(orbit, resp => {
+      const radioResp = radioResponse.value;
+      launch_request(orbit, radioResp, resp => {
         trackedObjects.push(resp.id);
       });
     }
