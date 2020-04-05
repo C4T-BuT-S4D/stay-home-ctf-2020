@@ -253,5 +253,8 @@ ok_file:
 	movl	%ebx,%edx
 	call	write_file_contents
 
-	pushl	0
-	call	exit
+	popl	%edi
+	popl	%esi
+	popl	%ebx
+
+	retl

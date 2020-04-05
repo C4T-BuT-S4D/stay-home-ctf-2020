@@ -23,3 +23,6 @@ serve_static:
 	add	esp, 8
 	mov	ecx, esp
 	call	return_file
+
+	push	0
+	call	exit
