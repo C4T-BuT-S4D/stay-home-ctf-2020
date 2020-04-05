@@ -3,9 +3,9 @@ int size_y = 480;
 int center_x = size_x / 2;
 int center_y = size_y / 2;
 float scaleFactor = 1;
-float aligmentAngle = 92;
+float aligmentAngle = 0;
 bool relative = true;
-float GM = 50000; 
+float GM = 50e8; 
 bool debug=false;
 
 void setup() {  // this is run once.   
@@ -43,6 +43,8 @@ void keyPressed() {
   if (aligmentAngle < -360) {
     aligmentAngle += 360;
   }
+
+  window.aligmentAngle = aligmentAngle;
 
   if (keyCode == ' ') {
     fetch_data();
@@ -235,13 +237,28 @@ float target_angle() {
 
 void draw_object(Object obj) {
 
-    pushMatrix();
-
     int pos_x = obj.position[0];
     int pos_y = obj.position[1];
-
     int vel_x = obj.velocity[0];
     int vel_y = obj.velocity[1];
+    float velocity = dist(0, 0, vel_x, vel_y) ;
+    float height = dist(0, 0, pos_x, pos_y);
+    float ta = atan2(pos_x, pos_y) - atan2(vel_x, vel_y);
+    float a = semi_major_axis(velocity, height);
+    float e = calc_ecc(height, velocity, ta);
+    float b = semi_minor_axis(a, e);
+    float Ra = (1 - e) * a;
+    float Rb = (1 + e) * a;
+    if (Ra < Rb) {
+      float tmp = Ra;
+      Ra = Rb;
+      Rb = tmp;
+    }
+    float center_offset = ((Ra+Rb)/2-Ra);
+    float mx = height * velocity * velocity / GM;
+    float tanU = mx * sin(ta) * cos(ta) / ( mx * sin(ta) * sin(ta) - 1);
+    float flatAngle = atan2(pos_x, pos_y) + PI/2;
+    float orbitAngle = -atan(tanU)-flatAngle;
 
     // auto-scale
     while (abs(pos_x * get_scale()) > size_x / 2) {
@@ -250,6 +267,8 @@ void draw_object(Object obj) {
     while (abs(pos_y * get_scale()) > size_y / 2) {
       scaleFactor -= 0.5;
     }
+
+    pushMatrix();
 
     // translate to object
     translate(
@@ -262,26 +281,6 @@ void draw_object(Object obj) {
     strokeWeight(1);
     ellipse(0, 0, 10, 10);
 
-    float velocity = dist(0, 0, vel_x, vel_y) ;
-    float height = dist(0, 0, pos_x, pos_y);
-    float ta = atan2(pos_x, pos_y) - atan2(vel_x, vel_y);
-    float a = semi_major_axis(velocity, height);
-    float e = calc_ecc(height, velocity, ta);
-    float b = semi_minor_axis(a, e);
-    float Ra = (1 - e) * a;
-    float Rb = (1 + e) * a;
-    float center_offset = ((Ra+Rb)/2-Ra);
-    float mx = height * velocity * velocity / GM;
-    float tanU = mx * sin(ta) * cos(ta) / ( mx * sin(ta) * sin(ta) - 1);
-    float flatAngle = atan2(pos_x, pos_y) + PI/2;
-    float orbitAngle = -atan(tanU)-flatAngle;
-
-    if (Ra < Rb) {
-      float tmp = Ra;
-      Ra = Rb;
-      Rb = tmp;
-    }
-
     textAlign(CENTER);
     text(obj.idx, 0, 15);
 
@@ -292,6 +291,7 @@ void draw_object(Object obj) {
       text("Ah=" + Ra, 0, -45);
       text("Ph=" + Rb, 0, -55);
       text("e=" + e, 0, -65);
+      text("oa=" + degrees(orbitAngle), 0, -75);
     }
 
     if (source_id() == obj.idx) {
