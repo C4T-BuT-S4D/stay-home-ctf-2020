@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 class Universe:
     MU = 50e8
-    ANT_MAX_ANGLE = 1e-5
+    ANT_MAX_ANGLE = 1.5e-3
     DROP_ORBIT_H_MIN = 5000
     DROP_ORBIT_H_MID = 10000
     DROP_ORBIT_H_MAX = 900000
@@ -374,11 +374,11 @@ async def run():
     conn = await asyncpg.create_pool(user='msp',
                                      password='msp',
                                      database='msp',
-                                     host='127.0.0.1')
+                                     host='db')
 
     logging.info('Connected to database')
 
-    server = Webserver(conn, 'localhost', '5001')
+    server = Webserver(conn, '0.0.0.0', '5001')
     worker = Worker(conn)
 
     await asyncio.wait([

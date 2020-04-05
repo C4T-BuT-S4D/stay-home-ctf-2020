@@ -12,3 +12,11 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - ./migrations:/docker-entrypoint-initdb.d/
+
+  service:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:5001:5001"
+    links:
+      - db
