@@ -3,16 +3,16 @@
 	.data
 static:
 	.asciz	"/static/"
-root:
-	.asciz	"/"
 register:
 	.asciz	"/register/"
 login:
 	.asciz	"/login/"
 users:
 	.asciz	"/users/"
-.me:
+me:
 	.asciz	"/me/"
+match:
+	.asciz	"/match/"
 
 	.global	routes
 routes:
@@ -26,6 +26,6 @@ routes:
 	.int	users_route
 	.int	me
 	.int	me_route
-	.int	root
-	.int	test_route
+	.int	match
+	.int	match_route
 	.int	0

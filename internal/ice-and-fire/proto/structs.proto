@@ -24,6 +24,10 @@ message MyData {
     Contact contact = 2;
 }
 
+message MatchRequest {
+	string username = 1;
+}
+
 message Match {
     bool ok = 1;
     double distance = 2;

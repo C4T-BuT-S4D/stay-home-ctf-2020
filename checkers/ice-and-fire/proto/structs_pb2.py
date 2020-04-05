@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\rstructs.proto\"\x17\n\x07\x43ontact\x12\x0c\n\x04text\x18\x01 \x01(\t\"*\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"V\n\x0fRegisterRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x13\n\x0b\x63oordinates\x18\x02 \x03(\x01\x12\x19\n\x07\x63ontact\x18\x03 \x01(\x0b\x32\x08.Contact\"#\n\x0cLoginRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\"8\n\x06MyData\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x19\n\x07\x63ontact\x18\x02 \x01(\x0b\x32\x08.Contact\"?\n\x05Match\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x12\x18\n\x06secret\x18\x03 \x01(\x0b\x32\x08.Contact\"$\n\x08Response\x12\n\n\x02ok\x18\x02 \x01(\x08\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1c\n\x08UserList\x12\x10\n\x08username\x18\x01 \x03(\tb\x06proto3'
+  serialized_pb=b'\n\rstructs.proto\"\x17\n\x07\x43ontact\x12\x0c\n\x04text\x18\x01 \x01(\t\"*\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"V\n\x0fRegisterRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x13\n\x0b\x63oordinates\x18\x02 \x03(\x01\x12\x19\n\x07\x63ontact\x18\x03 \x01(\x0b\x32\x08.Contact\"#\n\x0cLoginRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\"8\n\x06MyData\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x19\n\x07\x63ontact\x18\x02 \x01(\x0b\x32\x08.Contact\" \n\x0cMatchRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"?\n\x05Match\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x12\x18\n\x06secret\x18\x03 \x01(\x0b\x32\x08.Contact\"$\n\x08Response\x12\n\n\x02ok\x18\x02 \x01(\x08\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1c\n\x08UserList\x12\x10\n\x08username\x18\x01 \x03(\tb\x06proto3'
 )
 
 
@@ -207,6 +207,37 @@ _MYDATA = _descriptor.Descriptor(
 )
 
 
+_MATCHREQUEST = _descriptor.Descriptor(
+  name='MatchRequest',
+  full_name='MatchRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='username', full_name='MatchRequest.username', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=269,
+  serialized_end=301,
+)
+
+
 _MATCH = _descriptor.Descriptor(
   name='Match',
   full_name='Match',
@@ -247,8 +278,8 @@ _MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=269,
-  serialized_end=332,
+  serialized_start=303,
+  serialized_end=366,
 )
 
 
@@ -285,8 +316,8 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=334,
-  serialized_end=370,
+  serialized_start=368,
+  serialized_end=404,
 )
 
 
@@ -316,8 +347,8 @@ _USERLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=372,
-  serialized_end=400,
+  serialized_start=406,
+  serialized_end=434,
 )
 
 _REGISTERREQUEST.fields_by_name['user'].message_type = _USER
@@ -331,6 +362,7 @@ DESCRIPTOR.message_types_by_name['User'] = _USER
 DESCRIPTOR.message_types_by_name['RegisterRequest'] = _REGISTERREQUEST
 DESCRIPTOR.message_types_by_name['LoginRequest'] = _LOGINREQUEST
 DESCRIPTOR.message_types_by_name['MyData'] = _MYDATA
+DESCRIPTOR.message_types_by_name['MatchRequest'] = _MATCHREQUEST
 DESCRIPTOR.message_types_by_name['Match'] = _MATCH
 DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
 DESCRIPTOR.message_types_by_name['UserList'] = _USERLIST
@@ -370,6 +402,13 @@ MyData = _reflection.GeneratedProtocolMessageType('MyData', (_message.Message,),
   # @@protoc_insertion_point(class_scope:MyData)
   })
 _sym_db.RegisterMessage(MyData)
+
+MatchRequest = _reflection.GeneratedProtocolMessageType('MatchRequest', (_message.Message,), {
+  'DESCRIPTOR' : _MATCHREQUEST,
+  '__module__' : 'structs_pb2'
+  # @@protoc_insertion_point(class_scope:MatchRequest)
+  })
+_sym_db.RegisterMessage(MatchRequest)
 
 Match = _reflection.GeneratedProtocolMessageType('Match', (_message.Message,), {
   'DESCRIPTOR' : _MATCH,

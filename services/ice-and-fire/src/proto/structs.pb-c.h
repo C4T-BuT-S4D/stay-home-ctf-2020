@@ -20,6 +20,7 @@ typedef struct _User User;
 typedef struct _RegisterRequest RegisterRequest;
 typedef struct _LoginRequest LoginRequest;
 typedef struct _MyData MyData;
+typedef struct _MatchRequest MatchRequest;
 typedef struct _Match Match;
 typedef struct _Response Response;
 typedef struct _UserList UserList;
@@ -83,6 +84,16 @@ struct  _MyData
 #define MY_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&my_data__descriptor) \
     , NULL, NULL }
+
+
+struct  _MatchRequest
+{
+  ProtobufCMessage base;
+  char *username;
+};
+#define MATCH_REQUEST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&match_request__descriptor) \
+    , (char *)protobuf_c_empty_string }
 
 
 struct  _Match
@@ -214,6 +225,25 @@ MyData *
 void   my_data__free_unpacked
                      (MyData *message,
                       ProtobufCAllocator *allocator);
+/* MatchRequest methods */
+void   match_request__init
+                     (MatchRequest         *message);
+size_t match_request__get_packed_size
+                     (const MatchRequest   *message);
+size_t match_request__pack
+                     (const MatchRequest   *message,
+                      uint8_t             *out);
+size_t match_request__pack_to_buffer
+                     (const MatchRequest   *message,
+                      ProtobufCBuffer     *buffer);
+MatchRequest *
+       match_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   match_request__free_unpacked
+                     (MatchRequest *message,
+                      ProtobufCAllocator *allocator);
 /* Match methods */
 void   match__init
                      (Match         *message);
@@ -288,6 +318,9 @@ typedef void (*LoginRequest_Closure)
 typedef void (*MyData_Closure)
                  (const MyData *message,
                   void *closure_data);
+typedef void (*MatchRequest_Closure)
+                 (const MatchRequest *message,
+                  void *closure_data);
 typedef void (*Match_Closure)
                  (const Match *message,
                   void *closure_data);
@@ -308,6 +341,7 @@ extern const ProtobufCMessageDescriptor user__descriptor;
 extern const ProtobufCMessageDescriptor register_request__descriptor;
 extern const ProtobufCMessageDescriptor login_request__descriptor;
 extern const ProtobufCMessageDescriptor my_data__descriptor;
+extern const ProtobufCMessageDescriptor match_request__descriptor;
 extern const ProtobufCMessageDescriptor match__descriptor;
 extern const ProtobufCMessageDescriptor response__descriptor;
 extern const ProtobufCMessageDescriptor user_list__descriptor;
