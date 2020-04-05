@@ -18,4 +18,6 @@ routes:
 	.int	register_route
 	.int	login
 	.int	login_route
+	.int	root
+	.int	test_route
 	.int	0
