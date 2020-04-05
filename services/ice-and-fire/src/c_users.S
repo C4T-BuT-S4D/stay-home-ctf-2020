@@ -79,7 +79,7 @@ add_user:
 	jz	throw_redis_500
 
 	pushl	%esi
-	pushl	$sp_hir
+	pushl	$al_hir
 	pushl	redctx
 	call	redisCommand
 	testl	%eax,%eax
