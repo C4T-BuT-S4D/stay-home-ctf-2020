@@ -165,6 +165,35 @@ get_user_contact:
 	popl	%esi
 	retl
 
+.global	get_user_data
+get_user_data:
+	pushl	%esi
+	movl	%esp,%esi
+
+	pushl	%ecx
+
+	call	proc_redis_context
+	testl	%eax,%eax
+	jnz	throw_500
+
+	pushl	$gd_hir
+	pushl	redctx
+	call	redisCommand
+	testl	%eax,%eax
+	jz	throw_redis_500
+
+	movl	(%eax),%ecx
+	cmpl	$1,%ecx
+	jne	no_user
+
+return_user_gud:
+	movl	12(%eax),%edx
+	movl	16(%eax),%ecx
+
+	movl	%esi,%esp
+	popl	%esi
+	retl
+
 	.global	get_users_listing
 get_users_listing:
 	pushl	%ebx

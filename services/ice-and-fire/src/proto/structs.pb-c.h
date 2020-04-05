@@ -20,8 +20,10 @@ typedef struct _User User;
 typedef struct _RegisterRequest RegisterRequest;
 typedef struct _LoginRequest LoginRequest;
 typedef struct _MyData MyData;
+typedef struct _MatchRequest MatchRequest;
 typedef struct _Match Match;
 typedef struct _Response Response;
+typedef struct _UserList UserList;
 
 
 /* --- enums --- */
@@ -77,10 +79,21 @@ struct  _MyData
 {
   ProtobufCMessage base;
   User *user;
+  Contact *contact;
 };
 #define MY_DATA__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&my_data__descriptor) \
-    , NULL }
+    , NULL, NULL }
+
+
+struct  _MatchRequest
+{
+  ProtobufCMessage base;
+  char *username;
+};
+#define MATCH_REQUEST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&match_request__descriptor) \
+    , (char *)protobuf_c_empty_string }
 
 
 struct  _Match
@@ -104,6 +117,17 @@ struct  _Response
 #define RESPONSE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&response__descriptor) \
     , 0, (char *)protobuf_c_empty_string }
+
+
+struct  _UserList
+{
+  ProtobufCMessage base;
+  size_t n_username;
+  char **username;
+};
+#define USER_LIST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&user_list__descriptor) \
+    , 0,NULL }
 
 
 /* Contact methods */
@@ -201,6 +225,25 @@ MyData *
 void   my_data__free_unpacked
                      (MyData *message,
                       ProtobufCAllocator *allocator);
+/* MatchRequest methods */
+void   match_request__init
+                     (MatchRequest         *message);
+size_t match_request__get_packed_size
+                     (const MatchRequest   *message);
+size_t match_request__pack
+                     (const MatchRequest   *message,
+                      uint8_t             *out);
+size_t match_request__pack_to_buffer
+                     (const MatchRequest   *message,
+                      ProtobufCBuffer     *buffer);
+MatchRequest *
+       match_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   match_request__free_unpacked
+                     (MatchRequest *message,
+                      ProtobufCAllocator *allocator);
 /* Match methods */
 void   match__init
                      (Match         *message);
@@ -239,6 +282,25 @@ Response *
 void   response__free_unpacked
                      (Response *message,
                       ProtobufCAllocator *allocator);
+/* UserList methods */
+void   user_list__init
+                     (UserList         *message);
+size_t user_list__get_packed_size
+                     (const UserList   *message);
+size_t user_list__pack
+                     (const UserList   *message,
+                      uint8_t             *out);
+size_t user_list__pack_to_buffer
+                     (const UserList   *message,
+                      ProtobufCBuffer     *buffer);
+UserList *
+       user_list__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   user_list__free_unpacked
+                     (UserList *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*Contact_Closure)
@@ -256,11 +318,17 @@ typedef void (*LoginRequest_Closure)
 typedef void (*MyData_Closure)
                  (const MyData *message,
                   void *closure_data);
+typedef void (*MatchRequest_Closure)
+                 (const MatchRequest *message,
+                  void *closure_data);
 typedef void (*Match_Closure)
                  (const Match *message,
                   void *closure_data);
 typedef void (*Response_Closure)
                  (const Response *message,
+                  void *closure_data);
+typedef void (*UserList_Closure)
+                 (const UserList *message,
                   void *closure_data);
 
 /* --- services --- */
@@ -273,8 +341,10 @@ extern const ProtobufCMessageDescriptor user__descriptor;
 extern const ProtobufCMessageDescriptor register_request__descriptor;
 extern const ProtobufCMessageDescriptor login_request__descriptor;
 extern const ProtobufCMessageDescriptor my_data__descriptor;
+extern const ProtobufCMessageDescriptor match_request__descriptor;
 extern const ProtobufCMessageDescriptor match__descriptor;
 extern const ProtobufCMessageDescriptor response__descriptor;
+extern const ProtobufCMessageDescriptor user_list__descriptor;
 
 PROTOBUF_C__END_DECLS
 

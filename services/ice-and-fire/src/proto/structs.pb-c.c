@@ -232,6 +232,51 @@ void   my_data__free_unpacked
   assert(message->base.descriptor == &my_data__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   match_request__init
+                     (MatchRequest         *message)
+{
+  static const MatchRequest init_value = MATCH_REQUEST__INIT;
+  *message = init_value;
+}
+size_t match_request__get_packed_size
+                     (const MatchRequest *message)
+{
+  assert(message->base.descriptor == &match_request__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t match_request__pack
+                     (const MatchRequest *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &match_request__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t match_request__pack_to_buffer
+                     (const MatchRequest *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &match_request__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+MatchRequest *
+       match_request__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (MatchRequest *)
+     protobuf_c_message_unpack (&match_request__descriptor,
+                                allocator, len, data);
+}
+void   match_request__free_unpacked
+                     (MatchRequest *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &match_request__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   match__init
                      (Match         *message)
 {
@@ -320,6 +365,51 @@ void   response__free_unpacked
   if(!message)
     return;
   assert(message->base.descriptor == &response__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   user_list__init
+                     (UserList         *message)
+{
+  static const UserList init_value = USER_LIST__INIT;
+  *message = init_value;
+}
+size_t user_list__get_packed_size
+                     (const UserList *message)
+{
+  assert(message->base.descriptor == &user_list__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t user_list__pack
+                     (const UserList *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &user_list__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t user_list__pack_to_buffer
+                     (const UserList *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &user_list__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+UserList *
+       user_list__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (UserList *)
+     protobuf_c_message_unpack (&user_list__descriptor,
+                                allocator, len, data);
+}
+void   user_list__free_unpacked
+                     (UserList *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &user_list__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 static const ProtobufCFieldDescriptor contact__field_descriptors[1] =
@@ -513,7 +603,7 @@ const ProtobufCMessageDescriptor login_request__descriptor =
   (ProtobufCMessageInit) login_request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor my_data__field_descriptors[1] =
+static const ProtobufCFieldDescriptor my_data__field_descriptors[2] =
 {
   {
     "user",
@@ -527,14 +617,27 @@ static const ProtobufCFieldDescriptor my_data__field_descriptors[1] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "contact",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(MyData, contact),
+    &contact__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned my_data__field_indices_by_name[] = {
+  1,   /* field[1] = contact */
   0,   /* field[0] = user */
 };
 static const ProtobufCIntRange my_data__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 1 }
+  { 0, 2 }
 };
 const ProtobufCMessageDescriptor my_data__descriptor =
 {
@@ -544,11 +647,49 @@ const ProtobufCMessageDescriptor my_data__descriptor =
   "MyData",
   "",
   sizeof(MyData),
-  1,
+  2,
   my_data__field_descriptors,
   my_data__field_indices_by_name,
   1,  my_data__number_ranges,
   (ProtobufCMessageInit) my_data__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor match_request__field_descriptors[1] =
+{
+  {
+    "username",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(MatchRequest, username),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned match_request__field_indices_by_name[] = {
+  0,   /* field[0] = username */
+};
+static const ProtobufCIntRange match_request__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor match_request__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "MatchRequest",
+  "MatchRequest",
+  "MatchRequest",
+  "",
+  sizeof(MatchRequest),
+  1,
+  match_request__field_descriptors,
+  match_request__field_indices_by_name,
+  1,  match_request__number_ranges,
+  (ProtobufCMessageInit) match_request__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor match__field_descriptors[3] =
@@ -664,5 +805,43 @@ const ProtobufCMessageDescriptor response__descriptor =
   response__field_indices_by_name,
   1,  response__number_ranges,
   (ProtobufCMessageInit) response__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor user_list__field_descriptors[1] =
+{
+  {
+    "username",
+    1,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_STRING,
+    offsetof(UserList, n_username),
+    offsetof(UserList, username),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned user_list__field_indices_by_name[] = {
+  0,   /* field[0] = username */
+};
+static const ProtobufCIntRange user_list__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor user_list__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "UserList",
+  "UserList",
+  "UserList",
+  "",
+  sizeof(UserList),
+  1,
+  user_list__field_descriptors,
+  user_list__field_indices_by_name,
+  1,  user_list__number_ranges,
+  (ProtobufCMessageInit) user_list__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
