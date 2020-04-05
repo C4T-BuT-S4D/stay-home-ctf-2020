@@ -11,6 +11,8 @@ login:
 	.asciz	"/login/"
 users:
 	.asciz	"/users/"
+.me:
+	.asciz	"/me/"
 
 	.global	routes
 routes:
@@ -22,6 +24,8 @@ routes:
 	.int	login_route
 	.int	users
 	.int	users_route
+	.int	me
+	.int	me_route
 	.int	root
 	.int	test_route
 	.int	0

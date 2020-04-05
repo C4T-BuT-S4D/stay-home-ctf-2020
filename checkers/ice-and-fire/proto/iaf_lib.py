@@ -34,4 +34,6 @@ class CheckMachine:
 
         r = requests.get(url)
 
-        print(r.content)
+        req = UserList()
+        req.ParseFromString(r.content)
+        print(req)

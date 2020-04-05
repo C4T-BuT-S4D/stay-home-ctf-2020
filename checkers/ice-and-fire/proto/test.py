@@ -5,5 +5,5 @@ class Checker:
 
 cm = CheckMachine(Checker())
 
-cm.register()
-# cm.list()
+# cm.register()
+cm.list()
