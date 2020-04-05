@@ -7,6 +7,8 @@ nf_m:	.asciz	"<h1>Not found!</h1>"
 br_m:	.asciz	"Bad request!"
 ie_m:	.asciz	"Internal error!"
 cook:	.asciz	"Set-Cookie: session="
+cookh:
+	.asciz	"; Path=/; Max-Age=36000"
 nlnl:	.asciz	"\r\n"
 
 	.text
@@ -44,6 +46,8 @@ return_200_str_sess:
 	call	simple_write
 	movl	%esp,%ecx
 	addl	$4,%ecx
+	call	simple_write
+	movl	$cookh,%ecx
 	call	simple_write
 	movl	$nlnl,%ecx
 	call	simple_write

@@ -34,7 +34,9 @@ serve_static:
 	pop	ebx
 
 	call	return_file
+	push	0
+	call	exit
 
 bad_file:
-	xor	ecx, ecx
+	xor ecx, ecx
 	call	return_400

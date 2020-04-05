@@ -21,6 +21,11 @@ message LoginRequest {
 
 message MyData {
     User user = 1;
+    Contact contact = 2;
+}
+
+message MatchRequest {
+	string username = 1;
 }
 
 message Match {
@@ -32,4 +37,8 @@ message Match {
 message Response {
     bool ok = 2;
     string text = 1;
+}
+
+message UserList {
+    repeated string username = 1;
 }

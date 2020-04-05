@@ -3,7 +3,8 @@ import asyncpg
 import math
 import datetime
 import logging
-
+import uuid
+from aiochannel import Channel
 from asyncpg.pgproto.types import Point
 from aiohttp import web
 
@@ -11,13 +12,14 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class Universe:
-    SUN_MASS = 50000
-    GRAVITY_CONST = 1
-    TIME_WARP = 1000
-    TARGET_TPS = 60
-
-    A_A = 10000
-    A_B = 5
+    MU = 50e8
+    ANT_MAX_ANGLE = 1e-5
+    DROP_ORBIT_H_MIN = 5000
+    DROP_ORBIT_H_MID = 10000
+    DROP_ORBIT_H_MAX = 900000
+    MAX_DT = datetime.timedelta(seconds=5)
+    LAG_TPS = 5
+    GOOD_TPS = 30
 
 
 def object_from_row(row):
@@ -28,9 +30,46 @@ def object_from_row(row):
         mass=row['mass'],
         refreshed_at=row['refreshed_at'],
         narrow_beam_response=row['narrow_beam_response'],
-        antenna_a=row['antenna_a'],
-        antenna_b=row['antenna_b'],
+        antenna=row['antenna'],
     )
+
+
+def normalize_height(a):
+
+    return max(Universe.DROP_ORBIT_H_MIN, min(Universe.DROP_ORBIT_H_MAX, a))
+
+
+def object_from_config(cfg):
+
+    phase = math.radians(cfg['phase'])
+    Ph = normalize_height(cfg.get('height', 0))
+    pos = Point(Ph * math.sin(phase), Ph * math.cos(phase))
+    speed = math.sqrt(Universe.MU / Ph)
+    vel = Point(
+        speed * math.sin(phase + math.pi / 2),
+        speed * math.cos(phase + math.pi / 2),
+    )
+
+    ant_a = Universe.DROP_ORBIT_H_MAX * 2
+    if Ph >= Universe.DROP_ORBIT_H_MID:
+        ant_a = 0
+        ant_b = 0
+    else:
+        ant_angl = min(Universe.ANT_MAX_ANGLE,
+                       math.radians(cfg['antenna_focus']))
+        ant_b = ant_a * math.sin(ant_angl)
+
+    obj = Object(
+        idx=str(uuid.uuid4()),
+        position=pos,
+        velocity=vel,
+        mass=cfg['mass'],
+        refreshed_at=now(),
+        narrow_beam_response=cfg['narrow_beam_response'],
+        antenna=Point(ant_a, ant_b),
+    )
+
+    return obj
 
 
 def now():
@@ -39,15 +78,14 @@ def now():
 
 class Object():
     def __init__(self, idx, position, velocity, mass, refreshed_at,
-                 narrow_beam_response, antenna_a, antenna_b):
+                 narrow_beam_response, antenna):
 
         self.idx = idx
         self.position = position
         self.velocity = velocity
         self.mass = mass
-        self.narrow_beam_response = antenna_a,
-        self.antenna_a = antenna_a
-        self.antenna_b = antenna_b
+        self.narrow_beam_response = narrow_beam_response
+        self.antenna = antenna
         self.refreshed_at = refreshed_at
         self.logger = logging.getLogger('object::' + str(idx))
 
@@ -65,8 +103,8 @@ class Object():
             acc=self.acceleration(),
             angle=self.angle(),
             refreshed_at=self.refreshed_at.isoformat(),
-            antenna_a=self.antenna_a,
-            antenna_b=self.antenna_b,
+            antenna_a=self.antenna[0],
+            antenna_b=self.antenna[1],
         )
 
     def angle(self):
@@ -81,7 +119,7 @@ class Object():
 
         dist = self.distance_to_sun()
 
-        force = -Universe.GRAVITY_CONST * Universe.SUN_MASS / (dist * dist)
+        force = -Universe.MU / (dist * dist)
 
         angle = self.angle()
 
@@ -93,20 +131,22 @@ class Object():
     def update(self):
 
         T = now()
+        dt = (T - self.refreshed_at).total_seconds()
 
-        dt = (T - self.refreshed_at).total_seconds() * Universe.TIME_WARP
+        maxdt = Universe.MAX_DT
+        if dt > maxdt.total_seconds():
+            dt = maxdt.total_seconds()
+            T = self.refreshed_at + maxdt
 
         acc = self.acceleration()
 
         # update velocity
-
         self.velocity = Point(
             self.velocity[0] + acc[0] * dt,
             self.velocity[1] + acc[1] * dt,
         )
 
         # update position
-
         self.position = Point(
             self.position[0] + self.velocity[0] * dt,
             self.position[1] + self.velocity[1] * dt,
@@ -124,18 +164,22 @@ class Webserver():
         self.port = port
         self.logger = logging.getLogger('webserver')
 
-        self.app = web.Application(middlewares=[self.cors_middleware])
+        self.app = web.Application(middlewares=[self.middleware])
         self.app.add_routes([
             web.get('/telemetry/{id}', self.telemetry),
-            web.get('/beam/{id}', self.beam),
+            web.post('/beam/{id}', self.beam),
+            web.post('/launch/', self.launch),
             web.static('/', './ui/'),
         ])
 
     @web.middleware
-    async def cors_middleware(self, request, handler):
-        response = await handler(request)
-        # response.headers['Access-Control-Allow-Origin'] = '*'
-        return response
+    async def middleware(self, request, handler):
+        try:
+            response = await handler(request)
+            return response
+        except Exception as e:
+            self.logger.error('Error while processing request', str(e))
+            return web.json_response(dict(error=str(e)))
 
     async def run(self):
         runner = web.AppRunner(self.app)
@@ -165,9 +209,34 @@ class Webserver():
 
         return web.json_response({"object": obj.encode()})
 
+    async def launch(self, request):
+
+        config = await request.json()
+        obj = object_from_config(config)
+
+        async with self.conn.acquire() as conn:
+            await conn.execute(
+                '''INSERT INTO objects
+            (id, position, velocity, mass, antenna, narrow_beam_response)
+            VALUES
+            ($1, $2, $3, $4, $5, $6)''',
+                obj.idx,
+                obj.position,
+                obj.velocity,
+                obj.mass,
+                obj.antenna,
+                obj.narrow_beam_response,
+            )
+
+        return web.json_response({
+            "id": obj.idx,
+            "position": list(obj.position)
+        })
+
     async def beam(self, request):
         object_id = request.match_info['id']
-        angle = math.radians(float(request.query.get('angle', '0')))
+        config = await request.json()
+        angle = math.radians(config.get('angle', 0.0))
 
         async with self.conn.acquire() as conn:
             row = await conn.fetchrow('SELECT * FROM objects WHERE id=$1',
@@ -178,25 +247,14 @@ class Webserver():
 
         obj = object_from_row(row)
 
-        A = obj.antenna_a
-        B = obj.antenna_b
+        A = obj.antenna[0]
+        B = obj.antenna[1]
         s = math.sin(angle)
         c = math.cos(angle)
 
-        p1 = Point(
-            obj.position[0],
-            obj.position[1],
-        )
-
-        p2 = Point(
-            p1[0] + A * s - B * c,
-            p1[0] + A * c + B * s,
-        )
-
-        p3 = Point(
-            p1[0] + A * s + B * c,
-            p1[0] + A * c - B * s,
-        )
+        p1 = Point(obj.position[0], obj.position[1])
+        p2 = Point(p1[0] + A * s - B * c, p1[0] + A * c + B * s)
+        p3 = Point(p1[0] + A * s + B * c, p1[0] + A * c - B * s)
 
         pathStr = '(({}, {}), ({}, {}), ({}, {}))'.format(
             p1[0],
@@ -211,7 +269,7 @@ class Webserver():
             rows = await conn.fetch(
                 """select narrow_beam_response from objects where
                     polygon($1::text::path) @> position
-                    limit 128 order by created_at desc""", pathStr)
+                    order by created_at desc limit 128""", pathStr)
 
         responses = [row['narrow_beam_response'] for row in rows]
         self.logger.debug('Got {} narrow beam responses from {}'.format(
@@ -230,6 +288,7 @@ class Worker():
         self.logger = logging.getLogger('universe')
         self.last_health_check = now()
         self.ticks = 0
+        self.queue = Channel(32)
 
     async def run(self):
 
@@ -238,34 +297,47 @@ class Worker():
             self.logger.info('Clock fast-forward')
             await conn.execute('UPDATE objects SET refreshed_at = NOW()')
 
+        asyncio.ensure_future(self._dequeue())
+
         try:
             while True:
+                await self._calc_stats()
                 await self._tick()
-                await asyncio.sleep(1 / Universe.TARGET_TPS)
+
         except asyncio.CancelledError:
             self.logger.info("Terminating gravity worker")
+            self.queue.close()
+            await self.queue.join()
             return
 
-    async def _tick(self):
-
-        if now() - self.last_health_check > Worker.HEALTH_CHECK_INTERVAL:
-            self.logger.debug('Current TPS: {}/{}'.format(
-                int(self.ticks / Worker.HEALTH_CHECK_INTERVAL.total_seconds()),
-                Universe.TARGET_TPS,
+    async def _calc_stats(self):
+        dt = now() - self.last_health_check
+        if dt > Worker.HEALTH_CHECK_INTERVAL:
+            tps = int(self.ticks /
+                      Worker.HEALTH_CHECK_INTERVAL.total_seconds())
+            self.logger.debug('Current TPS: {} ({} ticks)'.format(
+                tps,
+                self.ticks,
             ))
             self.last_health_check = now()
             self.ticks = 0
 
+            if tps <= Universe.LAG_TPS:
+                await self._cleanup()
+
+    async def _cleanup(self):
         async with self.conn.acquire() as conn:
-            rows = await conn.fetch('SELECT * FROM objects')
+            await conn.execute('''
+            DELETE FROM objects
+            WHERE id IN
+            (SELECT id FROM objects
+             WHERE created_at < now() - interval '15 minutes'
+             ORDER BY created_at asc)''')
 
-            for row in rows:
+    async def _dequeue(self):
 
-                obj = object_from_row(row)
-
-                # obj.debug()
-                obj.update()
-
+        async with self.conn.acquire() as conn:
+            async for obj in self.queue:
                 await conn.execute(
                     '''
                     UPDATE objects SET
@@ -276,14 +348,34 @@ class Worker():
                         id = $1
                 ''', obj.idx, obj.position, obj.velocity, obj.refreshed_at)
 
+    async def _tick(self):
+
+        async with self.conn.acquire() as conn:
+            rows = await conn.fetch('''
+            SELECT * FROM objects
+            ORDER BY refreshed_at asc
+            LIMIT 128
+            ''')
+
+            if len(rows) == 0:
+                await asyncio.sleep(1 / Universe.GOOD_TPS)
+
+            for row in rows:
+
+                obj = object_from_row(row)
+                obj.update()
+                await self.queue.put(obj)
+
             self.ticks += 1
 
 
 async def run():
+
     conn = await asyncpg.create_pool(user='msp',
                                      password='msp',
                                      database='msp',
                                      host='127.0.0.1')
+
     logging.info('Connected to database')
 
     server = Webserver(conn, 'localhost', '5001')

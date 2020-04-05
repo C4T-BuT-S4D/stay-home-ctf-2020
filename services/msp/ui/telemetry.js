@@ -1,9 +1,8 @@
-window.serverState = {}
+window.serverState = {};
 
-window.trackedObjects = [
-"a00cb030-4d7b-4e2f-bdfa-bdab27927202",
- "a00cb030-4d7b-4e2f-bdfa-bdab27927201",
-]
+window.trackedObjects = [];
+
+window.aligmentAngle = 0.0;
 
 function fetch_data() {
 
@@ -28,11 +27,16 @@ function fetch_data() {
 
 window.beam_request = (from, angle) => {
 
-  let angleParam = encodeURI(String(angle))
+  const endpoint = `/beam/${from}`
 
-  const endpoint = `/beam/${from}?angle=${angleParam}`
+  let data = {
+    'angle': angle,
+  }
 
-  fetch(endpoint)
+  fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
     .then((response) => {
       return response.json()
     })
@@ -45,6 +49,36 @@ window.beam_request = (from, angle) => {
     })
 }
 
+window.launch_request = (height, radioResp, on_success) => {
+
+  const endpoint = `/launch/`
+
+  let data = {
+    phase: window.aligmentAngle + 180,
+    height: height,
+    narrow_beam_response: radioResp,
+    antenna_focus: 1,
+    mass: 100,
+  }
+
+  fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      if (data.error) {
+        console.error(`launch failed: ${data.error}`);
+        return;
+      }
+
+      console.error(`launch ok, result id: ${data.id}`);
+      on_success(data);
+    })
+}
+
 window.onload = () => {
   let trackingRequest = document.getElementById("tracking-request")
   trackingRequest.addEventListener("keyup", event => {
@@ -53,6 +87,19 @@ window.onload = () => {
       if (!trackedObjects.includes(trackingRequest.value)) {
         trackedObjects.push(trackingRequest.value);
       }
+    }
+  })
+
+  let launchRequest = document.getElementById("launch-request")
+  let radioResponse = document.getElementById("radio-response")
+  launchRequest.addEventListener("keyup", event => {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+      const orbit = parseFloat(launchRequest.value);
+      const radioResp = radioResponse.value;
+      launch_request(orbit, radioResp, resp => {
+        trackedObjects.push(resp.id);
+      });
     }
   })
 }

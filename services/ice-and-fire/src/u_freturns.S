@@ -254,7 +254,8 @@ ok_file:
 	movl	%ebx,%edx
 	call	write_file_contents
 
-	xorl	%eax,%eax
-	xorl	%ebx,%ebx
-	incl	%eax
-	int	$0x80
+	popl	%edi
+	popl	%esi
+	popl	%ebx
+
+	retl
