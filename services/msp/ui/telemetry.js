@@ -25,30 +25,6 @@ function fetch_data() {
   })
 }
 
-window.beam_request = (from, angle) => {
-
-  const endpoint = `/beam/${from}`
-
-  let data = {
-    'angle': angle,
-  }
-
-  fetch(endpoint, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      if (data.error) {
-        console.error(`beam from ${from} failed: ${data.error}`);
-        return;
-      }
-      console.log(`beam response`, data)
-    })
-}
-
 window.launch_request = (height, radioResp, on_success) => {
 
   const endpoint = `/launch/`
@@ -102,4 +78,30 @@ window.onload = () => {
       });
     }
   })
+
+  window.beam_request = (from, angle) => {
+
+    const endpoint = `/beam/${from}`
+
+    let data = {
+      'angle': angle,
+    }
+
+    fetch(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data.error) {
+          console.error(`beam from ${from} failed: ${data.error}`);
+          return;
+        }
+        console.log(`beam response`, data);
+        const answers = data.responses.filter(a => a.trim() != '')
+        radioResponse.value = answers.join(' ');
+      })
+  }
 }
