@@ -1,5 +1,5 @@
 	.data
-eps:	.double	1e-5
+eps:	.double	1e-1
 two:	.double	2
 	.text
 	.global	gvqlen

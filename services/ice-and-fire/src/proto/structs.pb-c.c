@@ -719,12 +719,12 @@ static const ProtobufCFieldDescriptor match__field_descriptors[3] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "secret",
+    "contact",
     3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Match, secret),
+    offsetof(Match, contact),
     &contact__descriptor,
     NULL,
     0,             /* flags */
@@ -732,9 +732,9 @@ static const ProtobufCFieldDescriptor match__field_descriptors[3] =
   },
 };
 static const unsigned match__field_indices_by_name[] = {
+  2,   /* field[2] = contact */
   1,   /* field[1] = distance */
   0,   /* field[0] = ok */
-  2,   /* field[2] = secret */
 };
 static const ProtobufCIntRange match__number_ranges[1 + 1] =
 {

@@ -55,16 +55,16 @@ class CheckMachine:
 
         self.c.assert_eq(r.status_code, 200, "Can't login")
 
-    def me(self, s, u):
+    def me(self, s, u, status=Status.MUMBLE):
         url = f'{self.url}/me/'
 
         data = s.get(url).content
         req = MyData()
         req.ParseFromString(data)
 
-        self.c.assert_eq(req.user.username, u.username, "Invalid username on /me/", Status.CORRUPT)
-        self.c.assert_eq(req.user.password, u.password, "Invalid password on /me/", Status.CORRUPT)
-        self.c.assert_eq(req.contact.text, u.contact, "Invalid contact on /me/", Status.CORRUPT)
+        self.c.assert_eq(req.user.username, u.username, "Invalid username on me", status)
+        self.c.assert_eq(req.user.password, u.password, "Invalid password on me", status)
+        self.c.assert_eq(req.contact.text, u.contact, "Invalid contact on me", status)
 
     def users(self, s, u):
         url = f'{self.url}/users/'
@@ -77,4 +77,50 @@ class CheckMachine:
             u for u in req.username
         ]
 
-        self.c.assert_in(u.username, user_list, "Can't find user", Status.CORRUPT)
+        return user_list
+
+    def match(self, s, username):
+        url = f'{self.url}/match/'
+
+        req = MatchRequest()
+        req.username = username
+
+        req = req.SerializeToString()
+
+        data = s.post(url, data=req).content
+
+        match = Match()
+        match.ParseFromString(data)
+
+        return match
+
+    def check_metric(self):
+        for i in range(15):
+            s1 = get_initialized_session()
+            u1 = User()
+            self.register(s1, u1)
+            self.login(s1, u1)
+            self.me(s1, u1)
+
+            s2 = get_initialized_session()
+            u2 = User()
+            self.register(s2, u2)
+            self.login(s2, u2)
+            self.me(s2, u2)
+
+            s3 = get_initialized_session()
+            u3 = User()
+            self.register(s3, u3)
+            self.login(s3, u3)
+            self.me(s3, u3)
+
+            a = self.match(s1, u2.username)
+            b = self.match(s1, u3.username)
+            c = self.match(s2, u3.username)
+
+            self.c.assert_eq(a.ok, False, "Invalid distance function")
+            self.c.assert_eq(b.ok, False, "Invalid distance function")
+            self.c.assert_eq(c.ok, False, "Invalid distance function")
+
+            if b.distance >= a.distance + c.distance:
+                self.c.cquit(Status.MUMBLE, "Distance function is not metric")

@@ -31,7 +31,7 @@ message MatchRequest {
 message Match {
     bool ok = 1;
     double distance = 2;
-    Contact secret = 3;
+    Contact contact = 3;
 }
 
 message Response {
