@@ -25,6 +25,30 @@ function fetch_data() {
   })
 }
 
+function thrust_request(from, angle) {
+
+  const endpoint = `/thrust/${from}`
+
+  let data = {
+    'angle': angle,
+    'duration': 1,
+  }
+
+  fetch(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      if (data.error) {
+        console.error(`thrust from ${from} failed: ${data.error}`);
+        return;
+      }
+    })
+}
+
 window.launch_request = (height, radioResp, on_success) => {
 
   const endpoint = `/launch/`
