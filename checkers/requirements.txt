@@ -2,3 +2,4 @@ checklib
 requests
 protobuf
 gevent
+bs4
