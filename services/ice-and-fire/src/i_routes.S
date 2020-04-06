@@ -13,6 +13,8 @@ me:
 	.asciz	"/me/"
 match:
 	.asciz	"/match/"
+root:
+	.asciz	""
 
 	.global	routes
 routes:
@@ -28,4 +30,6 @@ routes:
 	.int	me_route
 	.int	match
 	.int	match_route
+    .int    root
+    .int    root_route
 	.int	0
