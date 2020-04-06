@@ -1,9 +1,9 @@
 	.data
 eps:	.double	1e-5
-meps:	.double	-1e-5
+two:	.double	2
 	.text
-	.global	gvlen
-gvlen:
+	.global	gvqlen
+gvqlen:
 	movl	%esi,%eax
 	pxor	%xmm1,%xmm1
 
@@ -28,7 +28,6 @@ loops_gvl:
 
 end_gvl:
 	haddpd	%xmm1,%xmm1
-	sqrtsd	%xmm1,%xmm1
 
 	movl	%eax,%esi
 	retl
@@ -73,29 +72,28 @@ gcompat:
 	movl	%esp,%ebp
 
 	movl	%ebx,%ecx
-	call	gvlen
+	call	gvqlen
 	movsd	%xmm1,%xmm5
 
-	movl	%edi,%edx
-	call	gvlen
+	movl	%edi,%ecx
+	call	gvqlen
 	movsd	%xmm1,%xmm6
 
 	call	product
 	movsd	%xmm2,%xmm7
 
-	mulsd	%xmm5,%xmm6
-	subsd	%xmm6,%xmm7
+	movl	two,%xmm0
+	mulsd	%xmm0,%xmm7
+	subsd	%xmm7,%xmm5
+	addsd	%xmm6,%xmm5
+	sqrtsd	%xmm5,%xmm5
 
 	movl	%ebp,%esp
 	popl	%ebp
 
 	movsd	eps,%xmm0
-	comisd	%xmm0,%xmm7
+	comisd	%xmm0,%xmm5
 	ja	ncomp
-
-	movsd	meps,%xmm0
-	comisd	%xmm0,%xmm7
-	jb	ncomp
 
 	xorl	%esi,%esi
 	incl	%esi
