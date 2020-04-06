@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 class Universe:
     MU = 50e8
-    ANT_MAX_ANGLE = 1.5e-3
+    ANT_MAX_ANGLE = 0.5
     DROP_ORBIT_H_MIN = 5000
     DROP_ORBIT_H_MID = 10000
     DROP_ORBIT_H_MAX = 900000
