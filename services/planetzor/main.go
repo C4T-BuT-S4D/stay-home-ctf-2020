@@ -224,10 +224,6 @@ func handleAddReview(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/")
 }
 
-func handlePublicToken(c echo.Context) error {
-	return c.JSON(http.StatusOK, map[string]string{"token": tokens.Public()})
-}
-
 func handleSubscribe(c echo.Context) error {
 	user := c.QueryParam("user")
 	self := getLoginFromSession(c)
@@ -305,7 +301,6 @@ func main() {
 	e.GET("/subscribe", handleSubscribe, loginRequired)
 	e.GET("/planets", listPage)
 	e.GET("/reviews", latestReviews)
-	e.GET("/tokens/public", handlePublicToken)
 	e.Debug = true
 	e.Start(":4000")
 }

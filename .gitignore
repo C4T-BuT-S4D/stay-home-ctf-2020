@@ -438,3 +438,5 @@ temp/
 # End of https://www.gitignore.io/api/c,go,lua,c++,node,dart,jetbrains,assembler,jetbrains+all,jetbrains+iml
 
 .DS_Store
+
+checkers/venv

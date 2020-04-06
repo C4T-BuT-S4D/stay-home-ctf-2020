@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VULNS=(1 1 1)
+VULNS=(1 1 1 1)
 CHECKS=10
 
 print_output() {

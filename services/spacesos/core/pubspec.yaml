@@ -1,0 +1,8 @@
+name: spacesos_core
+description: Service
+
+
+dependencies:
+  async: ^2.2.0
+  grpc: ^2.1.3
+  protobuf: ^1.0.1
