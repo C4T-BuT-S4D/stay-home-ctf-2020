@@ -64,6 +64,6 @@ find . -name 'checker.py' | sort | while read -r CHECKER; do
 
     echo "Test $i successful!"
   done
-  ++CURN
+  let ++CURN
 done
 

@@ -61,7 +61,9 @@ class Checker(BaseChecker):
         #                 'Object did not move since creation')
 
         # orbit height should not really change
-        if abs(math.dist(new_pos, (0, 0)) - old_height) > 100:
+        if abs(
+                CheckMachine.dist(target_pos_x, target_pos_y, 0, 0) -
+                old_height) > 100:
             self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
                        'Object orbit shifted too much since creation')
 

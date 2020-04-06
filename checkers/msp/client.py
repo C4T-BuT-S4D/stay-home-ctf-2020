@@ -46,6 +46,10 @@ class CheckMachine:
         return ' '.join(response_body['responses'])
 
     @staticmethod
+    def dist(x1, y1, x2, y2):
+        return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+    @staticmethod
     def random_angle():
         return round(math.degrees(random.random() * math.pi * 2), 2)
 
@@ -97,9 +101,8 @@ class CheckMachine:
                          '/launch/ error: position has invalid format')
 
         pos_x, pos_y = response_body['position']
-        pos = (pos_x, pos_y)
 
-        if abs(math.dist((0, 0), pos) - height) > 10:
+        if abs(CheckMachine.dist(0, 0, pos_x, pos_y) - height) > 10:
             self.c.cquit(Status.MUMBLE, "ORBIT NOT REACHED",
                          '/launch/ error: position with invalid height')
 

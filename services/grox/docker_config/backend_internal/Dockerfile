@@ -1,14 +1,4 @@
-FROM rust:1.42
-
-RUN rustup default nightly
-RUN mkdir -p /backend_internal
-
-WORKDIR /app
-RUN USER=root cargo new cache
-WORKDIR /app/cache
-ADD backend_internal/Cargo.toml /app/cache
-ADD backend_internal/Cargo.lock /app/cache
-RUN cargo build --release
+FROM fl3x3dd/grox:latest
 
 ADD backend_internal/Rocket.toml /backend_internal
 ADD backend_internal/src /app/cache/src
