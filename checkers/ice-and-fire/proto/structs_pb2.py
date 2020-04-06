@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\rstructs.proto\"\x17\n\x07\x43ontact\x12\x0c\n\x04text\x18\x01 \x01(\t\"*\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"V\n\x0fRegisterRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x13\n\x0b\x63oordinates\x18\x02 \x03(\x01\x12\x19\n\x07\x63ontact\x18\x03 \x01(\x0b\x32\x08.Contact\"#\n\x0cLoginRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\"8\n\x06MyData\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x19\n\x07\x63ontact\x18\x02 \x01(\x0b\x32\x08.Contact\" \n\x0cMatchRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"?\n\x05Match\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x12\x18\n\x06secret\x18\x03 \x01(\x0b\x32\x08.Contact\"$\n\x08Response\x12\n\n\x02ok\x18\x02 \x01(\x08\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1c\n\x08UserList\x12\x10\n\x08username\x18\x01 \x03(\tb\x06proto3'
+  serialized_pb=b'\n\rstructs.proto\"\x17\n\x07\x43ontact\x12\x0c\n\x04text\x18\x01 \x01(\t\"*\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"V\n\x0fRegisterRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x13\n\x0b\x63oordinates\x18\x02 \x03(\x01\x12\x19\n\x07\x63ontact\x18\x03 \x01(\x0b\x32\x08.Contact\"#\n\x0cLoginRequest\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\"8\n\x06MyData\x12\x13\n\x04user\x18\x01 \x01(\x0b\x32\x05.User\x12\x19\n\x07\x63ontact\x18\x02 \x01(\x0b\x32\x08.Contact\" \n\x0cMatchRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"@\n\x05Match\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x12\x19\n\x07\x63ontact\x18\x03 \x01(\x0b\x32\x08.Contact\"$\n\x08Response\x12\n\n\x02ok\x18\x02 \x01(\x08\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1c\n\x08UserList\x12\x10\n\x08username\x18\x01 \x03(\tb\x06proto3'
 )
 
 
@@ -260,7 +260,7 @@ _MATCH = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='secret', full_name='Match.secret', index=2,
+      name='contact', full_name='Match.contact', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -279,7 +279,7 @@ _MATCH = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=303,
-  serialized_end=366,
+  serialized_end=367,
 )
 
 
@@ -316,8 +316,8 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=368,
-  serialized_end=404,
+  serialized_start=369,
+  serialized_end=405,
 )
 
 
@@ -347,8 +347,8 @@ _USERLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=406,
-  serialized_end=434,
+  serialized_start=407,
+  serialized_end=435,
 )
 
 _REGISTERREQUEST.fields_by_name['user'].message_type = _USER
@@ -356,7 +356,7 @@ _REGISTERREQUEST.fields_by_name['contact'].message_type = _CONTACT
 _LOGINREQUEST.fields_by_name['user'].message_type = _USER
 _MYDATA.fields_by_name['user'].message_type = _USER
 _MYDATA.fields_by_name['contact'].message_type = _CONTACT
-_MATCH.fields_by_name['secret'].message_type = _CONTACT
+_MATCH.fields_by_name['contact'].message_type = _CONTACT
 DESCRIPTOR.message_types_by_name['Contact'] = _CONTACT
 DESCRIPTOR.message_types_by_name['User'] = _USER
 DESCRIPTOR.message_types_by_name['RegisterRequest'] = _REGISTERREQUEST

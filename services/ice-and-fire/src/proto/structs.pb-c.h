@@ -101,7 +101,7 @@ struct  _Match
   ProtobufCMessage base;
   protobuf_c_boolean ok;
   double distance;
-  Contact *secret;
+  Contact *contact;
 };
 #define MATCH__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&match__descriptor) \

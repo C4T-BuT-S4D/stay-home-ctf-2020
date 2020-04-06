@@ -1,5 +1,5 @@
 	.data
-eps:	.double	1e-5
+eps:	.double	1e-1
 two:	.double	2
 	.text
 	.global	gvqlen
@@ -82,7 +82,7 @@ gcompat:
 	call	product
 	movsd	%xmm2,%xmm7
 
-	movl	two,%xmm0
+	movsd	two,%xmm0
 	mulsd	%xmm0,%xmm7
 	subsd	%xmm7,%xmm5
 	addsd	%xmm6,%xmm5

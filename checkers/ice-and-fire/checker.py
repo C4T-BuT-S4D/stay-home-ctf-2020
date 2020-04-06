@@ -8,8 +8,10 @@ import sys
 import os
 import requests
 import google.protobuf.message
+import copy
 
 from checklib import *
+from random import random
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,13 +32,42 @@ class Checker(BaseChecker):
             self.cquit(Status.MUMBLE, 'Protobuf parsing error')
 
     def check(self):
-        s = get_initialized_session()
+        s1 = get_initialized_session()
 
-        u = User()
+        u1 = User()
 
-        self.mch.register(s, u)
-        self.mch.login(s, u)
-        self.mch.me(s, u)
+        self.mch.register(s1, u1)
+        self.mch.login(s1, u1)
+        self.mch.me(s1, u1)
+
+        s2 = get_initialized_session()
+
+        u2 = User()
+
+        self.mch.register(s2, u2)
+        self.mch.login(s2, u2)
+        self.mch.me(s2, u2)
+
+        s3 = get_initialized_session()
+
+        coords_noise = copy.copy(u2.coordinates)
+        for i in range(16):
+            coords_noise[i] += random() * 1e-9
+
+        u3 = User(coordinates=coords_noise)
+
+        self.mch.register(s3, u3)
+        self.mch.login(s3, u3)
+        self.mch.me(s3, u3)
+
+        match1 = self.mch.match(s1, u2.username)
+        match2 = self.mch.match(s2, u3.username)
+
+        self.assert_eq(match1.ok, False, "Invalid user matching")
+        self.assert_eq(match2.ok, True, "Invalid user matching")
+        self.assert_eq(match2.contact.text, u3.contact, "Invalid contact on match")
+
+        self.mch.check_metric()
 
         self.cquit(Status.OK)
 
@@ -47,17 +78,35 @@ class Checker(BaseChecker):
 
         self.mch.register(s, u)
 
-        self.cquit(Status.OK, f'{u.username}:{u.password}')
+        self.cquit(Status.OK, f'{u.username}:{u.password}:{",".join(map(str, u.coordinates))}')
 
     def get(self, flag_id, flag, vuln):
-        s = get_initialized_session()
-        uu, up = flag_id.split(':')
-        u = User(u=uu, p=up, contact=flag)
+        s1 = get_initialized_session()
+        uu, up, coordinates = flag_id.split(':')
+        coordinates = list(map(float, coordinates.split(',')))
+        u1 = User(u=uu, p=up, coordinates=coordinates, contact=flag)
 
-        self.mch.login(s, u)
-        self.mch.me(s, u)
+        self.mch.login(s1, u1)
+        self.mch.me(s1, u1, status=Status.CORRUPT)
 
-        self.mch.users(s, u)
+        coords_noise = copy.copy(coordinates)
+        for i in range(16):
+            coords_noise[i] += random() * 1e-9
+
+        s2 = get_initialized_session()
+        u2 = User(coordinates=coords_noise)
+
+        self.mch.register(s2, u2)
+        self.mch.login(s2, u2)
+
+        users = self.mch.users(s2, u1)
+
+        self.assert_in(u1.username, users, "Can't find user", Status.CORRUPT)
+
+        match = self.mch.match(s2, u1.username)
+
+        self.assert_eq(match.ok, True, "Invalid user matching")
+        self.assert_eq(match.contact.text, u1.contact, "Invalid contact on match")
 
         self.cquit(Status.OK)
 
