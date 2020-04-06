@@ -82,7 +82,7 @@ gcompat:
 	call	product
 	movsd	%xmm2,%xmm7
 
-	movl	two,%xmm0
+	movsd	two,%xmm0
 	mulsd	%xmm0,%xmm7
 	subsd	%xmm7,%xmm5
 	addsd	%xmm6,%xmm5
