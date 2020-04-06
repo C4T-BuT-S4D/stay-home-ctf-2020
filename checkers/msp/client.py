@@ -53,7 +53,7 @@ class CheckMachine:
         url = f'{self.url}/launch/'
 
         if low_orbit:
-            height = random.randint(5000, 10000)
+            height = random.randint(5e3, 1e4)
             msg = ''
             af = random.choice([
                 0.41,
@@ -64,7 +64,7 @@ class CheckMachine:
                 0.59,
             ])
         else:
-            height = random.randint(20000, 900000)
+            height = random.randint(1e8, 9e8)
             af = 0
 
         response = s.post(url,

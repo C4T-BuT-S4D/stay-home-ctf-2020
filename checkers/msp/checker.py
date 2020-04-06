@@ -55,14 +55,15 @@ class Checker(BaseChecker):
         target_pos_y = new_pos[1]
 
         # objects should move pretty quick
+        # TODO
         #if math.dist(new_pos, old_pos) == 0:
         #    self.c.cquit(Status.MUMBLE, "GRAVITY FAILURE",
         #                 'Object did not move since creation')
 
         # orbit height should not really change
         if abs(math.dist(new_pos, (0, 0)) - old_height) > 100:
-            self.c.cquit(Status.MUMBLE, "GRAVITY FAILURE",
-                         'Object orbit shifted too much since creation')
+            self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
+                       'Object orbit shifted too much since creation')
 
         # STEP2: create a beam request
         angle = math.degrees(
