@@ -66,7 +66,7 @@ class Checker(BaseChecker):
 		_stats = self.mch.get_user_stats()
 		start_int = _stats[ 'intelligence' ]
 
-		if self.mch.read_book():
+		if self.mch.read_book( 1 ):
 			# Check int diff
 			_stats = self.mch.get_user_stats()
 
@@ -82,8 +82,7 @@ class Checker(BaseChecker):
 			)
 
 		# just farm book reading to increase INT and get some cap
-		for i in range( 16 ):
-			self.mch.read_book()
+		self.mch.read_book( 20 )
 
 		# go to next day
 		self.mch.go_to_next_day()
@@ -103,8 +102,7 @@ class Checker(BaseChecker):
 
 		# test easy raid
 		# farm int
-		for i in range( 16 ):
-			self.mch.read_book()
+		self.mch.read_book( 16 )
 
 		# go to raid
 		retcode, err_msg = self.mch.easy_raid()
@@ -142,20 +140,16 @@ class Checker(BaseChecker):
 				)
 
 		# farm INT and stamina in medium raids
-		for i in range( 6 ):
-			self.mch.read_book()
-
+		self.mch.read_book( 6 )
 		self.mch.go_to_next_day()
 		
 		# farm INT
 		for j in range( 4 ):
-			for i in range( 20 ):
-				self.mch.read_book()
-
+			self.mch.read_book( 24 )
 			self.mch.go_to_next_day()
 		
 		# farm stamina
-		for i in range( 3 ):
+		for i in range( 2 ):
 			for j in range( 4 ):
 				self.mch.medium_raid()
 			

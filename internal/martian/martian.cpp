@@ -426,20 +426,38 @@ bool Martian::RepairHome( void )
 
 bool Martian::ReadBook( void )
 {
+	std::cout << "{?} How many times do you want to read a book: ";
+	int count;
+	std::cin >> count;
+
+	if ( count < 0 | count > 24 )
+	{
+		std::cout << "{-} Error input!" << std::endl;
+		return false;
+	}
+
+	int need_actions = (int) READ_BOOK * count;
+
+	if ( need_actions > actions )
+	{
+		std::cout << "{-} You dont have action points!" << std::endl;
+		return false;
+	}
+
 	if ( CanDoAction( READ_BOOK ) )
 	{
-		intelligence += 3.5;
-		actions -= READ_BOOK;
+		intelligence += 3.5 * count;
+		actions -= READ_BOOK * count;
 		std::cout << "Reading ";
 		for ( int i = 0; i < 7; i++ )
 		{
 			std::cout << ".";
-			usleep( 100 );
 		}
+
 		std::cout << std::endl;
 
 		std::cout << "{+} You read the book. Intellect increased by <";
-		std::cout << 3.5 << ">" << std::endl; 
+		std::cout << 3.5 * count << ">" << std::endl; 
 	}
 	else
 	{
@@ -1323,11 +1341,12 @@ int HardRaid( Martian* player )
     {
     	std::string file_path = entry.path();
         
-        if ( file_path[ 6 ] != 'I' )
-        	if ( file_path[ 7 ] != 't' )
-        		if ( file_path[ 8 ] != 'e' )
-        			if ( file_path[ 9 ] != 'm' )
-        				continue;
+        if ( file_path[ 6 ] != 'I' || 
+        	 file_path[ 7 ] != 't' ||
+        	 file_path[ 8 ] != 'e' ||
+      		 file_path[ 9 ] != 'm' 
+      		) 
+      		continue;
 
         std::vector<BYTE> FileData = ReadFile( file_path );
         int idx = 0;
