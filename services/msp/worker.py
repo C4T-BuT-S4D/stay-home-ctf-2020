@@ -20,6 +20,7 @@ class Worker():
         self.ticks = 0
         self.queue = Channel(128)
         self.tm = tm
+        self.health = []
 
     async def run(self):
 
@@ -50,6 +51,7 @@ class Worker():
                 tps,
                 self.ticks,
             ))
+            self.health = [tps, self.ticks]
             self.last_health_check = now()
             self.ticks = 0
 

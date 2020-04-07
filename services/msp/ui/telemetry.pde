@@ -299,8 +299,11 @@ void draw_object(Object obj) {
     float center_offset = ((Ra+Rb)/2-Ra);
     float mx = height * velocity * velocity / GM;
     float tanU = mx * sin(ta) * cos(ta) / ( mx * sin(ta) * sin(ta) - 1);
+
+    // this works really bad but better than nothing
     float flatAngle = atan2(pos_x, pos_y) + PI/2;
-    float orbitAngle = -atan(tanU)-flatAngle;
+    float U = atan(tanU);
+    float orbitAngle = -U-flatAngle;
 
     // auto-scale
     while (abs(pos_x * get_scale()) > size_x / 2) {
@@ -333,7 +336,7 @@ void draw_object(Object obj) {
       text("Ah=" + Ra, 0, -45);
       text("Ph=" + Rb, 0, -55);
       text("e=" + e, 0, -65);
-      text("oa=" + degrees(orbitAngle), 0, -75);
+      text("oa=" + degrees(orbitAngle), 0, -85);
     }
 
     if (source_id() == obj.idx) {
@@ -342,10 +345,10 @@ void draw_object(Object obj) {
       text("[target]", 0, 25);
     }
 
-    if (source_id() == obj.idx && target_id() != "") {
+    float ant_A = obj.antenna_a;
+    float ant_B = obj.antenna_b;
+    if (source_id() == obj.idx && target_id() != "" && ant_A != 0) {
 
-      float ant_A = obj.antenna_a;
-      float ant_B = obj.antenna_b;
       float ant_alig = radians(target_angle());
       float ant_foc = target_focus();
 

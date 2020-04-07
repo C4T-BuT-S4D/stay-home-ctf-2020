@@ -46,6 +46,17 @@ class CheckMachine:
 
         return ' '.join(response_body['responses'])
 
+    def health_check(self, s):
+        url = f'{self.url}/worker/health'
+        response = s.get(url)
+        response_body = self.c.get_json(response, "GROUND EQUIPMENT ERROR",
+                                        Status.MUMBLE)
+        self.c.assert_in('result', response_body, "GROUND EQUIPMENT ERROR",
+                         Status.MUMBLE)
+
+        self.c.assert_eq(response_body['result'], "responsive",
+                         "GROUND EQUIPMENT ERROR", Status.MUMBLE)
+
     def thrust(self, s, idx, angle, duration):
         url = f'{self.url}/thrust/{idx}'
 
