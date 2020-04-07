@@ -35,6 +35,17 @@ class Checker(BaseChecker):
             self.cquit(Status.DOWN, 'Invalid response', 'KeyError: ' + str(e))
 
     def check(self):
+        def yesno():
+            random.choice([True, False])
+
+        do_health_check = yesno()
+
+        # simple health check first
+        if do_health_check:
+            s = get_initialized_session()
+            self.mch.health_check(s)
+
+        # gravity check
         s = get_initialized_session()
 
         # create a message
@@ -45,7 +56,7 @@ class Checker(BaseChecker):
         idx, height, pos_x, pos_y = self.mch.launch(s, msg, False)
 
         # wait a bit
-        sleep(10)
+        sleep(random.randint(5, 15))
 
         # receive a new telemetry
         target_telemetry = self.mch.telemetry(s, idx)
@@ -55,27 +66,46 @@ class Checker(BaseChecker):
         # ensure height did not change
         new_height = CheckMachine.dist(new_x, new_y, 0, 0)
         if abs(new_height - height) > 100:
-            self.c.cquit(Status.MUMBLE, "DRAG DETECTED",
-                         f'Object {idx} changed orbit without a reason')
+            self.cquit(Status.MUMBLE, "DRAG DETECTED",
+                       f'Object {idx} changed orbit without a reason')
 
         movement = CheckMachine.dist(pos_x, pos_y, new_x, new_y)
 
         # ensure position changed
         if movement == 0:
-            self.c.cquit(Status.MUMBLE, "GRAVITY FAILURE",
-                         f'Object {idx} did not move since creation')
+            self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
+                       f'Object {idx} did not move since creation')
 
-        # thrust
-        # TODO
+        # thrust command
+        thrust = random.randint(20, 40)
+        self.mch.thrust(s, idx, CheckMachine.random_angle(), thrust)
+        sleep(random.randint(5, 15))
 
-        # ensure orbital parameters changed
+        # get new telemetry
+        old_velocity = target_telemetry.get('velocity', (0, 0))
+
+        target_telemetry = self.mch.telemetry(s, idx)
+        new_velocity = target_telemetry.get('velocity', (0, 0))
+
+        # ensure speed actually changed
+        speed_difference = CheckMachine.dist(old_velocity[0], old_velocity[1],
+                                             new_velocity[0], new_velocity[1])
+
         # TODO
+        # ensure other orbital parameters also changed
+
+        if speed_difference < thrust:
+            self.cquit(
+                Status.MUMBLE, "ENGINE FAILURE",
+                f'Object {idx} did not change speed after the burn;' +
+                f'wanted dv: {thrust}; real dv: {speed_difference}')
 
         self.cquit(Status.OK)
 
     def put(self, flag_id, flag, vuln):
         s = get_initialized_session()
         idx, height, pos_x, pos_y = self.mch.launch(s, flag, False)
+        self.mch.thrust(s, idx, CheckMachine.random_angle(), 10)
         self.cquit(Status.OK, f'{idx}:{height}:{pos_x}:{pos_y}')
 
     def get(self, flag_id, flag, vuln):
@@ -83,6 +113,9 @@ class Checker(BaseChecker):
         s = get_initialized_session()
         idx, old_height, target_old_pos_x, target_old_pos_y = flag_id.split(
             ':')
+
+        if random.choice([False] * 5 + [True]):
+            self.mch.thrust(s, idx, CheckMachine.random_angle(), 1)
 
         old_height = float(old_height)
 
@@ -109,7 +142,14 @@ class Checker(BaseChecker):
                 source_pos_y - target_pos_y,
             ) + math.pi)
 
-        beam_str = self.mch.beam(s, source, angle)
+        focus = CheckMachine.dist(
+            source_pos_x,
+            source_pos_y,
+            target_pos_x,
+            target_pos_y,
+        ) * 0.9
+
+        beam_str = self.mch.beam(s, source, angle, focus)
         if flag not in beam_str:
             self.cquit(
                 Status.MUMBLE,

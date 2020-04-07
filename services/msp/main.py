@@ -20,6 +20,7 @@ async def run():
     tm = ThrustManager()
     server = Webserver(conn, '0.0.0.0', '5001', tm)
     worker = Worker(conn, tm)
+    server.worker = worker
 
     await asyncio.wait([
         asyncio.create_task(server.run()),

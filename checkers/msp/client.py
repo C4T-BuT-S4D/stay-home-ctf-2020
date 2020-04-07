@@ -31,10 +31,10 @@ class CheckMachine:
 
         return response_body['object']
 
-    def beam(self, s, idx, angle):
+    def beam(self, s, idx, angle, focus):
         url = f'{self.url}/beam/{idx}'
 
-        response = s.post(url, json=dict(angle=angle))
+        response = s.post(url, json=dict(angle=angle, focus=focus))
 
         self.c.assert_eq(response.status_code, 200, "RELAY ERROR")
 
@@ -45,6 +45,17 @@ class CheckMachine:
                          '/beam/ error: ' + response['error'])
 
         return ' '.join(response_body['responses'])
+
+    def health_check(self, s):
+        url = f'{self.url}/worker/health'
+        response = s.get(url)
+        response_body = self.c.get_json(response, "GROUND EQUIPMENT ERROR",
+                                        Status.MUMBLE)
+        self.c.assert_in('result', response_body, "GROUND EQUIPMENT ERROR",
+                         Status.MUMBLE)
+
+        self.c.assert_eq(response_body['result'], "responsive",
+                         "GROUND EQUIPMENT ERROR", Status.MUMBLE)
 
     def thrust(self, s, idx, angle, duration):
         url = f'{self.url}/thrust/{idx}'
