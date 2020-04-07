@@ -6,6 +6,7 @@ edition = "2018"
 [dependencies]
 rocket = "0.4.4"
 serde = { version = "1.0.105", features = ["derive"] }
+reqwest = { version = "0.10", features = ["json", "blocking"] }
 postgres = "0.17"
 
 [dependencies.rocket_contrib]
