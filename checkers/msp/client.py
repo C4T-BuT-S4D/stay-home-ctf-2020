@@ -1,6 +1,7 @@
 import math
 import random
 from checklib import Status
+from fun_payloads import payloads
 
 PORT = 5001
 
@@ -45,6 +46,23 @@ class CheckMachine:
 
         return ' '.join(response_body['responses'])
 
+    def thrust(self, s, idx, angle, duration):
+        url = f'{self.url}/thrust/{idx}'
+
+        response = s.post(url, json=dict(
+            angle=angle,
+            duration=duration,
+        ))
+
+        self.c.assert_eq(response.status_code, 200, "ENGINE ERROR")
+
+        response_body = self.c.get_json(response, "ENGINE ERROR",
+                                        Status.MUMBLE)
+
+        if 'error' in response_body:
+            self.c.cquit(Status.MUMBLE, "ENGINE ERROR",
+                         '/thrust/ error: ' + response['error'])
+
     @staticmethod
     def dist(x1, y1, x2, y2):
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
@@ -58,14 +76,14 @@ class CheckMachine:
 
         if low_orbit:
             height = random.randint(5e3, 1e4)
-            msg = ''
+            msg = random.choice(payloads)  # try to generate some fun
             af = random.choice([
-                0.41,
-                0.45,
-                0.51,
-                0.40,
-                0.44,
-                0.59,
+                0.0041,
+                0.0045,
+                0.0051,
+                0.0040,
+                0.0044,
+                0.0059,
             ])
         else:
             height = random.randint(1e8, 9e8)

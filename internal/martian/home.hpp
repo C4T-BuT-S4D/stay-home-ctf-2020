@@ -58,6 +58,8 @@ class Home {
 		int GardenTick( void );
 
 		// trophy
+		std::string GetTrophyDisplayCode( void );
+		bool TrophyMenu( void );
 		void SetTrophy( std::string _trophy );
 		bool ViewTrophy( void );
 		bool GetTrophyStatus( void );

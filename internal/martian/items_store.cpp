@@ -7,13 +7,13 @@ ItemsStore::ItemsStore( std::string Filename )
 	if ( FileData.size() <= 0 )
 	{
 		std::cout << "{-} Items file is empty!" << std::endl;
-		exit( -1 );	
+		exit( 0 );	
 	}
 
 	if ( !ParseFileData() ) 
 	{
 		std::cout << "{-} Error in items-files parsing!" << std::endl;
-		exit( -1 );
+		exit( 0 );
 	}
 };
 
@@ -103,7 +103,7 @@ Item ItemsStore::GetItemById( int Id )
 	if ( Id >= items.size() )
 	{
 		std::cout << "{-} Internal error! Incorrect item id!" << std::endl;
-		exit( -1 );
+		exit( 0 );
 	}
 
 	return items[ Id ];
@@ -118,7 +118,7 @@ Item ItemsStore::GetItemByName( std::string Name )
 	}
 
 	std::cout << "{-} Internal error! Incorrect item name!" << std::endl;
-	exit( -1 );
+	exit( 0 );
 };
 
 bool ItemsStore::DeleteItemById( int Id )
@@ -126,7 +126,7 @@ bool ItemsStore::DeleteItemById( int Id )
 	if ( Id >= items.size() )
 	{
 		std::cout << "{-} Internal error! Incorrect item id!" << std::endl;
-		exit( -1 );
+		exit( 0 );
 	}
 
 	items.erase( items.begin() + Id );
@@ -146,7 +146,7 @@ bool ItemsStore::DeleteItemByName( std::string Name )
 	}
 
 	std::cout << "{-} Internal error! Incorrect item name!" << std::endl;
-	exit( -1 );
+	exit( 0 );
 
 	return true;
 };

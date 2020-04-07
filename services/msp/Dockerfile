@@ -13,4 +13,4 @@ ADD . /app
 
 USER nobody
 
-CMD python3 gravity.py
+CMD python3 main.py
