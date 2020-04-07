@@ -4,15 +4,15 @@
 static:
 	.asciz	"/static/"
 register:
-	.asciz	"/register/"
+	.asciz	"/api/register/"
 login:
-	.asciz	"/login/"
+	.asciz	"/api/login/"
 users:
-	.asciz	"/users/"
+	.asciz	"/api/users/"
 me:
-	.asciz	"/me/"
+	.asciz	"/api/me/"
 match:
-	.asciz	"/match/"
+	.asciz	"/api/match/"
 root:
 	.asciz	""
 
