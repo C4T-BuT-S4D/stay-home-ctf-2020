@@ -67,7 +67,7 @@ void Martian::ViewUserStats( void )
 		std::cin >> inp;
 
 		if ( inp == 'y' )
-			home->ViewTrophy();
+			home->TrophyMenu();
 	}
 
 	std::cout << "{?} View graden? [y\\n]: ";
@@ -428,18 +428,18 @@ bool Martian::ReadBook( void )
 {
 	if ( CanDoAction( READ_BOOK ) )
 	{
-		intelligence += 2.5;
+		intelligence += 3.5;
 		actions -= READ_BOOK;
 		std::cout << "Reading ";
 		for ( int i = 0; i < 7; i++ )
 		{
 			std::cout << ".";
-			usleep( 90000 );
+			usleep( 100 );
 		}
 		std::cout << std::endl;
 
 		std::cout << "{+} You read the book. Intellect increased by <";
-		std::cout << 2.5 << ">" << std::endl; 
+		std::cout << 3.5 << ">" << std::endl; 
 	}
 	else
 	{
@@ -470,7 +470,6 @@ bool Martian::CheckHealth( void )
 	{
 		std::cout << "{-} You died!" << std::endl;
 		Die( name );
-		exit( -1 );
 	}
 
 	if ( health > INIT_HP )
@@ -601,7 +600,7 @@ void Martian::MakeRandomEvent( void )
 		Die( name );
 	}
 
-	if ( EventId > NIGHT_INT_IS_POWER && intelligence < 55.0 )
+	if ( EventId > 990 && intelligence < 55.0 )
 	{
 		std::cout << "{..} During the day, you tried to improve";
 		std::cout << "the work of the energy block, and at night"; 
@@ -759,6 +758,8 @@ int EasyRaid( Martian* player )
 
 		player->AddItemToHomeStock( _potato );
 		player->AddItemToHomeStock( _drink_water );
+
+		player->AddStamina( 1.0 );
 	}
 	else
 	{
@@ -803,7 +804,7 @@ int MediumRaid( Martian* player )
 	DWORD valid_code = (int) monster_hp + (int) monster_attack + (int) monster_regen;
 	valid_code += (int) player->GetHP();
 	valid_code = valid_code << 2;
-	valid_code = player->GetINT();
+	valid_code += player->GetINT();
 
 	bool runaway = false;
 
@@ -854,7 +855,8 @@ int MediumRaid( Martian* player )
 				if ( monster_move == 1 )
 				{
 					std::cout << "{..} The monster attacks!" << std::endl;
-					player->Damage( (double) monster_attack / 2 );
+					player->Damage( (double) monster_attack / 
+						( 2.0 * (double)( player->GetStamina() * 0.05 ) ) );
 				}
 				else
 				{
@@ -892,7 +894,7 @@ int MediumRaid( Martian* player )
 	}
 
 	std::cout << "{+++} You killed a monster!!!" << std::endl;
-	player->AddStamina( 15.0 );
+	player->AddStamina( 25.0 );
 
 	std::cout << "{?} You got a chest, but this time you";
 	std::cout << " need to enter the password immediately";
@@ -1111,7 +1113,7 @@ int HardRaid( Martian* player )
 
 	std::cout << "{?} You got a chest, but this time you";
 	std::cout << " need to enter the code immediately";
-	std::cout << " within 15 seconds" << std::endl;
+	std::cout << " within 5 seconds" << std::endl;
 
 	std::cout << "Code: ";
 
@@ -1120,7 +1122,7 @@ int HardRaid( Martian* player )
 	std::string user_code;
 	std::cin >> user_code;
 
-	if ( ( (int) time( NULL ) - start_time ) > 15 )
+	if ( ( (int) time( NULL ) - start_time ) > 5 )
 	{
 		std::cout << "{-} Time is out!" << std::endl;
 		std::cout << "{-} The chest exploded and damaged you!" << std::endl;
@@ -1138,7 +1140,7 @@ int HardRaid( Martian* player )
 	}
 
 	// check delimeters
-	if ( user_code[ 5 ] != '-' || user_code[ 11 ] != '-' )
+	else if ( user_code[ 5 ] != '-' || user_code[ 11 ] != '-' )
 	{
 		std::cout << "{-} Incorrect code!" << std::endl;
 		lose = true;
@@ -1178,7 +1180,7 @@ int HardRaid( Martian* player )
 	t = (((WORD)data << 8) | ((crc>>8)&255));
 	t ^= (WORD)(data >> 4);
 	t ^= ((WORD)data << 3);
-		
+	
 	if ( first_part != t )  
 	{
 		std::cout << "{-} Incorrect code!" << std::endl;
@@ -1214,7 +1216,7 @@ int HardRaid( Martian* player )
 
 	for ( int i = 1; i < 1000; i++ )
 	{	
-		// 273 
+		// 0 
 		if ( ( i % 3 == 0 ) && ( i % 7 == 0 ) && ( i % 13 == 0 ) && flags[ 0 ] )
 		{
 			// idx = 8 
@@ -1224,7 +1226,7 @@ int HardRaid( Martian* player )
 			continue;
 		}
 
-		// 391
+		// 3
 		else if ( ( i % 17 == 0 ) && ( i % 23 == 0 ) && flags[ 1 ] )
 		{
 			// idx = 7 
@@ -1234,7 +1236,7 @@ int HardRaid( Martian* player )
 			continue;
 		}
 
-		// 374 
+		// 2 
 		else if ( ( i % 11 == 0 ) && ( i % 34 == 0 ) && flags[ 2 ] )
 		{
 			// idx = 0
@@ -1244,19 +1246,20 @@ int HardRaid( Martian* player )
 			continue;
 		}
 
-		// 902 
+		// 4
 		else if ( ( i % 22 == 0 ) && ( i % 41 == 0 ) && flags[ 3 ] ) 
 		{
-			// idx = 16 
+			// idx = 12
 			int idx = ( ( ( i / 2 ) & 0xff ) ^ 127 ) % 16;
 			third_part_correct.push_back( (char) NameHash[ idx ] );
 			flags[ 3 ] = false;
 			continue;
 		}
 
+		// 1
 		else if ( ( i % 111 == 0 ) && ( i % 9 == 0 ) && flags[ 4 ] ) 
 		{
-			// idx = 31 
+			// idx = 10
 			int idx = ( i >> 5 );
 			third_part_correct.push_back( (char) NameHash[ idx ] );
 			flags[ 4 ] = false;

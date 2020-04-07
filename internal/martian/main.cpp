@@ -40,7 +40,7 @@ int main( int argc, char* argv[], char* envp[] )
 					reg_lifes--;
 				break;
 			case '3':
-				exit( -1 );
+				exit( 0 );
 				break;
 			default:
 				login_lifes--;
@@ -54,6 +54,8 @@ int main( int argc, char* argv[], char* envp[] )
 void Setup( void )
 {
 	init_alphs();
+
+	alarm( 60 ); // 2 minutes alarm
 	
 	setvbuf( stdin,  0, 2, 0 );
 	setvbuf( stdout, 0, 2, 0 );
@@ -202,7 +204,7 @@ void Session( void )
 				current_player->SaveFile(); // +
 				break;
 			case 11:
-				exit( 11 );
+				exit( 0 );
 				break;
 			default:
 				cnt--;
@@ -214,7 +216,7 @@ void Session( void )
 void UserMenu( void )
 {
 	std::cout << "|------- Profile [" << Username << "] -------|" << std::endl;
-	std::cout << "1. View stats" << std::endl;
+	std::cout << "1. View stats" << std::endl; 
 	std::cout << "2. Change status" << std::endl;
 	std::cout << "3. Eat potatoes" << std::endl;
 	std::cout << "4. Drink water" << std::endl;
