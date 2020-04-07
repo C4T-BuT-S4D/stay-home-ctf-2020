@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VULNS=(1 1 1 1)
-CHECKS=10
+VULNS=(1 2 1 1)
+CHECKS=200
 
 print_output() {
   echo "stdout:"
