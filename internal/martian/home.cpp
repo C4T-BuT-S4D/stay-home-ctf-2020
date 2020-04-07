@@ -35,10 +35,14 @@ Home::Home()
 
 	InitDeafultGarden();
 	InitDefaultStock();
+	// SetTrophy( "test_test_test_testtest_test_test_test" ); // debug only
 };
 
 void Home::Damage( double _damage )
 {
+	if ( _damage < 0.0 )
+		_damage = 0.0;
+	
 	health -= _damage;
 };
 
@@ -271,7 +275,7 @@ bool Home::MoveToTrashById( DWORD Id )
 	if ( Id >= stock.size() )
 	{
 		std::cout << "{-} Internal error! Incorrect item id!" << std::endl;
-		exit( -1 );
+		exit( 0 );
 	}
 
 	stock.erase( stock.begin() + Id );
@@ -355,30 +359,19 @@ void Home::SetTrophy( std::string _trophy )
 	is_trophy = true;
 };
 
-bool Home::ViewTrophy( void )
+std::string Home::GetTrophyDisplayCode( void )
 {
-	int local_var = 1;
-	if ( trophy.size() <= 0 || !is_trophy )
-	{
-		std::cout << "{-} You have no trophies" << std::endl;
-		return false;
-	}
-
-	std::cout << "{?} Here is a magnificent box with a display, ";
-	std::cout << "however, you can’t open it in any way. There ";
-	std::cout << "is no interface to enter. Some chars  are har";
-	std::cout << "dly distinguishable on the display, but you ca";
-	std::cout << "nnot comprehend their meaning." << std::endl;
+	std::string display_code;
 
 	void* ptr = (void*) trophy.c_str();
-	QWORD x = static_cast<QWORD>(reinterpret_cast<std::uintptr_t>(ptr));
+	QWORD x = static_cast<QWORD>( reinterpret_cast<std::uintptr_t>( ptr ) );
 
-	//memcpy( &x, &ptr, 8 );
 	x ^= 0xcafebabedeadbeef;
 	x = x >> 1;
 
 	BYTE bytes[ 8 ];
-	bytes[ 0 ] = (BYTE) ( x >> 56);
+
+	bytes[ 0 ] = (BYTE) ( x >> 56 );
 	bytes[ 1 ] = (BYTE) ( ( x >> 48 ) & 0xff );
 	bytes[ 2 ] = (BYTE) ( ( x >> 40 ) & 0xff );
 	bytes[ 3 ] = (BYTE) ( ( x >> 32 ) & 0xff );
@@ -394,20 +387,98 @@ bool Home::ViewTrophy( void )
 
 	for ( int i = 0; i < 8; i++ )
 	{
-		std::cout << std::hex << (int) bytes[ i ];
+		display_code += std::to_string( bytes[ i ] );
 
 		if ( i == 7 )
 			continue;
 
-		std::cout << "-";
+		display_code += "-";
 	}
 
-	std::cout << std::endl;
+	return display_code;
+};
 
-	//QWORD value = (int)ptr;
-	//std::printf( "%x\n", value );
-	// write( 1, ptr, 128 );
+bool Home::TrophyMenu( void )
+{
+	if ( !is_trophy )
+	{
+		std::cout << "{-} You have not trophies!" << std::endl;
+		return false;
+	}
 
+	std::cout << "--- Trophy menu ---" << std::endl;
+	std::cout << "1. View" << std::endl;
+	std::cout << "2. Recycle" << std::endl;
+	std::cout << "3. Remove" << std::endl;
+	std::cout << "> ";
+
+	int user_input;
+	std::cin >> user_input;
+
+	if ( user_input <= 0 || user_input > 3 )
+	{
+		std::cout << "{-} Incorrect option!" << std::endl;
+		return false;
+	}
+
+	switch( user_input )
+	{
+		case 1:
+		{
+			ViewTrophy();
+			break;
+		}
+		case 2:
+		{
+			std::cout << "{?} Enter code from trophy display: ";
+			std::string user_code;
+			std::cin >> user_code;
+
+			if ( user_code != GetTrophyDisplayCode() )
+			{
+				std::cout << "{-} Error code! Recycle failed!" << std::endl;
+				return false;
+			}
+			else
+			{
+				is_trophy = false;
+				trophy.clear();
+
+				std::cout << "{+} The trophy was recycled and you got iron <+5>" << std::endl;
+
+				Item add_iron = storage->GetItemByName( "iron" );
+				add_iron.add( 4 ); 
+
+				AddItem( add_iron );
+			}
+		}
+		case 3:
+		{
+			is_trophy = false;
+			trophy.clear();
+		}
+	}
+
+	return true;
+};
+
+bool Home::ViewTrophy( void )
+{
+	int local_var = 1;
+	if ( trophy.size() <= 0 || !is_trophy )
+	{
+		std::cout << "{-} You have no trophies" << std::endl;
+		return false;
+	}
+
+	std::cout << "{?} Here is a magnificent box with a display, ";
+	std::cout << "however, you can’t open it in any way." << std::endl;
+	std::cout << "{?} There is no interface to enter." << std::endl;
+	std::cout << "{?} Some chars are hardly distinguishable on the display, ";
+	std::cout << "but you cannot comprehend their meaning." << std::endl;
+
+	std::cout << "Display code: " << GetTrophyDisplayCode() << std::endl;
+	
 	return true;
 };
 

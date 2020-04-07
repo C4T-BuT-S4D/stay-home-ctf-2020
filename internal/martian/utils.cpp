@@ -177,7 +177,7 @@ int GetRandomEventId( void )
 {
 	std::random_device rd;
 	std::mt19937 gen( rd() );
-	std::uniform_int_distribution<> dis( 0, 100 );
+	std::uniform_int_distribution<> dis( 0, 1000 );
 
 	return dis( gen );
 };
@@ -203,5 +203,5 @@ void Die( std::string username )
 
 	std::remove( filename.c_str() );
 	
-	exit( -1 );
+	exit( 0 );
 };
