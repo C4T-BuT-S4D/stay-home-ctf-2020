@@ -21,6 +21,7 @@ class Webserver():
             web.post('/beam/{id}', self.beam),
             web.post('/launch/', self.launch),
             web.post('/thrust/{id}', self.thrust),
+            web.get('/{element}/health', self.health),
             web.static('/', './ui/'),
         ])
 
@@ -149,3 +150,11 @@ class Webserver():
         ))
 
         return web.json_response({})
+
+    async def health(self, request):
+        element = request.match_info['element']
+        return web.json_response(
+            dict(
+                result="responsive",
+                stats=list(getattr(self, element).health),
+            ))

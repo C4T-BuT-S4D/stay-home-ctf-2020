@@ -11,7 +11,7 @@ print_output() {
 }
 
 CURN=0
-find . -name 'checker.py' | sort | while read -r CHECKER; do
+find ./checkers/$1 -name 'checker.py' | sort | while read -r CHECKER; do
   echo "Processing checker '$CHECKER', ${VULNS[CURN]} vulns"
   for ((i = 1; i <= CHECKS; i++)); do
     echo "Running test $i..."
