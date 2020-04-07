@@ -27,7 +27,7 @@ const Crash$json = const {
 const PublicCrash$json = const {
   '1': 'PublicCrash',
   '2': const [
-    const {'1': 'user_name', '3': 1, '4': 1, '5': 9, '10': 'userName'},
+    const {'1': 'user', '3': 1, '4': 1, '5': 9, '10': 'user'},
     const {'1': 'coordinates', '3': 2, '4': 1, '5': 11, '6': '.spacesos.Coordinates', '10': 'coordinates'},
   ],
 };
@@ -40,18 +40,11 @@ const AuthRequest$json = const {
   ],
 };
 
-const CrashRequest$json = const {
-  '1': 'CrashRequest',
+const AuthResponse$json = const {
+  '1': 'AuthResponse',
   '2': const [
-    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
-    const {'1': 'crash', '3': 2, '4': 1, '5': 11, '6': '.spacesos.Crash', '10': 'crash'},
-  ],
-};
-
-const GetCrashesRequest$json = const {
-  '1': 'GetCrashesRequest',
-  '2': const [
-    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
+    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
+    const {'1': 'sessionId', '3': 2, '4': 1, '5': 9, '10': 'sessionId'},
   ],
 };
 
@@ -59,27 +52,7 @@ const AddToFriendRequest$json = const {
   '1': 'AddToFriendRequest',
   '2': const [
     const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
-    const {'1': 'user_name', '3': 2, '4': 1, '5': 9, '10': 'userName'},
-  ],
-};
-
-const FriendshipRequestsRequest$json = const {
-  '1': 'FriendshipRequestsRequest',
-  '2': const [
-    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
-  ],
-};
-
-const GetLatestCrashesRequest$json = const {
-  '1': 'GetLatestCrashesRequest',
-};
-
-const AuthResponse$json = const {
-  '1': 'AuthResponse',
-  '2': const [
-    const {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
-    const {'1': 'sessionId', '3': 2, '4': 1, '5': 9, '10': 'sessionId'},
-    const {'1': 'error', '3': 3, '4': 1, '5': 9, '10': 'error'},
+    const {'1': 'username', '3': 2, '4': 1, '5': 9, '10': 'username'},
   ],
 };
 
@@ -90,6 +63,13 @@ const AddToFriendResponse$json = const {
   ],
 };
 
+const FriendshipRequestsRequest$json = const {
+  '1': 'FriendshipRequestsRequest',
+  '2': const [
+    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
+  ],
+};
+
 const FriendshipRequestResponse$json = const {
   '1': 'FriendshipRequestResponse',
   '2': const [
@@ -97,10 +77,40 @@ const FriendshipRequestResponse$json = const {
   ],
 };
 
+const FriendsRequest$json = const {
+  '1': 'FriendsRequest',
+  '2': const [
+    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
+  ],
+};
+
+const FriendsResponse$json = const {
+  '1': 'FriendsResponse',
+  '2': const [
+    const {'1': 'users', '3': 1, '4': 3, '5': 9, '10': 'users'},
+  ],
+};
+
+const CrashRequest$json = const {
+  '1': 'CrashRequest',
+  '2': const [
+    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
+    const {'1': 'crash', '3': 2, '4': 1, '5': 11, '6': '.spacesos.Crash', '10': 'crash'},
+  ],
+};
+
 const CrashResponse$json = const {
   '1': 'CrashResponse',
   '2': const [
-    const {'1': 'confirmed', '3': 1, '4': 1, '5': 8, '10': 'confirmed'},
+    const {'1': 'result', '3': 1, '4': 1, '5': 9, '10': 'result'},
+    const {'1': 'confirmed', '3': 2, '4': 1, '5': 8, '10': 'confirmed'},
+  ],
+};
+
+const GetCrashesRequest$json = const {
+  '1': 'GetCrashesRequest',
+  '2': const [
+    const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
   ],
 };
 
@@ -109,6 +119,10 @@ const GetCrashesResponse$json = const {
   '2': const [
     const {'1': 'crashes', '3': 1, '4': 3, '5': 11, '6': '.spacesos.Crash', '10': 'crashes'},
   ],
+};
+
+const GetLatestCrashesRequest$json = const {
+  '1': 'GetLatestCrashesRequest',
 };
 
 const GetLatestCrashesResponse$json = const {

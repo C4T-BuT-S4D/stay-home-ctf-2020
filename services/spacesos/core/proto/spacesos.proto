@@ -18,7 +18,7 @@ message Crash {
 }
 
 message PublicCrash {
-  string user_name = 1;
+  string user = 1;
   Coordinates coordinates = 2;
 }
 
@@ -27,48 +27,58 @@ message AuthRequest {
   string password = 2;
 }
 
-message CrashRequest {
-  string sessionId = 1;
-  Crash crash = 2;
-}
-
-message GetCrashesRequest {
-  string sessionId = 1;
+message AuthResponse {
+  string id = 1;
+  string sessionId = 2;
 }
 
 message AddToFriendRequest {
   string sessionId = 1;
-  string user_name = 2;
-}
-
-message FriendshipRequestsRequest {
-  string sessionId = 1;
-}
-
-message GetLatestCrashesRequest {
-
-}
-
-message AuthResponse {
-  string id = 1;
-  string sessionId = 2;
-  string error = 3;
+  string username = 2;
 }
 
 message AddToFriendResponse {
   bool mutual = 1;
 }
 
+message FriendshipRequestsRequest {
+  string sessionId = 1;
+}
+
 message FriendshipRequestResponse {
   repeated string users = 1;
 }
 
+message FriendsRequest {
+  string sessionId = 1;
+}
+
+message FriendsResponse {
+  repeated string users = 1;
+}
+
+message CrashRequest {
+  string sessionId = 1;
+  Crash crash = 2;
+}
+
+
 message CrashResponse {
-  bool confirmed = 1;
+  string result = 1;
+  bool confirmed = 2;
+}
+
+
+message GetCrashesRequest {
+  string sessionId = 1;
 }
 
 message GetCrashesResponse {
   repeated Crash crashes = 1;
+}
+
+message GetLatestCrashesRequest {
+
 }
 
 message GetLatestCrashesResponse {
@@ -81,7 +91,7 @@ service SpaceSos {
   rpc Login(AuthRequest) returns (AuthResponse) {}
   rpc AddToFriend(AddToFriendRequest) returns (AddToFriendResponse) {}
   rpc FriendshipRequests(FriendshipRequestsRequest) returns (FriendshipRequestResponse) {}
-  // TODO(rpc for listing friends)
+  rpc GetFriends(FriendsRequest) returns (FriendsResponse) {}
   rpc Crash(CrashRequest) returns (CrashResponse) {}
   rpc GetCrashes(GetCrashesRequest) returns (GetCrashesResponse) {}
   rpc GetLatestCrashes(GetLatestCrashesRequest) returns (GetLatestCrashesResponse) {}
