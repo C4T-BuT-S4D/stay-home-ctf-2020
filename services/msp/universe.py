@@ -3,7 +3,7 @@ import datetime
 
 class Universe:
     MU = 50e8
-    ANT_MAX_ANGLE = 0.5
+    ANT_MAX_ANGLE = 0.006
     DROP_ORBIT_H_MIN = 5000
     DROP_ORBIT_H_MID = 1e8
     DROP_ORBIT_H_MAX = 9e8

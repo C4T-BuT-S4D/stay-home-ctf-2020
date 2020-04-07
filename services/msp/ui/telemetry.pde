@@ -239,6 +239,24 @@ float target_angle() {
   return degrees(atan2(source_pos_x-target_pos_x, source_pos_y-target_pos_y) + PI);
 }
 
+float target_focus() {
+
+  String sid = source_id();
+  String tid = target_id();
+
+  if (sid == "" || tid == "") {
+    return -0;
+  }
+
+  float source_pos_x = window.serverState[sid].object.position[0];
+  float source_pos_y = window.serverState[sid].object.position[1];
+
+  float target_pos_x = window.serverState[tid].object.position[0];
+  float target_pos_y = window.serverState[tid].object.position[1];
+
+  return dist(source_pos_x, source_pos_y, target_pos_x, target_pos_y) - 100;
+}
+
 void thrust() {
 
   if (source_id() == "") {
@@ -329,6 +347,7 @@ void draw_object(Object obj) {
       float ant_A = obj.antenna_a;
       float ant_B = obj.antenna_b;
       float ant_alig = radians(target_angle());
+      float ant_foc = target_focus();
 
       // draw antenna triangle;
 
@@ -337,8 +356,8 @@ void draw_object(Object obj) {
       noFill();
 
       triangle(
-        0,
-        0,
+        ant_foc * sin(ant_alig) * get_scale(),
+        ant_foc * cos(ant_alig) * get_scale(),
         (ant_A * sin(ant_alig) - ant_B * cos(ant_alig)) * get_scale(),
         (ant_A * cos(ant_alig) + ant_B * sin(ant_alig)) * get_scale(),
         (ant_A * sin(ant_alig) + ant_B * cos(ant_alig)) * get_scale(),
