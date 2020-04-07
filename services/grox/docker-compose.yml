@@ -7,12 +7,24 @@ services:
     env_file:
       - ./docker_config/postgres/db.env
     restart: on-failure
-  backend_internal:
+  graph:
     build:
       context: .
-      dockerfile: ./docker_config/backend_internal/Dockerfile
+      dockerfile: ./docker_config/backend_graph/Dockerfile
     restart: on-failure
-    ports:
-      - 6666:8000
     depends_on:
       - postgres
+  owner:
+    build:
+      context: .
+      dockerfile: ./docker_config/backend_owner/Dockerfile
+    restart: on-failure
+    depends_on:
+      - postgres
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker_config/backend/Dockerfile
+    restart: on-failure
+    ports:
+      - 6666:3000

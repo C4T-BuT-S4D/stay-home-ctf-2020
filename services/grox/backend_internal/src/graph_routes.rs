@@ -206,16 +206,119 @@ pub fn get_graph_links(graph: i32) -> JsonValue {
 
     ", &[&graph]);
 
-    let mut links: Vec<(i32, i32)> = Vec::new();
+    let mut links: Vec<(i32, i32, i32)> = Vec::new();
 
     for row in match result {
         Ok(res) => res,
         Err(e) => return error(e)
     } {
-        links.push((row.get(0), row.get(1)))
+        links.push((row.get(0), row.get(1), row.get(2)))
     }
 
     json!({
         "ok": links
     })
+}
+
+#[get("/node_links/<node>")]
+pub fn get_node_links(node: i32) -> JsonValue {
+    let client = get_connection();
+    let mut client = match client {
+        Ok(c) => c,
+        Err(e) => return error(e)
+    };
+
+    let result = client.query_one("
+
+    SELECT COUNT(id) from nodes WHERE id = $1
+
+    ", &[&node]);
+
+    let count: i64 = match result {
+        Ok(row) => row.get(0),
+        Err(e) => return error(e)
+    };
+
+    if count == 0 {
+        return error("No such node");
+    }
+
+    let result = client.query("
+
+    SELECT r FROM links WHERE l = $1
+
+    ", &[&node]);
+
+    let mut links: Vec<i32> = Vec::new();
+
+    for row in match result {
+        Ok(res) => res,
+        Err(e) => return error(e)
+    } {
+        links.push(row.get(0))
+    }
+
+    json!({
+        "ok": links
+    })
+}
+
+#[get("/graph_exists/<graph>")]
+pub fn graph_exists(graph: i32) -> JsonValue {
+    let client = get_connection();
+    let mut client = match client {
+        Ok(c) => c,
+        Err(e) => return error(e)
+    };
+
+    let result = client.query_one("
+
+    SELECT COUNT(id) from graphs WHERE id = $1
+
+    ", &[&graph]);
+
+    let count: i64 = match result {
+        Ok(row) => row.get(0),
+        Err(e) => return error(e)
+    };
+
+    if count == 0 {
+        json!(api::Exists {
+            exists: false
+        })
+    } else {
+        json!(api::Exists {
+            exists: true
+        })
+    }
+}
+
+#[get("/node_exists/<node>")]
+pub fn node_exists(node: i32) -> JsonValue {
+    let client = get_connection();
+    let mut client = match client {
+        Ok(c) => c,
+        Err(e) => return error(e)
+    };
+
+    let result = client.query_one("
+
+    SELECT COUNT(id) from nodes WHERE id = $1
+
+    ", &[&node]);
+
+    let count: i64 = match result {
+        Ok(row) => row.get(0),
+        Err(e) => return error(e)
+    };
+
+    if count == 0 {
+        json!(api::Exists {
+            exists: false
+        })
+    } else {
+        json!(api::Exists {
+            exists: true
+        })
+    }
 }

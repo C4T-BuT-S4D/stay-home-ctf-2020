@@ -1,6 +1,12 @@
 {
   "dependencies": {
     "koa": "^2.11.0",
-    "koa-router": "^8.0.8"
+    "koa-bodyparser": "^4.3.0",
+    "koa-cash": "^2.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-router": "^8.0.8",
+    "koa-session": "^5.13.1",
+    "lru-cache": "^5.1.1",
+    "pg": "^8.0.0"
   }
 }
