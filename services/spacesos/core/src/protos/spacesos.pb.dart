@@ -129,7 +129,7 @@ class Crash extends $pb.GeneratedMessage {
 
 class PublicCrash extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('PublicCrash', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOS(1, 'userName')
+    ..aOS(1, 'user')
     ..aOM<Coordinates>(2, 'coordinates', subBuilder: Coordinates.create)
     ..hasRequiredFields = false
   ;
@@ -150,13 +150,13 @@ class PublicCrash extends $pb.GeneratedMessage {
   static PublicCrash _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get userName => $_getSZ(0);
+  $core.String get user => $_getSZ(0);
   @$pb.TagNumber(1)
-  set userName($core.String v) { $_setString(0, v); }
+  set user($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasUserName() => $_has(0);
+  $core.bool hasUser() => $_has(0);
   @$pb.TagNumber(1)
-  void clearUserName() => clearField(1);
+  void clearUser() => clearField(1);
 
   @$pb.TagNumber(2)
   Coordinates get coordinates => $_getN(1);
@@ -211,6 +211,231 @@ class AuthRequest extends $pb.GeneratedMessage {
   void clearPassword() => clearField(2);
 }
 
+class AuthResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOS(1, 'id')
+    ..aOS(2, 'sessionId', protoName: 'sessionId')
+    ..hasRequiredFields = false
+  ;
+
+  AuthResponse._() : super();
+  factory AuthResponse() => create();
+  factory AuthResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AuthResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AuthResponse clone() => AuthResponse()..mergeFromMessage(this);
+  AuthResponse copyWith(void Function(AuthResponse) updates) => super.copyWith((message) => updates(message as AuthResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AuthResponse create() => AuthResponse._();
+  AuthResponse createEmptyInstance() => create();
+  static $pb.PbList<AuthResponse> createRepeated() => $pb.PbList<AuthResponse>();
+  @$core.pragma('dart2js:noInline')
+  static AuthResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AuthResponse>(create);
+  static AuthResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get sessionId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set sessionId($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasSessionId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSessionId() => clearField(2);
+}
+
+class AddToFriendRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddToFriendRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOS(1, 'sessionId', protoName: 'sessionId')
+    ..aOS(2, 'username')
+    ..hasRequiredFields = false
+  ;
+
+  AddToFriendRequest._() : super();
+  factory AddToFriendRequest() => create();
+  factory AddToFriendRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddToFriendRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddToFriendRequest clone() => AddToFriendRequest()..mergeFromMessage(this);
+  AddToFriendRequest copyWith(void Function(AddToFriendRequest) updates) => super.copyWith((message) => updates(message as AddToFriendRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddToFriendRequest create() => AddToFriendRequest._();
+  AddToFriendRequest createEmptyInstance() => create();
+  static $pb.PbList<AddToFriendRequest> createRepeated() => $pb.PbList<AddToFriendRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddToFriendRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddToFriendRequest>(create);
+  static AddToFriendRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get sessionId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set sessionId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSessionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSessionId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get username => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set username($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasUsername() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUsername() => clearField(2);
+}
+
+class AddToFriendResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddToFriendResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOB(1, 'mutual')
+    ..hasRequiredFields = false
+  ;
+
+  AddToFriendResponse._() : super();
+  factory AddToFriendResponse() => create();
+  factory AddToFriendResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddToFriendResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  AddToFriendResponse clone() => AddToFriendResponse()..mergeFromMessage(this);
+  AddToFriendResponse copyWith(void Function(AddToFriendResponse) updates) => super.copyWith((message) => updates(message as AddToFriendResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddToFriendResponse create() => AddToFriendResponse._();
+  AddToFriendResponse createEmptyInstance() => create();
+  static $pb.PbList<AddToFriendResponse> createRepeated() => $pb.PbList<AddToFriendResponse>();
+  @$core.pragma('dart2js:noInline')
+  static AddToFriendResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddToFriendResponse>(create);
+  static AddToFriendResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get mutual => $_getBF(0);
+  @$pb.TagNumber(1)
+  set mutual($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMutual() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMutual() => clearField(1);
+}
+
+class FriendshipRequestsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendshipRequestsRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOS(1, 'sessionId', protoName: 'sessionId')
+    ..hasRequiredFields = false
+  ;
+
+  FriendshipRequestsRequest._() : super();
+  factory FriendshipRequestsRequest() => create();
+  factory FriendshipRequestsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FriendshipRequestsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FriendshipRequestsRequest clone() => FriendshipRequestsRequest()..mergeFromMessage(this);
+  FriendshipRequestsRequest copyWith(void Function(FriendshipRequestsRequest) updates) => super.copyWith((message) => updates(message as FriendshipRequestsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FriendshipRequestsRequest create() => FriendshipRequestsRequest._();
+  FriendshipRequestsRequest createEmptyInstance() => create();
+  static $pb.PbList<FriendshipRequestsRequest> createRepeated() => $pb.PbList<FriendshipRequestsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FriendshipRequestsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendshipRequestsRequest>(create);
+  static FriendshipRequestsRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get sessionId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set sessionId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSessionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSessionId() => clearField(1);
+}
+
+class FriendshipRequestResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendshipRequestResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..pPS(1, 'users')
+    ..hasRequiredFields = false
+  ;
+
+  FriendshipRequestResponse._() : super();
+  factory FriendshipRequestResponse() => create();
+  factory FriendshipRequestResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FriendshipRequestResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FriendshipRequestResponse clone() => FriendshipRequestResponse()..mergeFromMessage(this);
+  FriendshipRequestResponse copyWith(void Function(FriendshipRequestResponse) updates) => super.copyWith((message) => updates(message as FriendshipRequestResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FriendshipRequestResponse create() => FriendshipRequestResponse._();
+  FriendshipRequestResponse createEmptyInstance() => create();
+  static $pb.PbList<FriendshipRequestResponse> createRepeated() => $pb.PbList<FriendshipRequestResponse>();
+  @$core.pragma('dart2js:noInline')
+  static FriendshipRequestResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendshipRequestResponse>(create);
+  static FriendshipRequestResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get users => $_getList(0);
+}
+
+class FriendsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendsRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOS(1, 'sessionId', protoName: 'sessionId')
+    ..hasRequiredFields = false
+  ;
+
+  FriendsRequest._() : super();
+  factory FriendsRequest() => create();
+  factory FriendsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FriendsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FriendsRequest clone() => FriendsRequest()..mergeFromMessage(this);
+  FriendsRequest copyWith(void Function(FriendsRequest) updates) => super.copyWith((message) => updates(message as FriendsRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FriendsRequest create() => FriendsRequest._();
+  FriendsRequest createEmptyInstance() => create();
+  static $pb.PbList<FriendsRequest> createRepeated() => $pb.PbList<FriendsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FriendsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendsRequest>(create);
+  static FriendsRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get sessionId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set sessionId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSessionId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSessionId() => clearField(1);
+}
+
+class FriendsResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendsResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..pPS(1, 'users')
+    ..hasRequiredFields = false
+  ;
+
+  FriendsResponse._() : super();
+  factory FriendsResponse() => create();
+  factory FriendsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FriendsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  FriendsResponse clone() => FriendsResponse()..mergeFromMessage(this);
+  FriendsResponse copyWith(void Function(FriendsResponse) updates) => super.copyWith((message) => updates(message as FriendsResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FriendsResponse create() => FriendsResponse._();
+  FriendsResponse createEmptyInstance() => create();
+  static $pb.PbList<FriendsResponse> createRepeated() => $pb.PbList<FriendsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static FriendsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendsResponse>(create);
+  static FriendsResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get users => $_getList(0);
+}
+
 class CrashRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CrashRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
     ..aOS(1, 'sessionId', protoName: 'sessionId')
@@ -254,6 +479,47 @@ class CrashRequest extends $pb.GeneratedMessage {
   Crash ensureCrash() => $_ensure(1);
 }
 
+class CrashResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('CrashResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..aOS(1, 'result')
+    ..aOB(2, 'confirmed')
+    ..hasRequiredFields = false
+  ;
+
+  CrashResponse._() : super();
+  factory CrashResponse() => create();
+  factory CrashResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CrashResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  CrashResponse clone() => CrashResponse()..mergeFromMessage(this);
+  CrashResponse copyWith(void Function(CrashResponse) updates) => super.copyWith((message) => updates(message as CrashResponse));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CrashResponse create() => CrashResponse._();
+  CrashResponse createEmptyInstance() => create();
+  static $pb.PbList<CrashResponse> createRepeated() => $pb.PbList<CrashResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CrashResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CrashResponse>(create);
+  static CrashResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get result => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set result($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasResult() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearResult() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.bool get confirmed => $_getBF(1);
+  @$pb.TagNumber(2)
+  set confirmed($core.bool v) { $_setBool(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasConfirmed() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearConfirmed() => clearField(2);
+}
+
 class GetCrashesRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('GetCrashesRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
     ..aOS(1, 'sessionId', protoName: 'sessionId')
@@ -285,237 +551,6 @@ class GetCrashesRequest extends $pb.GeneratedMessage {
   void clearSessionId() => clearField(1);
 }
 
-class AddToFriendRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddToFriendRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOS(1, 'sessionId', protoName: 'sessionId')
-    ..aOS(2, 'userName')
-    ..hasRequiredFields = false
-  ;
-
-  AddToFriendRequest._() : super();
-  factory AddToFriendRequest() => create();
-  factory AddToFriendRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AddToFriendRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AddToFriendRequest clone() => AddToFriendRequest()..mergeFromMessage(this);
-  AddToFriendRequest copyWith(void Function(AddToFriendRequest) updates) => super.copyWith((message) => updates(message as AddToFriendRequest));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static AddToFriendRequest create() => AddToFriendRequest._();
-  AddToFriendRequest createEmptyInstance() => create();
-  static $pb.PbList<AddToFriendRequest> createRepeated() => $pb.PbList<AddToFriendRequest>();
-  @$core.pragma('dart2js:noInline')
-  static AddToFriendRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddToFriendRequest>(create);
-  static AddToFriendRequest _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get sessionId => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set sessionId($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasSessionId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearSessionId() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get userName => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set userName($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasUserName() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearUserName() => clearField(2);
-}
-
-class FriendshipRequestsRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendshipRequestsRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOS(1, 'sessionId', protoName: 'sessionId')
-    ..hasRequiredFields = false
-  ;
-
-  FriendshipRequestsRequest._() : super();
-  factory FriendshipRequestsRequest() => create();
-  factory FriendshipRequestsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory FriendshipRequestsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  FriendshipRequestsRequest clone() => FriendshipRequestsRequest()..mergeFromMessage(this);
-  FriendshipRequestsRequest copyWith(void Function(FriendshipRequestsRequest) updates) => super.copyWith((message) => updates(message as FriendshipRequestsRequest));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static FriendshipRequestsRequest create() => FriendshipRequestsRequest._();
-  FriendshipRequestsRequest createEmptyInstance() => create();
-  static $pb.PbList<FriendshipRequestsRequest> createRepeated() => $pb.PbList<FriendshipRequestsRequest>();
-  @$core.pragma('dart2js:noInline')
-  static FriendshipRequestsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendshipRequestsRequest>(create);
-  static FriendshipRequestsRequest _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get sessionId => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set sessionId($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasSessionId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearSessionId() => clearField(1);
-}
-
-class GetLatestCrashesRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('GetLatestCrashesRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..hasRequiredFields = false
-  ;
-
-  GetLatestCrashesRequest._() : super();
-  factory GetLatestCrashesRequest() => create();
-  factory GetLatestCrashesRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory GetLatestCrashesRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  GetLatestCrashesRequest clone() => GetLatestCrashesRequest()..mergeFromMessage(this);
-  GetLatestCrashesRequest copyWith(void Function(GetLatestCrashesRequest) updates) => super.copyWith((message) => updates(message as GetLatestCrashesRequest));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static GetLatestCrashesRequest create() => GetLatestCrashesRequest._();
-  GetLatestCrashesRequest createEmptyInstance() => create();
-  static $pb.PbList<GetLatestCrashesRequest> createRepeated() => $pb.PbList<GetLatestCrashesRequest>();
-  @$core.pragma('dart2js:noInline')
-  static GetLatestCrashesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetLatestCrashesRequest>(create);
-  static GetLatestCrashesRequest _defaultInstance;
-}
-
-class AuthResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AuthResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOS(1, 'id')
-    ..aOS(2, 'sessionId', protoName: 'sessionId')
-    ..aOS(3, 'error')
-    ..hasRequiredFields = false
-  ;
-
-  AuthResponse._() : super();
-  factory AuthResponse() => create();
-  factory AuthResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AuthResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AuthResponse clone() => AuthResponse()..mergeFromMessage(this);
-  AuthResponse copyWith(void Function(AuthResponse) updates) => super.copyWith((message) => updates(message as AuthResponse));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static AuthResponse create() => AuthResponse._();
-  AuthResponse createEmptyInstance() => create();
-  static $pb.PbList<AuthResponse> createRepeated() => $pb.PbList<AuthResponse>();
-  @$core.pragma('dart2js:noInline')
-  static AuthResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AuthResponse>(create);
-  static AuthResponse _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get id => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set id($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearId() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get sessionId => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set sessionId($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasSessionId() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearSessionId() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.String get error => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set error($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasError() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearError() => clearField(3);
-}
-
-class AddToFriendResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('AddToFriendResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOB(1, 'mutual')
-    ..hasRequiredFields = false
-  ;
-
-  AddToFriendResponse._() : super();
-  factory AddToFriendResponse() => create();
-  factory AddToFriendResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AddToFriendResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  AddToFriendResponse clone() => AddToFriendResponse()..mergeFromMessage(this);
-  AddToFriendResponse copyWith(void Function(AddToFriendResponse) updates) => super.copyWith((message) => updates(message as AddToFriendResponse));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static AddToFriendResponse create() => AddToFriendResponse._();
-  AddToFriendResponse createEmptyInstance() => create();
-  static $pb.PbList<AddToFriendResponse> createRepeated() => $pb.PbList<AddToFriendResponse>();
-  @$core.pragma('dart2js:noInline')
-  static AddToFriendResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddToFriendResponse>(create);
-  static AddToFriendResponse _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.bool get mutual => $_getBF(0);
-  @$pb.TagNumber(1)
-  set mutual($core.bool v) { $_setBool(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasMutual() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearMutual() => clearField(1);
-}
-
-class FriendshipRequestResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('FriendshipRequestResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..pPS(1, 'users')
-    ..hasRequiredFields = false
-  ;
-
-  FriendshipRequestResponse._() : super();
-  factory FriendshipRequestResponse() => create();
-  factory FriendshipRequestResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory FriendshipRequestResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  FriendshipRequestResponse clone() => FriendshipRequestResponse()..mergeFromMessage(this);
-  FriendshipRequestResponse copyWith(void Function(FriendshipRequestResponse) updates) => super.copyWith((message) => updates(message as FriendshipRequestResponse));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static FriendshipRequestResponse create() => FriendshipRequestResponse._();
-  FriendshipRequestResponse createEmptyInstance() => create();
-  static $pb.PbList<FriendshipRequestResponse> createRepeated() => $pb.PbList<FriendshipRequestResponse>();
-  @$core.pragma('dart2js:noInline')
-  static FriendshipRequestResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FriendshipRequestResponse>(create);
-  static FriendshipRequestResponse _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.List<$core.String> get users => $_getList(0);
-}
-
-class CrashResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('CrashResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
-    ..aOB(1, 'confirmed')
-    ..hasRequiredFields = false
-  ;
-
-  CrashResponse._() : super();
-  factory CrashResponse() => create();
-  factory CrashResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory CrashResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  CrashResponse clone() => CrashResponse()..mergeFromMessage(this);
-  CrashResponse copyWith(void Function(CrashResponse) updates) => super.copyWith((message) => updates(message as CrashResponse));
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static CrashResponse create() => CrashResponse._();
-  CrashResponse createEmptyInstance() => create();
-  static $pb.PbList<CrashResponse> createRepeated() => $pb.PbList<CrashResponse>();
-  @$core.pragma('dart2js:noInline')
-  static CrashResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CrashResponse>(create);
-  static CrashResponse _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.bool get confirmed => $_getBF(0);
-  @$pb.TagNumber(1)
-  set confirmed($core.bool v) { $_setBool(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasConfirmed() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearConfirmed() => clearField(1);
-}
-
 class GetCrashesResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('GetCrashesResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
     ..pc<Crash>(1, 'crashes', $pb.PbFieldType.PM, subBuilder: Crash.create)
@@ -539,6 +574,27 @@ class GetCrashesResponse extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.List<Crash> get crashes => $_getList(0);
+}
+
+class GetLatestCrashesRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('GetLatestCrashesRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  GetLatestCrashesRequest._() : super();
+  factory GetLatestCrashesRequest() => create();
+  factory GetLatestCrashesRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetLatestCrashesRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  GetLatestCrashesRequest clone() => GetLatestCrashesRequest()..mergeFromMessage(this);
+  GetLatestCrashesRequest copyWith(void Function(GetLatestCrashesRequest) updates) => super.copyWith((message) => updates(message as GetLatestCrashesRequest));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static GetLatestCrashesRequest create() => GetLatestCrashesRequest._();
+  GetLatestCrashesRequest createEmptyInstance() => create();
+  static $pb.PbList<GetLatestCrashesRequest> createRepeated() => $pb.PbList<GetLatestCrashesRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetLatestCrashesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetLatestCrashesRequest>(create);
+  static GetLatestCrashesRequest _defaultInstance;
 }
 
 class GetLatestCrashesResponse extends $pb.GeneratedMessage {

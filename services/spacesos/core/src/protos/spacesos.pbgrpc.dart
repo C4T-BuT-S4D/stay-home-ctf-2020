@@ -34,6 +34,12 @@ class SpaceSosClient extends $grpc.Client {
       ($0.FriendshipRequestsRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) =>
           $0.FriendshipRequestResponse.fromBuffer(value));
+  static final _$getFriends =
+      $grpc.ClientMethod<$0.FriendsRequest, $0.FriendsResponse>(
+          '/spacesos.SpaceSos/GetFriends',
+          ($0.FriendsRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.FriendsResponse.fromBuffer(value));
   static final _$crash = $grpc.ClientMethod<$0.CrashRequest, $0.CrashResponse>(
       '/spacesos.SpaceSos/Crash',
       ($0.CrashRequest value) => value.writeToBuffer(),
@@ -82,6 +88,14 @@ class SpaceSosClient extends $grpc.Client {
       {$grpc.CallOptions options}) {
     final call = $createCall(
         _$friendshipRequests, $async.Stream.fromIterable([request]),
+        options: options);
+    return $grpc.ResponseFuture(call);
+  }
+
+  $grpc.ResponseFuture<$0.FriendsResponse> getFriends($0.FriendsRequest request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$getFriends, $async.Stream.fromIterable([request]),
         options: options);
     return $grpc.ResponseFuture(call);
   }
@@ -148,6 +162,13 @@ abstract class SpaceSosServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.FriendshipRequestsRequest.fromBuffer(value),
         ($0.FriendshipRequestResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.FriendsRequest, $0.FriendsResponse>(
+        'GetFriends',
+        getFriends_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.FriendsRequest.fromBuffer(value),
+        ($0.FriendsResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.CrashRequest, $0.CrashResponse>(
         'Crash',
         crash_Pre,
@@ -194,6 +215,11 @@ abstract class SpaceSosServiceBase extends $grpc.Service {
     return friendshipRequests(call, await request);
   }
 
+  $async.Future<$0.FriendsResponse> getFriends_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.FriendsRequest> request) async {
+    return getFriends(call, await request);
+  }
+
   $async.Future<$0.CrashResponse> crash_Pre(
       $grpc.ServiceCall call, $async.Future<$0.CrashRequest> request) async {
     return crash(call, await request);
@@ -218,6 +244,8 @@ abstract class SpaceSosServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.AddToFriendRequest request);
   $async.Future<$0.FriendshipRequestResponse> friendshipRequests(
       $grpc.ServiceCall call, $0.FriendshipRequestsRequest request);
+  $async.Future<$0.FriendsResponse> getFriends(
+      $grpc.ServiceCall call, $0.FriendsRequest request);
   $async.Future<$0.CrashResponse> crash(
       $grpc.ServiceCall call, $0.CrashRequest request);
   $async.Future<$0.GetCrashesResponse> getCrashes(
