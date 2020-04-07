@@ -89,6 +89,7 @@ class Webserver():
         object_id = request.match_info['id']
         config = await request.json()
         angle = math.radians(config.get('angle', 0.0))
+        focus = config.get('focus', 0.0)
 
         async with self.conn.acquire() as conn:
             row = await conn.fetchrow('SELECT * FROM objects WHERE id=$1',
@@ -107,6 +108,7 @@ class Webserver():
         p1 = Point(obj.position[0], obj.position[1])
         p2 = Point(p1[0] + A * s - B * c, p1[0] + A * c + B * s)
         p3 = Point(p1[0] + A * s + B * c, p1[0] + A * c - B * s)
+        p1 = Point(p1[0] + focus * s, p1[1] + focus * c)
 
         pathStr = '(({}, {}), ({}, {}), ({}, {}))'.format(
             p1[0],

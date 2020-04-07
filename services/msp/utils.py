@@ -1,6 +1,4 @@
-import math
 import datetime
-import uuid
 from universe import Universe
 
 
