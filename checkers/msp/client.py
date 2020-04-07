@@ -60,12 +60,12 @@ class CheckMachine:
             height = random.randint(5e3, 1e4)
             msg = ''
             af = random.choice([
-                0.41,
-                0.45,
-                0.51,
-                0.40,
-                0.44,
-                0.59,
+                0.0041,
+                0.0045,
+                0.0051,
+                0.0040,
+                0.0044,
+                0.0059,
             ])
         else:
             height = random.randint(1e8, 9e8)

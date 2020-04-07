@@ -74,6 +74,10 @@ void keyPressed() {
     debug = !debug;
   }
 
+  if (keyCode == 'T') {
+    thrust();
+  }
+
   if (keyCode == 'K') {
     if (source_id() != "" && target_id() != "" && source_id() != target_id()) {
       beam_request(source_id(), target_angle());
@@ -233,6 +237,26 @@ float target_angle() {
   float target_pos_y = window.serverState[tid].object.position[1];
 
   return degrees(atan2(source_pos_x-target_pos_x, source_pos_y-target_pos_y) + PI);
+}
+
+void thrust() {
+
+  if (source_id() == "") {
+    return;
+  }
+
+  Object obj = window.serverState[source_id()].object;
+
+  float angle = aligmentAngle;
+
+  if (relative) {
+    int vel_x = obj.velocity[0];
+    int vel_y = obj.velocity[1];
+    float prograde_angle = -atan2(vel_x, vel_y)
+    angle += prograde_angle;
+  }
+
+  thrust_request(source_id(), degrees(angle));
 }
 
 void draw_object(Object obj) {
