@@ -105,6 +105,7 @@ class Checker(BaseChecker):
     def put(self, flag_id, flag, vuln):
         s = get_initialized_session()
         idx, height, pos_x, pos_y = self.mch.launch(s, flag, False)
+        self.mch.thrust(s, idx, CheckMachine.random_angle(), 10)
         self.cquit(Status.OK, f'{idx}:{height}:{pos_x}:{pos_y}')
 
     def get(self, flag_id, flag, vuln):
@@ -112,6 +113,9 @@ class Checker(BaseChecker):
         s = get_initialized_session()
         idx, old_height, target_old_pos_x, target_old_pos_y = flag_id.split(
             ':')
+
+        if random.choice([False] * 5 + [True]):
+            self.mch.thrust(s, idx, CheckMachine.random_angle(), 1)
 
         old_height = float(old_height)
 
@@ -138,7 +142,14 @@ class Checker(BaseChecker):
                 source_pos_y - target_pos_y,
             ) + math.pi)
 
-        beam_str = self.mch.beam(s, source, angle)
+        focus = CheckMachine.dist(
+            source_pos_x,
+            source_pos_y,
+            target_pos_x,
+            target_pos_y,
+        ) * 0.9
+
+        beam_str = self.mch.beam(s, source, angle, focus)
         if flag not in beam_str:
             self.cquit(
                 Status.MUMBLE,

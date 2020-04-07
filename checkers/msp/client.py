@@ -31,10 +31,10 @@ class CheckMachine:
 
         return response_body['object']
 
-    def beam(self, s, idx, angle):
+    def beam(self, s, idx, angle, focus):
         url = f'{self.url}/beam/{idx}'
 
-        response = s.post(url, json=dict(angle=angle))
+        response = s.post(url, json=dict(angle=angle, focus=focus))
 
         self.c.assert_eq(response.status_code, 200, "RELAY ERROR")
 

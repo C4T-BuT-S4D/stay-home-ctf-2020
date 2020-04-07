@@ -20,6 +20,6 @@ class ThrustManager():
             # thrust QoS when the service is overloaded with requests
             self.health.add(idx)
             if len(self.health) > 128:
-                self.health.remove(random.choice(self._health))
+                self.health.remove(random.choice(list(self.health)))
 
             self.requests[str(idx)] = cmd
