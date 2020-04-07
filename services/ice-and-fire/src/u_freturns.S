@@ -6,12 +6,14 @@ nl:	.asciz	"\r\n"
 nlnl:	.asciz	"\r\n\r\n"
 
 js_e:	.asciz	".js"
+css_e:	.asciz	".css"
 html_e:	.asciz	".html"
 png_e:	.asciz	".png"
 jpg_e:	.asciz	".jpg"
 dir_e:	.asciz	"/"
 
 js_t:	.asciz	"application/javascript"
+css_t:	.asciz	"text/css"
 html_t:	.asciz	"text/html"
 png_t:	.asciz	"image/png"
 jpg_t:	.asciz	"image/jpeg"
@@ -35,9 +37,22 @@ label_js:
 	movl	$js_e,%edx
 	call	gstrcmp
 	test	%eax,%eax
-	jnz	label_html
+	jnz	label_css
 
 	movl	$js_t,%ecx
+	jmp	end_wct
+
+label_css:
+	movl	%esi,%ebx
+	addl	%edi,%ebx
+	subl	$4,%ebx
+	movl	%ebx,%ecx
+	movl	$css_e,%edx
+	call	gstrcmp
+	test	%eax,%eax
+	jnz	label_html
+
+	movl	$css_t,%ecx
 	jmp	end_wct
 
 label_html:

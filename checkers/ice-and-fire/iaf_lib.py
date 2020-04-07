@@ -20,7 +20,7 @@ class User:
 class CheckMachine:
     @property
     def url(self):
-        return f'http://{self.c.host}:{self.port}'
+        return f'http://{self.c.host}:{self.port}/api'
 
     def __init__(self, checker):
         self.c = checker

@@ -5,10 +5,7 @@ services:
     build: .
     restart: on-failure
     volumes:
-      - ./:/osx
-    security_opt:
-      - seccomp:unconfined
-    privileged: true
+      - ./static:/app/static:ro
 
   nginx:
     image: nginx:1.15.11-alpine

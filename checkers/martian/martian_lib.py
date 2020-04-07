@@ -116,10 +116,12 @@ class CheckMachine:
 				"Change status process timeout!" 
 			)
 
-	def read_book( self ):
+	def read_book( self, count ):
 		try:
 			self.sock.recvuntil( b"[>] " )
 			self.sock.send( b'6\n' ) # read book cmd
+			self.sock.recvuntil( b": " ) # enter count
+			self.sock.send( str( count ).encode() + b'\n' ) 
 
 			buf = self.sock.recvuntil( b"|--" )
 
