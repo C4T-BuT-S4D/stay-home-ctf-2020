@@ -22,13 +22,13 @@ app.use(async (ctx, next) => {
 });
 
 app.use(async (ctx, next) => {
-    // try {
-    await next();
-    // } catch (err) {
-    //     ctx.resp(500, {
-    //         error: err.message,
-    //     });
-    // }
+    try {
+        await next();
+    } catch (err) {
+        ctx.resp(500, {
+            error: err.message,
+        });
+    }
 });
 
 const cache = new Lru({
@@ -51,7 +51,7 @@ app.use(
     })
 );
 
-app.keys = ['TODO'];
+app.keys = [process.env.KEY];
 
 app.use(
     session(
