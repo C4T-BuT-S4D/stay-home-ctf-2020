@@ -39,6 +39,8 @@ class Checker(BaseChecker):
             random.choice([True, False])
 
         do_health_check = yesno()
+        do_height_check = yesno()
+        do_thrust_check = not do_height_check and yesno()
 
         # simple health check first
         if do_health_check:
@@ -56,49 +58,53 @@ class Checker(BaseChecker):
         idx, height, pos_x, pos_y = self.mch.launch(s, msg, False)
 
         # wait a bit
-        sleep(random.randint(5, 15))
+        if do_height_check:
+            sleep(random.randint(5, 10))
 
-        # receive a new telemetry
-        target_telemetry = self.mch.telemetry(s, idx)
-        new_pos = target_telemetry.get('position')
-        new_x, new_y = new_pos[0], new_pos[1]
+            # receive a new telemetry
+            target_telemetry = self.mch.telemetry(s, idx)
+            new_pos = target_telemetry.get('position')
+            new_x, new_y = new_pos[0], new_pos[1]
 
-        # ensure height did not change
-        new_height = CheckMachine.dist(new_x, new_y, 0, 0)
-        if abs(new_height - height) > 100:
-            self.cquit(Status.MUMBLE, "DRAG DETECTED",
-                       f'Object {idx} changed orbit without a reason')
+            # ensure height did not change
+            new_height = CheckMachine.dist(new_x, new_y, 0, 0)
+            if abs(new_height - height) > 100:
+                self.cquit(Status.MUMBLE, "DRAG DETECTED",
+                           f'Object {idx} changed orbit without a reason')
 
-        movement = CheckMachine.dist(pos_x, pos_y, new_x, new_y)
+            movement = CheckMachine.dist(pos_x, pos_y, new_x, new_y)
 
-        # ensure position changed
-        if movement == 0:
-            self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
-                       f'Object {idx} did not move since creation')
+            # ensure position changed
+            if movement == 0:
+                self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
+                           f'Object {idx} did not move since creation')
 
         # thrust command
-        thrust = random.randint(20, 40)
-        self.mch.thrust(s, idx, CheckMachine.random_angle(), thrust)
-        sleep(random.randint(5, 15))
+        if do_thrust_check:
+            thrust = random.randint(20, 40)
+            self.mch.thrust(s, idx, CheckMachine.random_angle(), thrust)
+            sleep(random.randint(5, 10))
 
-        # get new telemetry
-        old_velocity = target_telemetry.get('velocity', (0, 0))
+            # get new telemetry
+            old_velocity = target_telemetry.get('velocity', (0, 0))
 
-        target_telemetry = self.mch.telemetry(s, idx)
-        new_velocity = target_telemetry.get('velocity', (0, 0))
+            target_telemetry = self.mch.telemetry(s, idx)
+            new_velocity = target_telemetry.get('velocity', (0, 0))
 
-        # ensure speed actually changed
-        speed_difference = CheckMachine.dist(old_velocity[0], old_velocity[1],
-                                             new_velocity[0], new_velocity[1])
+            # ensure speed actually changed
+            speed_difference = CheckMachine.dist(old_velocity[0],
+                                                 old_velocity[1],
+                                                 new_velocity[0],
+                                                 new_velocity[1])
 
-        # TODO
-        # ensure other orbital parameters also changed
+            # TODO
+            # ensure other orbital parameters also changed
 
-        if speed_difference < thrust:
-            self.cquit(
-                Status.MUMBLE, "ENGINE FAILURE",
-                f'Object {idx} did not change speed after the burn;' +
-                f'wanted dv: {thrust}; real dv: {speed_difference}')
+            if speed_difference < thrust:
+                self.cquit(
+                    Status.MUMBLE, "ENGINE FAILURE",
+                    f'Object {idx} did not change speed after the burn;' +
+                    f'wanted dv: {thrust}; real dv: {speed_difference}')
 
         self.cquit(Status.OK)
 

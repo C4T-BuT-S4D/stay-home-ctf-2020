@@ -4,6 +4,8 @@ from checklib import *
 import random
 import string
 
+context.log_level = 'CRITICAL'
+
 PORT = 9999
 
 # global const
@@ -280,7 +282,7 @@ class CheckMachine:
 			else:
 				self.c.cquit( Status.MUMBLE,
 					"Lol! You died!",
-					"Nigth event: '{}'".format( buf ) 
+					"Nigth event: " + buf.decode()[5:]
 				)
 		except:
 			self.close_connect()
@@ -418,15 +420,11 @@ class CheckMachine:
 		t ^= (data >> 4) & 0xffff 
 		t ^= ((data << 3) & 0xffff)
 
-		buf = str( t )
-		
-		if len( buf ) != 5:
-			buf = '0' * ( 5 - len( buf ) ) + buf
-
-		res += str( t ) + '-'
+		buf = str( t ).zfill( 5 )
+		res += str( buf ) + '-'
 
 		# second part
-		sym = value & 0x7f
+		sym = ( value ^ 65 ) & 0x7f
 		buf = 'aaaa' + chr( sym )
 
 		res += str( buf ) + '-'
@@ -480,7 +478,7 @@ class CheckMachine:
 			self.sock.send( str( valid_code ).encode() + b'\n' )
 
 			buf = self.sock.recvline()
-
+			
 			if b"{+} You managed to open the chest and there you found:" not in buf:
 				self.c.cquit( Status.MUMBLE,
 					"Hard raid: code is not correct!",
