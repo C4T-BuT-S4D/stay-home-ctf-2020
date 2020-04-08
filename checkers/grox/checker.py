@@ -28,6 +28,7 @@ class Checker(BaseChecker):
             self.cquit(Status.DOWN, 'Connection error', 'Got requests connection error')
 
     def check(self):
+        sleep(2)
         s1 = get_initialized_session()
         u1, p1 = rnd_username(), rnd_password()
 
@@ -83,6 +84,7 @@ class Checker(BaseChecker):
         self.cquit(Status.OK)
 
     def put(self, flag_id, flag, vuln):
+        sleep(2)
         s = get_initialized_session()
         u, p = rnd_username(), rnd_password()
 
