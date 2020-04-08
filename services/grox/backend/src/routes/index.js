@@ -314,9 +314,6 @@ function register_routes(router) {
     });
 
     router.get('/planet/:id', async (ctx) => {
-        const cashed = await ctx.cashed();
-        if (cashed) return;
-
         const { id: uid } = ctx.session;
 
         if (!ctx.auth) {
@@ -330,17 +327,48 @@ function register_routes(router) {
 
         if (
             ctx.unwrap(
-                await ctx.get(`http://owner:8001/api/node_get/${uid}/${nid}`, {
-                    nid,
-                })
+                await ctx.get(`http://owner:8001/api/node_get/${uid}/${nid}`)
             )
         ) {
             return;
         }
 
-        const [name, info] = await ctx.get_planet(nid);
+        if (ctx.data !== 0) {
+            const [name, info] = await ctx.get_planet(nid);
+
+            ctx.resp(200, {
+                ok: {
+                    name,
+                    info,
+                },
+            });
+            return;
+        }
+
+        if (
+            ctx.unwrap(
+                await ctx.get(
+                    `http://graph:8000/api/double_linked_nodes/${nid}`
+                )
+            )
+        ) {
+            return;
+        }
+
+        if (
+            ctx.unwrap(
+                await ctx.post(
+                    `http://owner:8001/api/node_get_any/${uid}`,
+                    ctx.data
+                )
+            )
+        ) {
+            return;
+        }
 
         if (ctx.data !== 0) {
+            const [name, info] = await ctx.get_planet(nid);
+
             ctx.resp(200, {
                 ok: {
                     name,

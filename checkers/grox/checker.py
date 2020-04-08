@@ -28,6 +28,7 @@ class Checker(BaseChecker):
             self.cquit(Status.DOWN, 'Connection error', 'Got requests connection error')
 
     def check(self):
+        sleep(2)
         s1 = get_initialized_session()
         u1, p1 = rnd_username(), rnd_password()
 
@@ -78,11 +79,12 @@ class Checker(BaseChecker):
 
         self.mch.get_user_empires(s2, uid1, eid1)
         self.mch.get_empire(s2, eid1, ename1, [pid1, pid2], [[lid1, pid1, pid2]])
-        self.mch.get_planet(s1, pid1, pname1, pinfo1)
+        self.mch.get_planet(s2, pid2, pname2, pinfo2)
 
         self.cquit(Status.OK)
 
     def put(self, flag_id, flag, vuln):
+        sleep(2)
         s = get_initialized_session()
         u, p = rnd_username(), rnd_password()
 
@@ -112,6 +114,7 @@ class Checker(BaseChecker):
         self.cquit(Status.OK, f'{u}:{p}:{uid}:{eid}:{ename}:{pid1}:{pid2}:{pname2}:{pid3}:{lid1}:{lid2}:{lid3}')
 
     def get(self, flag_id, flag, vuln):
+        sleep(2)
         s = get_initialized_session()
         u, p, uid, eid, ename, pid1, pid2, pname2, pid3, lid1, lid2, lid3 = flag_id.split(':')
 

@@ -166,6 +166,48 @@ pub fn node_get(uid: i32, nid: i32) -> JsonValue {
     })
 }
 
+#[post("/node_get_any/<uid>", data="<data>")]
+pub fn node_get_any(uid: i32, data: Json<Vec<i32>>) -> JsonValue {
+    let data = data.into_inner();
+    let client = get_connection();
+    let mut client = match client {
+        Ok(c) => c,
+        Err(e) => return error(e)
+    };
+
+    for nid in &data {
+        let url = format!("http://graph:8000/api/node_exists/{}", nid);
+
+        let resp: api::Exists = match reqwest::blocking::get(&url) {
+            Ok(data) => match data.json() {
+                Ok(data) => data,
+                Err(e) => return error(e)
+            },
+            Err(e) => return error(e)
+        };
+
+        if !resp.exists {
+            return error("No such node");
+        }
+
+    }
+
+    let result = client.query_one("
+
+    SELECT COUNT(uid) FROM nodeo WHERE uid=$1 AND nid=ANY($2)
+
+    ", &[&uid, &data]);
+
+    let id: i64 = match result {
+        Ok(row) => row.get(0),
+        Err(e) => return error(e)
+    };
+
+    json!({
+        "ok": id
+    })
+}
+
 #[get("/graph_list/<uid>")]
 pub fn graph_list(uid: i32) -> JsonValue {
     let client = get_connection();

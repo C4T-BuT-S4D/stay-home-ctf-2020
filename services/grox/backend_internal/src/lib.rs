@@ -26,7 +26,8 @@ pub fn create_graph_server() {
             graph_routes::get_graph_links,
             graph_routes::get_node_links,
             graph_routes::node_exists,
-            graph_routes::graph_exists
+            graph_routes::graph_exists,
+            graph_routes::double_linked_nodes
         ])
         .launch();
 }
@@ -44,6 +45,7 @@ pub fn create_owner_server() {
             owner_routes::graph_get,
             owner_routes::node_set,
             owner_routes::node_get,
+            owner_routes::node_get_any,
             owner_routes::graph_list
         ])
         .launch();
