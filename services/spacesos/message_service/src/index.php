@@ -5,6 +5,6 @@
 
     if(strpos($url['path'], '/send/') === 0)
         include_once "send.php";
-
+    else
     if(in_array($url['path'], ['/recv/', '/recv']))
         include_once "recv.php";
