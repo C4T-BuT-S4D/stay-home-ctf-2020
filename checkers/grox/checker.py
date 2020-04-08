@@ -112,6 +112,7 @@ class Checker(BaseChecker):
         self.cquit(Status.OK, f'{u}:{p}:{uid}:{eid}:{ename}:{pid1}:{pid2}:{pname2}:{pid3}:{lid1}:{lid2}:{lid3}')
 
     def get(self, flag_id, flag, vuln):
+        sleep(2)
         s = get_initialized_session()
         u, p, uid, eid, ename, pid1, pid2, pname2, pid3, lid1, lid2, lid3 = flag_id.split(':')
 
