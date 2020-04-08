@@ -4,12 +4,13 @@ import 'package:uuid/uuid.dart';
 import 'protos/spacesos.pb.dart';
 
 class Repository {
-  Db db;
+  ConnectionPool pool;
 
-  Repository(this.db) {}
+  Repository(this.pool) {}
 
   Future<Map<String, String>> FindUser(String username,
       {String password = null}) async {
+    var db = await pool.connect();
     final coll = db.collection("users");
     var builder = where.eq("username", username);
     if (password != null) {
@@ -32,6 +33,7 @@ class Repository {
     if (sessionId == null) {
       sessionId = Uuid().v4();
     }
+    var db = await pool.connect();
     final coll = db.collection("users");
     final res = await coll.insert(
         {"username": username, "password": password, "session_id": sessionId});
@@ -42,6 +44,7 @@ class Repository {
   }
 
   Future<String> GetBySession(String sessionId) async {
+    var db = await pool.connect();
     final coll = db.collection("users");
     final res = await coll.findOne(where.eq("session_id", sessionId));
     if (res == null) {
@@ -51,6 +54,7 @@ class Repository {
   }
 
   void AddFriendshipRequest(String fromUser, String toUser) async {
+    var db = await pool.connect();
     final coll = db.collection("friend_requests");
     final res = await coll.insert({"from": fromUser, "to": toUser});
     if (res["err"] != null) {
@@ -59,6 +63,7 @@ class Repository {
   }
 
   void AddToFriends(String firstUser, String secondUser) async {
+    var db = await pool.connect();
     final coll = db.collection("users");
     var res = await coll.update(
         where.eq("username", firstUser), modify.push("friends", secondUser));
@@ -73,15 +78,17 @@ class Repository {
   }
 
   Future<List<String>> ListFriends(String user) async {
+    var db = await pool.connect();
     final coll = db.collection("users");
     final res = await coll.findOne(where.eq("username", user));
     if (res == null || res["friends"] == null) {
-      return null;
+      return [];
     }
     return List<String>.from(res["friends"]);
   }
 
   Future<List<String>> ListFriendshipRequests(String user) async {
+    var db = await pool.connect();
     final coll = db.collection("friend_requests");
     final res = await coll.find(where.eq("to", user).fields(["from"])).toList();
     if (res == null) {
@@ -95,12 +102,14 @@ class Repository {
   }
 
   Future<bool> HaveFriendshipRequest(String from, String to) async {
+    var db = await pool.connect();
     final coll = db.collection("friend_requests");
     final res = await coll.findOne(where.eq("to", to).eq("from", from));
     return res != null;
   }
 
   void DeleteFriendshipRequest(String from, String to) async {
+    var db = await pool.connect();
     final coll = db.collection("friend_requests");
     final res = await coll.remove(where.eq("to", to).eq("from", from));
     if (res["err"] != null) {
@@ -108,7 +117,8 @@ class Repository {
     }
   }
 
-  Future<List<PublicCrash>> LatestCrashes({int limit = 200}) async {
+  Future<List<PublicCrash>> LatestCrashes({int limit = 150}) async {
+    var db = await pool.connect();
     final coll = db.collection("crashes");
     final mongoRes = await coll
         .find(
@@ -131,6 +141,7 @@ class Repository {
   }
 
   void AddPublicCrash(Crash crash, String user) async {
+    var db = await pool.connect();
     final coll = db.collection("crashes");
     final coordinates = {
       "lat": crash.coordinates.latitude,

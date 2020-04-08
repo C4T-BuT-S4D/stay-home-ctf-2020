@@ -482,7 +482,6 @@ class CrashRequest extends $pb.GeneratedMessage {
 class CrashResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CrashResponse', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
     ..aOS(1, 'result')
-    ..aOB(2, 'confirmed')
     ..hasRequiredFields = false
   ;
 
@@ -509,15 +508,6 @@ class CrashResponse extends $pb.GeneratedMessage {
   $core.bool hasResult() => $_has(0);
   @$pb.TagNumber(1)
   void clearResult() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.bool get confirmed => $_getBF(1);
-  @$pb.TagNumber(2)
-  set confirmed($core.bool v) { $_setBool(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasConfirmed() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearConfirmed() => clearField(2);
 }
 
 class GetCrashesRequest extends $pb.GeneratedMessage {

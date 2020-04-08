@@ -1,7 +1,12 @@
 #!/bin/bash
 
-VULNS=(1 2 1 1)
-CHECKS=200
+VULNS=(1 1 2 1 1)
+
+if [ -z "$RUNS" ]; then 
+  RUNS=10
+fi
+
+echo "RUNS=$RUNS"
 
 print_output() {
   echo "stdout:"
@@ -13,7 +18,7 @@ print_output() {
 CURN=0
 find ./checkers/$1 -name 'checker.py' | sort | while read -r CHECKER; do
   echo "Processing checker '$CHECKER', ${VULNS[CURN]} vulns"
-  for ((i = 1; i <= CHECKS; i++)); do
+  for ((i = 1; i <= RUNS; i++)); do
     echo "Running test $i..."
 
     echo "Running CHECK..."

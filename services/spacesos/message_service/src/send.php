@@ -1,6 +1,9 @@
 <?php
-    $user = $_POST['user'];
-    $message = $_POST['message'];
+    $url = parse_url($_GET['q'])['path'];
+
+    $user = substr($url, strlen('/send/'));
+
+    $message = file_get_contents("php://input");
 
     if(!$user)
         die("no user");

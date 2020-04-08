@@ -103,7 +103,6 @@ const CrashResponse$json = const {
   '1': 'CrashResponse',
   '2': const [
     const {'1': 'result', '3': 1, '4': 1, '5': 9, '10': 'result'},
-    const {'1': 'confirmed', '3': 2, '4': 1, '5': 8, '10': 'confirmed'},
   ],
 };
 
