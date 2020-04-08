@@ -82,6 +82,7 @@ dkms.conf
 # Files and directories created by pub
 .dart_tool/
 services/spacesos/core/.packages
+services/spacesos/core/src/.packages
 build/
 # If you're building an application, you may want to check-in your pubspec.lock
 services/spacesos/core/src/pubspec.lock
