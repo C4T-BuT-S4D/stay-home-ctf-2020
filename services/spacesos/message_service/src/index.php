@@ -3,7 +3,7 @@
 
     $url = parse_url($_GET['q']);
 
-    if(in_array($url['path'], ['/send/', '/send']))
+    if(strpos($url['path'], '/send/') === 0)
         include_once "send.php";
 
     if(in_array($url['path'], ['/recv/', '/recv']))
