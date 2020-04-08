@@ -420,12 +420,8 @@ class CheckMachine:
 		t ^= (data >> 4) & 0xffff 
 		t ^= ((data << 3) & 0xffff)
 
-		buf = str( t )
-		
-		if len( buf ) != 5:
-			buf = '0' * ( 5 - len( buf ) ) + buf
-
-		res += str( t ) + '-'
+		buf = str( t ).zfill( 5 )
+		res += str( buf ) + '-'
 
 		# second part
 		sym = ( value ^ 65 ) & 0x7f
