@@ -1,2 +1,2 @@
-docker_volumes/*
-!docker_volumes/postgres/.keep
+docker_volumes/postgres/*
+docker_volumes/key/.key

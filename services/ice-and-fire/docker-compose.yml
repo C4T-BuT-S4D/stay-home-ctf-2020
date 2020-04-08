@@ -1,16 +1,19 @@
 version: "2.4"
 
 services:
-  test:
+  iceandfire:
     build: .
     restart: on-failure
     volumes:
       - ./static:/app/static:ro
+    pids_limit: 256
+    mem_limit: 200M
+    cpus: 0.5
 
   nginx:
     image: nginx:1.15.11-alpine
     ports:
-      - "31337:80"
+      - 31337:80
     restart: on-failure
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
@@ -18,3 +21,5 @@ services:
   redis:
     image: redis:5.0.8-alpine
     restart: on-failure
+    mem_limit: 200M
+    cpus: 0.25

@@ -8,4 +8,7 @@ RUN yarn install
 ADD backend /backend
 
 ADD backend/.run.sh .
+
+USER nobody
+
 CMD ["./.run.sh"]

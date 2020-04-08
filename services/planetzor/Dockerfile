@@ -1,7 +1,5 @@
 FROM golang:1.12-alpine
 
-MAINTAINER tg: @jnovikov
-
 RUN apk update && apk add git gcc musl-dev
 
 ADD ./go.mod /app/go.mod

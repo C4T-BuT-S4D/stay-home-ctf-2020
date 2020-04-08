@@ -1,22 +1,23 @@
-version: '3.1'
+version: '2.4'
 
 services:
 
   db:
     image: postgres:12-alpine
-    restart: unless-stopped
+    restart: on-failure
     environment:
       POSTGRES_USER: msp
       POSTGRES_PASSWORD: msp
-    ports:
-      - "127.0.0.1:5432:5432"
     volumes:
       - ./migrations:/docker-entrypoint-initdb.d/
+    mem_limit: 500M
+    cpus: 0.25
 
   service:
     build: .
-    restart: unless-stopped
+    restart: on-failure
     ports:
-      - "0.0.0.0:5001:5001"
-    links:
-      - db
+      - 5001:5001
+    pids_limit: 256
+    mem_limit: 700M
+    cpus: 1

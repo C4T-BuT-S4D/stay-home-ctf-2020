@@ -11,4 +11,7 @@ RUN rm -rf /app
 ENV ROCKET_ENV=production
 
 WORKDIR /
+
+USER nobody
+
 CMD ["./graph"]

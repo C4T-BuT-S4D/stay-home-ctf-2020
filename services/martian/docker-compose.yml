@@ -11,3 +11,4 @@ services:
     restart: on-failure
     pids_limit: 256
     mem_limit: 500M
+    cpus: 0.5
