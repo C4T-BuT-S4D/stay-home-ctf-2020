@@ -211,7 +211,7 @@ class Checker(BaseChecker):
 		logined, err_msg = self.mch.login( username, password )
 
 		if not logined:
-			self.cquit( Status.MUMBLE, 
+			self.c.cquit( Status.MUMBLE, 
 				"Can't login by registered user",
 				"Checker.login(): err_msg = {}".format( err_msg )
 			)

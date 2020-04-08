@@ -611,25 +611,11 @@ void Martian::MakeRandomEvent( void )
 {
 	int EventId = GetRandomEventId();
 
-	if ( EventId == NIGHT_DESTINY )
-	{
-		std::cout << "{..} At night, a storm suddenly rose and demolished your house" << std::endl;
-		std::cout << "{-} You died!" << std::endl;
-		Die( name );
-	}
-
 	if ( EventId > 990 && intelligence < 55.0 )
 	{
 		std::cout << "{..} During the day, you tried to improve";
 		std::cout << "the work of the energy block, and at night"; 
 		std::cout << "it exploded from overloading.";
-		std::cout << "{-} You died!" << std::endl;
-		Die( name );
-	}
-
-	if ( EventId == NIGHT_CHOKED )
-	{
-		std::cout << "{..} In a dream, you choked and suffocated" << std::endl;
 		std::cout << "{-} You died!" << std::endl;
 		Die( name );
 	}
@@ -1216,6 +1202,7 @@ int HardRaid( Martian* player )
 		xor_res ^= (int) second_part[ i ];
 	}
 
+	fight_signature ^= 65;
 	if ( xor_res != ( fight_signature & 0x7f ) ) // debug condition 
 	{
 		std::cout << "{-} Incorrect code!" << std::endl;
