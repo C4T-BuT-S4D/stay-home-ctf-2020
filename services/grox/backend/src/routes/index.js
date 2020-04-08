@@ -129,6 +129,15 @@ function register_routes(router) {
             return;
         }
 
+        const { name = null } = ctx.request.body;
+
+        if (!name) {
+            ctx.resp(400, {
+                error: 'No empire name',
+            });
+            return;
+        }
+
         const { id: uid } = ctx.session;
 
         if (ctx.unwrap(await ctx.post(`http://graph:8000/api/create_graph/`))) {
@@ -148,6 +157,8 @@ function register_routes(router) {
             return;
         }
 
+        await ctx.add_empire(gid, name);
+
         ctx.resp(200, {
             ok: gid,
         });
@@ -157,6 +168,15 @@ function register_routes(router) {
         if (!ctx.auth) {
             ctx.resp(403, {
                 error: 'Not authorized',
+            });
+            return;
+        }
+
+        const { name = null, info = null } = ctx.request.body;
+
+        if (!name || !info) {
+            ctx.resp(400, {
+                error: 'No planet name or info',
             });
             return;
         }
@@ -194,6 +214,8 @@ function register_routes(router) {
         ) {
             return;
         }
+
+        await ctx.add_planet(nid, name, info);
 
         ctx.resp(200, {
             ok: nid,
@@ -280,12 +302,53 @@ function register_routes(router) {
 
         const links = ctx.data;
 
+        const [name] = await ctx.get_empire(gid);
+
         ctx.resp(200, {
             ok: {
+                name,
                 nodes,
                 links,
             },
         });
+    });
+
+    router.get('/planet/:id', async (ctx) => {
+        const cashed = await ctx.cashed();
+        if (cashed) return;
+
+        const { id: uid } = ctx.session;
+
+        if (!ctx.auth) {
+            ctx.resp(403, {
+                error: 'Not authorized',
+            });
+            return;
+        }
+
+        const { id: nid } = ctx.params;
+
+        if (
+            ctx.unwrap(
+                await ctx.get(`http://owner:8001/api/node_get/${uid}/${nid}`, {
+                    nid,
+                })
+            )
+        ) {
+            return;
+        }
+
+        const [name, info] = await ctx.get_planet(nid);
+
+        if (ctx.data !== 0) {
+            ctx.resp(200, {
+                ok: {
+                    name,
+                    info,
+                },
+            });
+            return;
+        }
     });
 }
 

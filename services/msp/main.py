@@ -5,8 +5,6 @@ from worker import Worker
 from webserver import Webserver
 from thrust import ThrustManager
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 async def run():
 

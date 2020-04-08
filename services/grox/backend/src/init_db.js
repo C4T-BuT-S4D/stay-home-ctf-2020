@@ -11,12 +11,25 @@ async function init() {
     });
 
     await pool.query(`
-        CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            username VARCHAR(100) NOT NULL,
-            password VARCHAR(100) NOT NULL
-        );
-        `);
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(100) NOT NULL,
+        password VARCHAR(100) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS empires (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        gid INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS planets (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        info VARCHAR(100) NOT NULL,
+        nid INTEGER NOT NULL
+    );
+    `);
 
     return pool;
 }

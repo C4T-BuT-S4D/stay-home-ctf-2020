@@ -198,11 +198,12 @@ pub fn get_graph_links(graph: i32) -> JsonValue {
 
     let result = client.query("
 
-    SELECT DISTINCT ON (L.id) L.id, L.l, L.r FROM links L
-    INNER JOIN (
+    SELECT id, l, r FROM links L
+    WHERE l in (
         SELECT id FROM nodes WHERE graph=$1
-    ) N
-    ON L.l = N.id or L.r = N.id
+    ) and r in (
+        SELECT id FROM nodes WHERE graph=$1
+    )
 
     ", &[&graph]);
 

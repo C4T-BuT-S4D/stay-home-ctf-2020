@@ -12,4 +12,4 @@ ENV ROCKET_ENV=production
 
 WORKDIR /
 ADD .wait.sh .
-CMD ["./.wait.sh", "postgres:5432", "--", "./graph"]
+CMD ["./.wait.sh", "-t", "0", "postgres:5432", "--", "./graph"]

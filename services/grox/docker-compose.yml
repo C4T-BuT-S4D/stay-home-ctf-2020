@@ -26,5 +26,7 @@ services:
       context: .
       dockerfile: ./docker_config/backend/Dockerfile
     restart: on-failure
+    depends_on:
+      - postgres
     ports:
       - 6666:3000
