@@ -78,7 +78,7 @@ class Checker(BaseChecker):
 
         self.mch.get_user_empires(s2, uid1, eid1)
         self.mch.get_empire(s2, eid1, ename1, [pid1, pid2], [[lid1, pid1, pid2]])
-        self.mch.get_planet(s1, pid1, pname1, pinfo1)
+        self.mch.get_planet(s2, pid2, pname2, pinfo2)
 
         self.cquit(Status.OK)
 

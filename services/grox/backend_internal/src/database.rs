@@ -8,7 +8,13 @@ pub fn get_connection() -> Result<Client, Error> {
 }
 
 pub fn init_graph_db() -> Result<(), Box<dyn error::Error>> {
-    let mut client = get_connection()?;
+    let mut client = loop {
+        let client = get_connection();
+        match client {
+            Ok(client) => break client,
+            Err(_) => std::thread::sleep(std::time::Duration::from_secs(1))
+        }
+    };
 
     client.batch_execute("
 
@@ -33,7 +39,13 @@ pub fn init_graph_db() -> Result<(), Box<dyn error::Error>> {
 }
 
 pub fn init_owner_db() -> Result<(), Box<dyn error::Error>> {
-    let mut client = get_connection()?;
+    let mut client = loop {
+        let client = get_connection();
+        match client {
+            Ok(client) => break client,
+            Err(_) => std::thread::sleep(std::time::Duration::from_secs(1))
+        }
+    };
 
     client.batch_execute("
 

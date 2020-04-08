@@ -1,6 +1,9 @@
 const { Pool } = require('pg');
 
 async function init() {
+    const sleep = (time) =>
+        new Promise((resolve) => setTimeout((_) => resolve(), time));
+
     const pool = new Pool({
         user: 'grox',
         host: 'postgres',
@@ -9,6 +12,15 @@ async function init() {
             '29fc24ba5c7f99a5f750bb5edfc5aa04b4dea78f70b4eaab15521e16af99398f',
         port: 5432,
     });
+
+    while (true) {
+        try {
+            await pool.connect();
+            break;
+        } catch (_) {
+            sleep(1000);
+        }
+    }
 
     await pool.query(`
     CREATE TABLE IF NOT EXISTS users (

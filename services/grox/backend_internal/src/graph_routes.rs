@@ -323,3 +323,35 @@ pub fn node_exists(node: i32) -> JsonValue {
         })
     }
 }
+
+#[get("/double_linked_nodes/<node>")]
+pub fn double_linked_nodes(node: i32) -> JsonValue {
+    let client = get_connection();
+    let mut client = match client {
+        Ok(c) => c,
+        Err(e) => return error(e)
+    };
+
+    let result = client.query("
+
+    SELECT id from nodes N
+    WHERE
+    EXISTS (SELECT 1 FROM links L1 WHERE L1.l = N.id and L1.r = $1)
+    AND
+    EXISTS (SELECT 1 FROM links L2 WHERE L2.r = N.id and L2.l = $1)
+
+    ", &[&node]);
+
+    let mut nodes: Vec<i32> = Vec::new();
+
+    for row in match result {
+        Ok(res) => res,
+        Err(e) => return error(e)
+    } {
+        nodes.push(row.get(0))
+    }
+
+    json!({
+        "ok": nodes
+    })
+}
