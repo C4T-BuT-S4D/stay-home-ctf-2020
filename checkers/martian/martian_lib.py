@@ -4,6 +4,8 @@ from checklib import *
 import random
 import string
 
+context.log_level = 'CRITICAL'
+
 PORT = 9999
 
 # global const
