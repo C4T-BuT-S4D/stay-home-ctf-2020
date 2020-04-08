@@ -13,4 +13,6 @@ ADD . /app
 
 RUN go build .
 
+USER nobody
+
 ENTRYPOINT ["./planetzor"]

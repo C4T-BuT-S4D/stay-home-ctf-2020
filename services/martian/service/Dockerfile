@@ -9,5 +9,7 @@ ADD ./libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 WORKDIR /
 
+USER nobody
+
 CMD ["socat", "TCP-LISTEN:1337,reuseaddr,fork,keepalive", "EXEC:./martian"]
 
