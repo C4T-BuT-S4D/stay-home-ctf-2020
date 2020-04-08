@@ -7,7 +7,7 @@ pub fn get_connection() -> Result<Client, Error> {
     Client::connect(CONNECTION_STRING, NoTls)
 }
 
-pub fn init_db() -> Result<(), Box<dyn error::Error>> {
+pub fn init_graph_db() -> Result<(), Box<dyn error::Error>> {
     let mut client = get_connection()?;
 
     client.batch_execute("
@@ -25,6 +25,28 @@ pub fn init_db() -> Result<(), Box<dyn error::Error>> {
         id SERIAL PRIMARY KEY,
         l INTEGER NOT NULL,
         r INTEGER NOT NULL
+    );
+
+    ")?;
+
+    Ok(())
+}
+
+pub fn init_owner_db() -> Result<(), Box<dyn error::Error>> {
+    let mut client = get_connection()?;
+
+    client.batch_execute("
+
+    CREATE TABLE IF NOT EXISTS grapho (
+        id SERIAL PRIMARY KEY,
+        uid INTEGER NOT NULL,
+        gid integer NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS nodeo (
+        id SERIAL PRIMARY KEY,
+        uid INTEGER NOT NULL,
+        nid INTEGER NOT NULL
     );
 
     ")?;

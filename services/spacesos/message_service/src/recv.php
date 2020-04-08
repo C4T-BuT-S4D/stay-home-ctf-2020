@@ -1,5 +1,4 @@
 <?php
-
     $user = $_GET['user'];
 
     chdir("/tmp/messages");

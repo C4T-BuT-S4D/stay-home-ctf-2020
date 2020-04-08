@@ -13,4 +13,4 @@
     fwrite($file, $message . "\n");
     fclose($file);
 
-    echo "ok";
+    echo "<$user: ok>";
