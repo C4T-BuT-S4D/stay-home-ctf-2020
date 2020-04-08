@@ -30,3 +30,6 @@ script:
 after_script:
   - find . -name "docker-compose.yml" -exec docker-compose -f {} down -v \;
 
+after_failure:
+  - find . -name "docker-compose.yml" -exec docker-compose -f {} logs \;
+
