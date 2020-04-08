@@ -112,7 +112,7 @@ func latestReviews(c echo.Context) error {
 	}
 
 	ctx := PublicReviewsContext{}
-	ctx.Reviews = db.PublicReviews(planet, score, 200)
+	ctx.Reviews = db.PublicReviews(planet, score, 150)
 	ctx.Score = score
 	ctx.Planet = planet
 	ctx.Planets = db.ListPlanets()

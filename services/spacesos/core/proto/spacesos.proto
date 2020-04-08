@@ -65,7 +65,6 @@ message CrashRequest {
 
 message CrashResponse {
   string result = 1;
-  bool confirmed = 2;
 }
 
 

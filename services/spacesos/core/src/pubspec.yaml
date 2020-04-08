@@ -1,6 +1,5 @@
 name: spacesos_core
-description: Service
-
+description: Service for
 
 dependencies:
   async: ^2.2.0
