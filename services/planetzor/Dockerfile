@@ -1,6 +1,6 @@
-FROM golang:1.12-alpine
+FROM golang:buster
 
-RUN apk update && apk add git gcc musl-dev
+MAINTAINER tg: @jnovikov
 
 ADD ./go.mod /app/go.mod
 ADD ./go.sum /app/go.sum
