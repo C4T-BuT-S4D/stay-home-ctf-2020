@@ -40,7 +40,6 @@ class CheckMachine:
             c.time.GetCurrentTime()
         else:
             c.time.FromDateTime(dtime)
-
         response = self.stub.Crash(spacesos_pb2.CrashRequest(sessionId=session_id, crash=c, expose=True))
         return response.result
 
