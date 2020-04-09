@@ -111,7 +111,7 @@ class Checker(BaseChecker):
         lid2 = self.mch.create_alliance(s, pid2, pid3)
         lid3 = self.mch.create_alliance(s, pid3, pid1)
 
-        self.cquit(Status.OK, f'{u}:{p}:{uid}:{eid}:{ename}:{pid1}:{pid2}:{pname2}:{pid3}:{lid1}:{lid2}:{lid3}')
+        self.cquit(Status.OK, f'{uid}', f'{u}:{p}:{uid}:{eid}:{ename}:{pid1}:{pid2}:{pname2}:{pid3}:{lid1}:{lid2}:{lid3}')
 
     def get(self, flag_id, flag, vuln):
         sleep(2)
@@ -120,7 +120,6 @@ class Checker(BaseChecker):
 
         uid, eid, pid1, pid2, pid3, lid1, lid2, lid3 = map(int, [uid, eid, pid1, pid2, pid3, lid1, lid2, lid3])
 
-        self.mch.get_users(s, u, uid, Status.CORRUPT)
         self.mch.get_user_empires(s, uid, eid, Status.CORRUPT)
         self.mch.get_empire(s, eid, ename, [pid1, pid2, pid3], [[lid1, pid1, pid2], [lid2, pid2, pid3], [lid3, pid3, pid1]], Status.CORRUPT)
 

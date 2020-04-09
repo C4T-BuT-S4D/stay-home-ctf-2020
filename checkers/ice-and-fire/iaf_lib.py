@@ -66,7 +66,7 @@ class CheckMachine:
         self.c.assert_eq(req.user.password, u.password, "Invalid password on me", status)
         self.c.assert_eq(req.contact.text, u.contact, "Invalid contact on me", status)
 
-    def users(self, s, u):
+    def users(self, s):
         url = f'{self.url}/users/'
 
         data = s.get(url).content

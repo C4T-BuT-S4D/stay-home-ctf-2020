@@ -67,6 +67,10 @@ class Checker(BaseChecker):
         self.assert_eq(match2.ok, True, "Invalid user matching")
         self.assert_eq(match2.contact.text, u3.contact, "Invalid contact on match")
 
+        users = self.mch.users(s2)
+
+        self.assert_in(u1.username, users, "Can't find user in user list", Status.MUMBLE)
+
         self.mch.check_metric()
 
         self.cquit(Status.OK)
@@ -78,7 +82,7 @@ class Checker(BaseChecker):
 
         self.mch.register(s, u)
 
-        self.cquit(Status.OK, f'{u.username}:{u.password}:{",".join(map(str, u.coordinates))}')
+        self.cquit(Status.OK, f'{u.username}', f'{u.username}:{u.password}:{",".join(map(str, u.coordinates))}')
 
     def get(self, flag_id, flag, vuln):
         s1 = get_initialized_session()
@@ -98,10 +102,6 @@ class Checker(BaseChecker):
 
         self.mch.register(s2, u2)
         self.mch.login(s2, u2)
-
-        users = self.mch.users(s2, u1)
-
-        self.assert_in(u1.username, users, "Can't find user", Status.CORRUPT)
 
         match = self.mch.match(s2, u1.username)
 
