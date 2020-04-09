@@ -18,8 +18,8 @@ services:
     restart: on-failure
     ports:
       - 5001:5001
-    links:
-      - db
+    depends_on:
+      - "db"
     pids_limit: 256
     mem_limit: 700M
     cpus: 1
