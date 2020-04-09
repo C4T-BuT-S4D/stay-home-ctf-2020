@@ -5,3 +5,4 @@ gevent
 bs4
 lxml
 pwntools
+grpcio
