@@ -152,6 +152,15 @@ class Checker(BaseChecker):
         else:
             self.cquit(Status.OK)
 
+    def action(self, action, *args, **kwargs):
+        try:
+            super(Checker, self).action(action, *args, **kwargs)
+        except grpc.RpcError as rpc_error:
+            if rpc_error.code() in [grpc.StatusCode.UNAVAILABLE, grpc.StatusCode.DEADLINE_EXCEEDED]:
+                self.cquit(status.Status.DOWN, "Connection error", str(rpc_error))
+        finally:
+            self.cm.chan.close()
+
 
 if __name__ == '__main__':
     c = Checker(sys.argv[2])
