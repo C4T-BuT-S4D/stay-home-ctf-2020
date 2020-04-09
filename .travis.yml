@@ -36,7 +36,7 @@ before_script:
   - sleep 60
 
 script:
-  - ./check.sh
+  - ./check.sh $SERVICE
 
 after_script:
   - docker-compose -f ./services/$SERVICE/docker-compose.yml down -v
