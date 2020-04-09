@@ -1341,8 +1341,6 @@ int HardRaid( Martian* player )
         while ( FileData[ idx++ ] != '\n' )
         	continue;
 
-       	idx++;
-
        	std::string ItemStatus;
 
        	while ( FileData[ idx ] != '\n' )
