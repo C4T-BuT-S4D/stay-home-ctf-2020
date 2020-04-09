@@ -89,22 +89,22 @@ export default {
             coordinates: coords,
             sliders: sliders,
             names: [
-                'Physical Strength',
-                'Charm',
-                'WillPower',
-                'Courage',
-                'Knowledge',
-                'Coordination',
-                'Offense',
-                'Deception',
-                'Evasion',
-                'Deactivation',
-                'Observation',
-                'Shock Resistance',
-                'Gambling Value',
-                'Movement Value',
-                'Life Level',
-                'Perception'
+                'Age',
+                'Chemical composition',
+                'Diameter',
+                'Kinematics',
+                'Magnetic field',
+                'Mass',
+                'Rotation',
+                'Temperature',
+                'Radiation',
+                'Luminosity',
+                'Magnitude',
+                'Brightness',
+                'Color',
+                'Rings',
+                'Spectral value',
+                'Habitability'
             ]
         };
     },
@@ -139,7 +139,7 @@ export default {
             let resp = Response.deserializeBinary(rawResp.data);
             let ok = resp.getOk();
             if (!ok) {
-                alert(`Error: ${resp.getText()}`);
+                this.$toasted.show(`Error: ${resp.getText()}`);
             } else {
                 this.$router.push({ name: 'Login' });
             }

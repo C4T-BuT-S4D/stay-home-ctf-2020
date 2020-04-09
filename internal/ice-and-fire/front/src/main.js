@@ -6,6 +6,7 @@ import { BootstrapVue } from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import axios from 'axios';
+import Toasted from 'vue-toasted';
 
 let url = '';
 
@@ -26,6 +27,11 @@ Vue.prototype.$http = axios;
 store.$http = axios;
 
 Vue.use(BootstrapVue);
+Vue.use(Toasted, {
+    position: 'bottom-right',
+    duration: 2000,
+    keepOnHover: true
+});
 Vue.config.productionTip = false;
 
 new Vue({
