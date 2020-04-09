@@ -10,6 +10,10 @@ import urllib.parse
 
 IP = sys.argv[1]
 
+hint = None
+if len(sys.argv) > 2:
+    hint = sys.argv[2]
+
 url = f'http://{IP}:4000'
 
 
@@ -156,7 +160,10 @@ x = attack(messages, signatures)
 
 assert x * G == Q
 
-users = get_latest_users()[:5]
+if hint:
+    users = [hint, ]
+else:
+    users = get_latest_users()[:5]
 
 s = requests.Session()
 resp = s.post(f'{url}/register', data={'login': rnd_string(), 'password': rnd_string()})
