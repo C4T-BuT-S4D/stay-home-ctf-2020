@@ -138,9 +138,9 @@ class Checker(BaseChecker):
                 sessionId = self.cm.login_user(u[0], u[1])
                 tokens = [x.spaceship_access_token for x in self.cm.get_crush(sessionId)]
                 assert_in(flag, tokens, 'Failed to receive spaceship_access_token', status=status.Status.CORRUPT)
-            crashes = self.cm.get_latest_crushes()
-            names = [x.user for x in crashes]
-            assert_in(user_1[0], names, 'Failed to receive public crash information', status=status.Status.CORRUPT)
+            # crashes = self.cm.get_latest_crushes()
+            # names = [x.user for x in crashes]
+            # assert_in(user_1[0], names, 'Failed to receive public crash information', status=status.Status.CORRUPT)
         except grpc.RpcError as rpc_error:
             details = rpc_error.details()
             if rpc_error.code() in [grpc.StatusCode.UNAVAILABLE, grpc.StatusCode.DEADLINE_EXCEEDED]:

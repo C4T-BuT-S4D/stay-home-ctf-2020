@@ -105,8 +105,9 @@ class Checker(BaseChecker):
         self.assert_in(flag, home_response.text, 'Failed to get private review', status.Status.CORRUPT)
         self.assert_in(p_review, home_response.text, 'Failed to get public review', status.Status.CORRUPT)
 
-        response = self.mch.get_public_reviews_response(sess, planet=p_planet)
-        self.assert_in(p_review, response.text, 'Failed to find public review', status.Status.CORRUPT)
+        # response = self.mch.get_public_reviews_response(sess, planet=p_planet)
+        #
+        # self.assert_in(p_review, response.text, 'Failed to find public review', status.Status.CORRUPT)
 
         self.cquit(Status.OK)
 
