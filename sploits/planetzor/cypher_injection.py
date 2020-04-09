@@ -3,15 +3,14 @@
 import sys
 import requests
 
-IP = sys.argv[1]
+ip = sys.argv[1]
 
 payload = '3 RETURN r LIMIT 1 UNION ALL MATCH (r:Review)'
-host = f'http://{IP}:4000/reviews'
-
+host = f'http://{ip}:4000/reviews'
 
 resp = requests.get(host, params={'score': payload})
 
-print(resp.text)
+print(resp.text, flush=True)
 
 
 
