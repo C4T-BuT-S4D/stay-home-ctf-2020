@@ -80,7 +80,7 @@ void keyPressed() {
 
   if (keyCode == 'K') {
     if (source_id() != "" && target_id() != "" && source_id() != target_id()) {
-      beam_request(source_id(), target_angle());
+      beam_request(source_id(), target_angle(), target_focus());
     }
   }
 }
@@ -254,7 +254,7 @@ float target_focus() {
   float target_pos_x = window.serverState[tid].object.position[0];
   float target_pos_y = window.serverState[tid].object.position[1];
 
-  return dist(source_pos_x, source_pos_y, target_pos_x, target_pos_y) - 100;
+  return dist(source_pos_x, source_pos_y, target_pos_x, target_pos_y) * 0.9;
 }
 
 void thrust() {
