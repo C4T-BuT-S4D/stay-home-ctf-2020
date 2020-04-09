@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 
 services:
   core:
@@ -9,14 +9,20 @@ services:
     depends_on:
       - db
       - messenger
+    mem_limit: 300M
+    cpus: 0.25
 
   db:
     image: mongo
     restart: always
     volumes:
     - "./data:/data/db"
+    mem_limit: 500M
+    cpus: 0.25
 
   messenger:
     build: message_service
     restart: always
+    mem_limit: 300M
+    cpus: 0.25
 

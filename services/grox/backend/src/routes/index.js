@@ -140,7 +140,7 @@ function register_routes(router) {
 
         const { id: uid } = ctx.session;
 
-        if (ctx.unwrap(await ctx.post(`http://graph:8000/api/create_graph/`))) {
+        if (ctx.unwrap(await ctx.post(`http://graph:8000/api/create_graph`))) {
             return;
         }
 
@@ -148,7 +148,7 @@ function register_routes(router) {
 
         if (
             ctx.unwrap(
-                await ctx.post(`http://owner:8001/api/graph_set/`, {
+                await ctx.post(`http://owner:8001/api/graph_set`, {
                     uid,
                     gid,
                 })
@@ -172,6 +172,8 @@ function register_routes(router) {
             return;
         }
 
+        const { id: uid } = ctx.session;
+
         const { name = null, info = null } = ctx.request.body;
 
         if (!name || !info) {
@@ -190,11 +192,26 @@ function register_routes(router) {
             return;
         }
 
-        const { id: uid } = ctx.session;
+        if (
+            ctx.unwrap(
+                await ctx.get(`http://owner:8001/api/graph_get/${uid}/${graph}`, {
+                    gid: graph,
+                })
+            )
+        ) {
+            return;
+        }
+
+        if (ctx.data === 0) {
+            ctx.resp(403, {
+                error: 'No access',
+            });
+            return;
+        }
 
         if (
             ctx.unwrap(
-                await ctx.post(`http://graph:8000/api/create_node/`, {
+                await ctx.post(`http://graph:8000/api/create_node`, {
                     graph,
                 })
             )
@@ -206,7 +223,7 @@ function register_routes(router) {
 
         if (
             ctx.unwrap(
-                await ctx.post(`http://owner:8001/api/node_set/`, {
+                await ctx.post(`http://owner:8001/api/node_set`, {
                     uid,
                     nid,
                 })
@@ -260,10 +277,7 @@ function register_routes(router) {
 
         if (
             ctx.unwrap(
-                await ctx.post(`http://graph:8000/api/create_link/`, {
-                    l,
-                    r,
-                })
+                await ctx.get(`http://graph:8000/api/link/${l}/${r}`)
             )
         ) {
             return;

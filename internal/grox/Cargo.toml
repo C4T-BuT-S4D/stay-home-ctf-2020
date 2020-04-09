@@ -4,12 +4,8 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-rocket = "0.4.4"
+actix-web = "1.0"
 serde = { version = "1.0.105", features = ["derive"] }
 reqwest = { version = "0.10", features = ["json", "blocking"] }
 postgres = "0.17"
-
-[dependencies.rocket_contrib]
-version = "0.4.4"
-default-features = false
-features = ["json"]
+serde_json = "1.0"

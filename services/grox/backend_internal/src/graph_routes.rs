@@ -1,18 +1,16 @@
-use rocket::{get, post};
-use rocket_contrib::json;
-use rocket_contrib::json::{Json, JsonValue};
+use actix_web::web::{Json, HttpResponse, Path};
 use crate::database::get_connection;
+use serde_json::json;
 
 use crate::api;
 
-fn error<T: std::fmt::Display>(e: T) -> JsonValue {
-    json!({
+fn error<T: std::fmt::Display>(e: T) -> HttpResponse {
+    HttpResponse::Ok().json(json!({
         "error": format!("{}", e)
-    })
+    }))
 }
 
-#[post("/create_graph")]
-pub fn create_graph() -> JsonValue {
+pub fn create_graph() -> HttpResponse {
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -30,13 +28,12 @@ pub fn create_graph() -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[post("/create_node", data="<node>")]
-pub fn create_node(node: Json<api::NodeCreate>) -> JsonValue {
+pub fn create_node(node: Json<api::NodeCreate>) -> HttpResponse {
     let node = node.into_inner();
     let client = get_connection();
     let mut client = match client {
@@ -70,14 +67,13 @@ pub fn create_node(node: Json<api::NodeCreate>) -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[post("/create_link", data="<link>")]
-pub fn create_link(link: Json<api::LinkCreate>) -> JsonValue {
-    let link = link.into_inner();
+pub fn link(info: Path<(i32, i32)>) -> HttpResponse {
+    let (l, r) = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -88,7 +84,7 @@ pub fn create_link(link: Json<api::LinkCreate>) -> JsonValue {
 
     SELECT COUNT(id) from nodes WHERE id = $1
 
-    ", &[&link.l]);
+    ", &[&l]);
 
     let count: i64 = match result {
         Ok(row) => row.get(0),
@@ -103,7 +99,7 @@ pub fn create_link(link: Json<api::LinkCreate>) -> JsonValue {
 
     SELECT COUNT(id) from nodes WHERE id = $1
 
-    ", &[&link.r]);
+    ", &[&r]);
 
     let count: i64 = match result {
         Ok(row) => row.get(0),
@@ -118,20 +114,20 @@ pub fn create_link(link: Json<api::LinkCreate>) -> JsonValue {
 
     INSERT INTO links (l, r) VALUES($1, $2) RETURNING id
 
-    ", &[&link.l, &link.r]);
+    ", &[&l, &r]);
 
     let id: i32 = match result {
         Ok(row) => row.get(0),
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[get("/graph_nodes/<graph>")]
-pub fn get_graph_nodes(graph: i32) -> JsonValue {
+pub fn graph_nodes(info: Path<i32>) -> HttpResponse {
+    let graph = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -168,13 +164,13 @@ pub fn get_graph_nodes(graph: i32) -> JsonValue {
         nodes.push(row.get(0))
     }
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": nodes
-    })
+    }))
 }
 
-#[get("/graph_links/<graph>")]
-pub fn get_graph_links(graph: i32) -> JsonValue {
+pub fn graph_links(info: Path<i32>) -> HttpResponse {
+    let graph = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -216,13 +212,13 @@ pub fn get_graph_links(graph: i32) -> JsonValue {
         links.push((row.get(0), row.get(1), row.get(2)))
     }
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": links
-    })
+    }))
 }
 
-#[get("/node_links/<node>")]
-pub fn get_node_links(node: i32) -> JsonValue {
+pub fn node_links(info: Path<i32>) -> HttpResponse {
+    let node = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -259,13 +255,13 @@ pub fn get_node_links(node: i32) -> JsonValue {
         links.push(row.get(0))
     }
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": links
-    })
+    }))
 }
 
-#[get("/graph_exists/<graph>")]
-pub fn graph_exists(graph: i32) -> JsonValue {
+pub fn graph_exists(info: Path<i32>) -> HttpResponse {
+    let graph = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -284,18 +280,18 @@ pub fn graph_exists(graph: i32) -> JsonValue {
     };
 
     if count == 0 {
-        json!(api::Exists {
+        HttpResponse::Ok().json(json!(api::Exists {
             exists: false
-        })
+        }))
     } else {
-        json!(api::Exists {
+        HttpResponse::Ok().json(json!(api::Exists {
             exists: true
-        })
+        }))
     }
 }
 
-#[get("/node_exists/<node>")]
-pub fn node_exists(node: i32) -> JsonValue {
+pub fn node_exists(info: Path<i32>) -> HttpResponse {
+    let node = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -314,18 +310,18 @@ pub fn node_exists(node: i32) -> JsonValue {
     };
 
     if count == 0 {
-        json!(api::Exists {
+        HttpResponse::Ok().json(json!(api::Exists {
             exists: false
-        })
+        }))
     } else {
-        json!(api::Exists {
+        HttpResponse::Ok().json(json!(api::Exists {
             exists: true
-        })
+        }))
     }
 }
 
-#[get("/double_linked_nodes/<node>")]
-pub fn double_linked_nodes(node: i32) -> JsonValue {
+pub fn double_linked_nodes(info: Path<i32>) -> HttpResponse {
+    let node = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -351,7 +347,7 @@ pub fn double_linked_nodes(node: i32) -> JsonValue {
         nodes.push(row.get(0))
     }
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": nodes
-    })
+    }))
 }

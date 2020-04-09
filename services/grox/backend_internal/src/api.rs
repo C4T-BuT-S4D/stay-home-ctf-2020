@@ -6,12 +6,6 @@ pub struct NodeCreate {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct LinkCreate {
-    pub l: i32,
-    pub r: i32
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct GraphSet {
     pub uid: i32,
     pub gid: i32

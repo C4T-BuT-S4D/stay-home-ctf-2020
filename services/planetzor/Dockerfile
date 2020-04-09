@@ -1,7 +1,5 @@
 FROM golang:buster
 
-MAINTAINER tg: @jnovikov
-
 ADD ./go.mod /app/go.mod
 ADD ./go.sum /app/go.sum
 
@@ -13,6 +11,6 @@ ADD . /app
 
 RUN go build .
 
-USER nobody
+ADD run.sh /
 
-ENTRYPOINT ["./planetzor"]
+ENTRYPOINT ["/run.sh"]
