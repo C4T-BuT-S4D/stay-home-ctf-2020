@@ -11,6 +11,6 @@ ADD . /app
 
 RUN go build .
 
-USER nobody
+ADD run.sh /
 
-ENTRYPOINT ["./planetzor"]
+ENTRYPOINT ["/run.sh"]
