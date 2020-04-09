@@ -1,20 +1,17 @@
 use reqwest;
-use rocket::{get, post};
-use rocket_contrib::json;
-use rocket_contrib::json::{Json, JsonValue};
+use actix_web::web::{Json, HttpResponse, Path};
 use crate::database::get_connection;
+use serde_json::json;
 
 use crate::api;
 
-fn error<T: std::fmt::Display>(e: T) -> JsonValue {
-    json!({
+fn error<T: std::fmt::Display>(e: T) -> HttpResponse {
+    HttpResponse::Ok().json(json!({
         "error": format!("{}", e)
-    })
+    }))
 }
 
-#[post("/graph_set", data="<data>")]
-pub fn graph_set(data: Json<api::GraphSet>) -> JsonValue {
-    let data = data.into_inner();
+pub fn graph_set(data: Json<api::GraphSet>) -> HttpResponse {
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -39,20 +36,20 @@ pub fn graph_set(data: Json<api::GraphSet>) -> JsonValue {
 
     INSERT INTO grapho (uid, gid) VALUES($1, $2) RETURNING id
 
-    ", &[&data.uid, &data.gid]);
+    ", &[&data.0.uid, &data.0.gid]);
 
     let id: i32 = match result {
         Ok(row) => row.get(0),
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[get("/graph_get/<uid>/<gid>")]
-pub fn graph_get(uid: i32, gid: i32) -> JsonValue {
+pub fn graph_get(info: Path<(i32, i32)>) -> HttpResponse {
+    let (uid, gid) = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -84,13 +81,12 @@ pub fn graph_get(uid: i32, gid: i32) -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[post("/node_set", data="<data>")]
-pub fn node_set(data: Json<api::NodeSet>) -> JsonValue {
+pub fn node_set(data: Json<api::NodeSet>) -> HttpResponse {
     let data = data.into_inner();
     let client = get_connection();
     let mut client = match client {
@@ -123,13 +119,13 @@ pub fn node_set(data: Json<api::NodeSet>) -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[get("/node_get/<uid>/<nid>")]
-pub fn node_get(uid: i32, nid: i32) -> JsonValue {
+pub fn node_get(info: Path<(i32, i32)>) -> HttpResponse {
+    let (uid, nid) = info.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -161,13 +157,13 @@ pub fn node_get(uid: i32, nid: i32) -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[post("/node_get_any/<uid>", data="<data>")]
-pub fn node_get_any(uid: i32, data: Json<Vec<i32>>) -> JsonValue {
+pub fn node_get_any(uid: Path<i32>, data: Json<Vec<i32>>) -> HttpResponse {
+    let uid = uid.into_inner();
     let data = data.into_inner();
     let client = get_connection();
     let mut client = match client {
@@ -203,13 +199,13 @@ pub fn node_get_any(uid: i32, data: Json<Vec<i32>>) -> JsonValue {
         Err(e) => return error(e)
     };
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": id
-    })
+    }))
 }
 
-#[get("/graph_list/<uid>")]
-pub fn graph_list(uid: i32) -> JsonValue {
+pub fn graph_list(uid: Path<i32>) -> HttpResponse {
+    let uid = uid.into_inner();
     let client = get_connection();
     let mut client = match client {
         Ok(c) => c,
@@ -231,7 +227,7 @@ pub fn graph_list(uid: i32) -> JsonValue {
         graphs.push(row.get(0))
     }
 
-    json!({
+    HttpResponse::Ok().json(json!({
         "ok": graphs
-    })
+    }))
 }

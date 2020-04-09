@@ -18,7 +18,7 @@ async function init() {
             await pool.connect();
             break;
         } catch (_) {
-            sleep(1000);
+            await sleep(1000);
         }
     }
 

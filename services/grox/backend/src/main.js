@@ -80,7 +80,14 @@ app.use(async (ctx, next) => {
                     res.on('data', (chunk) => {
                         data += chunk;
                     });
-                    res.on('end', () => resolve(JSON.parse(data)));
+                    res.on('end', () => {
+                        try {
+                            let pdata = JSON.parse(data);
+                            resolve(pdata);
+                        } catch (_) {
+                            reject();
+                        }
+                    });
                 })
                 .on('error', (err) => {
                     reject(err);
@@ -100,7 +107,14 @@ app.use(async (ctx, next) => {
                     res.on('data', (chunk) => {
                         data += chunk;
                     });
-                    res.on('end', () => resolve(JSON.parse(data)));
+                    res.on('end', () => {
+                        try {
+                            let pdata = JSON.parse(data);
+                            resolve(pdata);
+                        } catch (_) {
+                            reject();
+                        }
+                    });
                 })
                 .on('error', (err) => {
                     reject(err);

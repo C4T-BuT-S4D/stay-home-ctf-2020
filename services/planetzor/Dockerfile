@@ -1,7 +1,5 @@
 FROM golang:buster
 
-MAINTAINER tg: @jnovikov
-
 ADD ./go.mod /app/go.mod
 ADD ./go.sum /app/go.sum
 
