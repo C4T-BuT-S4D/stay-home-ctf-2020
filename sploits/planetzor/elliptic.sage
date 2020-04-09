@@ -1,4 +1,5 @@
 #!/usr/bin/env sage
+
 import base64
 import hashlib
 import random

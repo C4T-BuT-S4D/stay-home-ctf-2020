@@ -12,7 +12,7 @@ VULNS=(
 
 SERVICES="grox ice-and-fire martian msp planetzor spacesos"
 
-if [ -z "$RUNS" ]; then 
+if [ -z "$RUNS" ]; then
   RUNS=10
 fi
 
@@ -64,7 +64,7 @@ for SERVICE in $SERVICES; do
         exit 1
       else
         echo "PUT passed!"
-        OUT=$(cat /tmp/checker_stdout)
+        OUT=$(cat /tmp/checker_stderr)
         echo "flag_id:"
         echo "$OUT"
         true
