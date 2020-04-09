@@ -88,7 +88,7 @@ std::pair<bool,double> Home::Repair( double skill )
 
 			if ( energy < 85.0 )
 			{
-				int tmp_scheme[ 8 ];
+				unsigned int tmp_scheme[ 8 ];
 				std::cout << "{?} Change the power scheme? [y\\n]: ";
 				BYTE user_input;
 				std::cin >> user_input;
@@ -102,7 +102,7 @@ std::pair<bool,double> Home::Repair( double skill )
 					for ( int i = 0; i < 16; i++ )
 					{
 						std::cout << "enter new voltage: ";
-						scanf( "%d", &tmp_scheme[ i ] );
+						scanf( "%u", &tmp_scheme[ i ] );
 						changed++;
 
 						if ( tmp_scheme[ i ] == 1337 )

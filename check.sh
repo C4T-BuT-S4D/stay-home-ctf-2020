@@ -1,6 +1,16 @@
 #!/bin/bash
 
-VULNS=(1 1 2 1 1)
+declare -A VULNS
+VULNS=(
+  [grox]=1
+  [ice-and-fire]=1
+  [martian]=2
+  [msp]=1
+  [planetzor]=1
+  [spacesos]=1
+)
+
+SERVICES="grox ice-and-fire martian msp planetzor spacesos"
 
 if [ -z "$RUNS" ]; then 
   RUNS=10
@@ -15,9 +25,15 @@ print_output() {
   cat /tmp/checker_stderr
 }
 
-CURN=0
-find ./checkers/$1 -name 'checker.py' | sort | while read -r CHECKER; do
-  echo "Processing checker '$CHECKER', ${VULNS[CURN]} vulns"
+for SERVICE in $SERVICES; do
+
+  if [[ -n "$1" ]] && [[ "$1" != "$SERVICE" ]]; then
+    continue
+  fi
+
+  CHECKER="./checkers/$SERVICE/checker.py"
+
+  echo "Processing checker '$CHECKER', ${VULNS[$SERVICE]} vulns"
   for ((i = 1; i <= RUNS; i++)); do
     echo "Running test $i..."
 
@@ -33,7 +49,7 @@ find ./checkers/$1 -name 'checker.py' | sort | while read -r CHECKER; do
       true
     fi
 
-    for ((j = 1; j <= VULNS[CURN]; j++)); do
+    for ((j = 1; j <= ${VULNS[$SERVICE]}; j++)); do
       echo "Testing vuln $j..."
       # shellcheck disable=SC2018
       # shellcheck disable=SC2019
@@ -69,6 +85,5 @@ find ./checkers/$1 -name 'checker.py' | sort | while read -r CHECKER; do
 
     echo "Test $i successful!"
   done
-  let ++CURN
 done
 

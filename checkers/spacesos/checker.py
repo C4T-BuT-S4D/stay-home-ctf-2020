@@ -127,7 +127,7 @@ class Checker(BaseChecker):
         except Exception as e:
             self.cquit(status.Status.ERROR, 'Error', str(e))
         else:
-            self.cquit(Status.OK, f'{username}:{password}:{secondUser}:{second_password}')
+            self.cquit(Status.OK, f'{username}', f'{username}:{password}:{secondUser}:{second_password}')
 
     def get(self, flag_id, flag, vuln):
         try:
@@ -151,6 +151,7 @@ class Checker(BaseChecker):
             self.cquit(status.Status.ERROR, 'Error', str(e))
         else:
             self.cquit(Status.OK)
+
 
 if __name__ == '__main__':
     c = Checker(sys.argv[2])

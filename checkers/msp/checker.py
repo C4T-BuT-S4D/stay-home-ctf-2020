@@ -36,7 +36,7 @@ class Checker(BaseChecker):
 
     def check(self):
         def yesno():
-            random.choice([True, False])
+            return random.choice([True, False])
 
         do_health_check = yesno()
         do_height_check = yesno()
@@ -56,6 +56,12 @@ class Checker(BaseChecker):
 
         # launch a craft
         idx, height, pos_x, pos_y = self.mch.launch(s, msg, False)
+        target_telemetry = self.mch.telemetry(s, idx)
+
+        old_velocity = target_telemetry.get('velocity', None)
+        if old_velocity is None:
+            self.cquit(Status.MUMBLE, "GROUND EQUIPMENT NOISE",
+                       f'Object {idx} returned telemetry without velocity')
 
         # wait a bit
         if do_height_check:
@@ -65,6 +71,11 @@ class Checker(BaseChecker):
             target_telemetry = self.mch.telemetry(s, idx)
             new_pos = target_telemetry.get('position')
             new_x, new_y = new_pos[0], new_pos[1]
+            old_velocity = target_telemetry.get('velocity', None)
+            if old_velocity is None:
+                self.cquit(
+                    Status.MUMBLE, "GROUND EQUIPMENT NOISE",
+                    f'Object {idx} returned telemetry without velocity')
 
             # ensure height did not change
             new_height = CheckMachine.dist(new_x, new_y, 0, 0)
@@ -80,13 +91,12 @@ class Checker(BaseChecker):
                            f'Object {idx} did not move since creation')
 
         # thrust command
-        if do_thrust_check:
+        # TODO
+        # temporary disabled because it's retarded
+        if False and do_thrust_check:
             thrust = random.randint(20, 40)
             self.mch.thrust(s, idx, CheckMachine.random_angle(), thrust)
             sleep(random.randint(5, 10))
-
-            # get new telemetry
-            old_velocity = target_telemetry.get('velocity', (0, 0))
 
             target_telemetry = self.mch.telemetry(s, idx)
             new_velocity = target_telemetry.get('velocity', (0, 0))

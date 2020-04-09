@@ -93,7 +93,7 @@ class Checker(BaseChecker):
         self.mch.add_review(sess, public_planet, public_review, self._random_score(), private=False)
 
         # Return username, password, public planet and review.
-        self.cquit(Status.OK, f'{username}:{password}:{public_planet}:{public_review}')
+        self.cquit(Status.OK, f'{username}', f'{username}:{password}:{public_planet}:{public_review}')
 
     def get(self, flag_id, flag, vuln):
         u, p, p_planet, p_review = flag_id.split(':')
@@ -106,7 +106,6 @@ class Checker(BaseChecker):
         self.assert_in(p_review, home_response.text, 'Failed to get public review', status.Status.CORRUPT)
 
         # response = self.mch.get_public_reviews_response(sess, planet=p_planet)
-        #
         # self.assert_in(p_review, response.text, 'Failed to find public review', status.Status.CORRUPT)
 
         self.cquit(Status.OK)
