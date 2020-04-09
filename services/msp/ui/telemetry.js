@@ -103,12 +103,13 @@ window.onload = () => {
     }
   })
 
-  window.beam_request = (from, angle) => {
+  window.beam_request = (from, angle, focus) => {
 
     const endpoint = `/beam/${from}`
 
     let data = {
       'angle': angle,
+      'focus': focus,
     }
 
     fetch(endpoint, {
