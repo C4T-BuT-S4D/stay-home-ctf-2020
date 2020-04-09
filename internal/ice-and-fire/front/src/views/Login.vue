@@ -39,7 +39,7 @@ export default {
     components: {
         Layout
     },
-    data() {
+    data: function() {
         return {
             username: '',
             password: ''
@@ -72,7 +72,7 @@ export default {
             let resp = Response.deserializeBinary(rawResp.data);
             let ok = resp.getOk();
             if (!ok) {
-                alert(`Error: ${resp.getText()}`);
+                this.$toasted.show(`Error: ${resp.getText()}`);
             } else {
                 this.$router.push({ name: 'Users' });
             }
