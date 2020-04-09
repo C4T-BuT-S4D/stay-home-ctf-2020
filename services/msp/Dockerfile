@@ -1,13 +1,11 @@
-FROM python:alpine
+FROM python
 
 WORKDIR /app
 
 ADD requirements.txt /app
 
 RUN set -ex && \
-  apk add --virtual remove --no-cache build-base && \
-  pip install --no-cache-dir -r requirements.txt && \
-  apk del remove
+  pip install --no-cache-dir -r requirements.txt
 
 ADD . /app
 
