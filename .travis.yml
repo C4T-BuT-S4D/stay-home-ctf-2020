@@ -4,8 +4,18 @@ python:
   - "3.7"
 
 env:
-  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 
-  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=grox
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=ice-and-fire
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=martian
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=msp
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=planetzor
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=10  SERVICE=spacesos
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=grox
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=ice-and-fire
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=martian
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=msp
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=planetzor
+  - DOCKER_COMPOSE_VERSION=1.25.0 RUNS=200 SERVICE=spacesos
 
 services:
   - docker
@@ -20,7 +30,7 @@ install:
   - sudo apt-get update
   - sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
   - pip install -r checkers/requirements.txt
-  - find . -name "docker-compose.yml" -print0 | xargs -0 -n1 -I{} sh -c 'docker-compose -f {} up --build -d || exit 255'
+  - docker-compose -f ./services/$SERVICE/docker-compose.yml up --build -d
 
 before_script:
   - sleep 60
@@ -29,8 +39,7 @@ script:
   - ./check.sh
 
 after_script:
-  - find . -name "docker-compose.yml" -exec docker-compose -f {} down -v \;
+  - docker-compose -f ./services/$SERVICE/docker-compose.yml down -v
 
 after_failure:
-  - find . -name "docker-compose.yml" -exec docker-compose -f {} logs \;
-
+  - docker-compose -f ./services/$SERVICE/docker-compose.yml logs
