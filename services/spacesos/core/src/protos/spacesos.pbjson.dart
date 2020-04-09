@@ -96,6 +96,7 @@ const CrashRequest$json = const {
   '2': const [
     const {'1': 'sessionId', '3': 1, '4': 1, '5': 9, '10': 'sessionId'},
     const {'1': 'crash', '3': 2, '4': 1, '5': 11, '6': '.spacesos.Crash', '10': 'crash'},
+    const {'1': 'expose', '3': 3, '4': 1, '5': 8, '10': 'expose'},
   ],
 };
 

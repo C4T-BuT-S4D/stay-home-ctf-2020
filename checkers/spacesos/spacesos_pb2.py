@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='spacesos',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0espacesos.proto\x12\x08spacesos\x1a\x1fgoogle/protobuf/timestamp.proto\"\\\n\x0b\x43oordinates\x12\x16\n\x0enearest_planet\x18\x01 \x01(\t\x12\x11\n\tlongitude\x18\x02 \x01(\x02\x12\x10\n\x08latitude\x18\x03 \x01(\x02\x12\x10\n\x08\x64istance\x18\x04 \x01(\x02\"}\n\x05\x43rash\x12\x1e\n\x16spaceship_access_token\x18\x01 \x01(\t\x12*\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32\x15.spacesos.Coordinates\x12(\n\x04time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"G\n\x0bPublicCrash\x12\x0c\n\x04user\x18\x01 \x01(\t\x12*\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32\x15.spacesos.Coordinates\".\n\x0b\x41uthRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"-\n\x0c\x41uthResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\tsessionId\x18\x02 \x01(\t\"9\n\x12\x41\x64\x64ToFriendRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"%\n\x13\x41\x64\x64ToFriendResponse\x12\x0e\n\x06mutual\x18\x01 \x01(\x08\".\n\x19\x46riendshipRequestsRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\"*\n\x19\x46riendshipRequestResponse\x12\r\n\x05users\x18\x01 \x03(\t\"#\n\x0e\x46riendsRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\" \n\x0f\x46riendsResponse\x12\r\n\x05users\x18\x01 \x03(\t\"A\n\x0c\x43rashRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\x12\x1e\n\x05\x63rash\x18\x02 \x01(\x0b\x32\x0f.spacesos.Crash\"\x1f\n\rCrashResponse\x12\x0e\n\x06result\x18\x01 \x01(\t\"&\n\x11GetCrashesRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\"6\n\x12GetCrashesResponse\x12 \n\x07\x63rashes\x18\x01 \x03(\x0b\x32\x0f.spacesos.Crash\"\x19\n\x17GetLatestCrashesRequest\"B\n\x18GetLatestCrashesResponse\x12&\n\x07\x63rashes\x18\x01 \x03(\x0b\x32\x15.spacesos.PublicCrash2\xda\x04\n\x08SpaceSos\x12;\n\x08Register\x12\x15.spacesos.AuthRequest\x1a\x16.spacesos.AuthResponse\"\x00\x12\x38\n\x05Login\x12\x15.spacesos.AuthRequest\x1a\x16.spacesos.AuthResponse\"\x00\x12L\n\x0b\x41\x64\x64ToFriend\x12\x1c.spacesos.AddToFriendRequest\x1a\x1d.spacesos.AddToFriendResponse\"\x00\x12`\n\x12\x46riendshipRequests\x12#.spacesos.FriendshipRequestsRequest\x1a#.spacesos.FriendshipRequestResponse\"\x00\x12\x43\n\nGetFriends\x12\x18.spacesos.FriendsRequest\x1a\x19.spacesos.FriendsResponse\"\x00\x12:\n\x05\x43rash\x12\x16.spacesos.CrashRequest\x1a\x17.spacesos.CrashResponse\"\x00\x12I\n\nGetCrashes\x12\x1b.spacesos.GetCrashesRequest\x1a\x1c.spacesos.GetCrashesResponse\"\x00\x12[\n\x10GetLatestCrashes\x12!.spacesos.GetLatestCrashesRequest\x1a\".spacesos.GetLatestCrashesResponse\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0espacesos.proto\x12\x08spacesos\x1a\x1fgoogle/protobuf/timestamp.proto\"\\\n\x0b\x43oordinates\x12\x16\n\x0enearest_planet\x18\x01 \x01(\t\x12\x11\n\tlongitude\x18\x02 \x01(\x02\x12\x10\n\x08latitude\x18\x03 \x01(\x02\x12\x10\n\x08\x64istance\x18\x04 \x01(\x02\"}\n\x05\x43rash\x12\x1e\n\x16spaceship_access_token\x18\x01 \x01(\t\x12*\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32\x15.spacesos.Coordinates\x12(\n\x04time\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"G\n\x0bPublicCrash\x12\x0c\n\x04user\x18\x01 \x01(\t\x12*\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32\x15.spacesos.Coordinates\".\n\x0b\x41uthRequest\x12\r\n\x05login\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"-\n\x0c\x41uthResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\tsessionId\x18\x02 \x01(\t\"9\n\x12\x41\x64\x64ToFriendRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"%\n\x13\x41\x64\x64ToFriendResponse\x12\x0e\n\x06mutual\x18\x01 \x01(\x08\".\n\x19\x46riendshipRequestsRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\"*\n\x19\x46riendshipRequestResponse\x12\r\n\x05users\x18\x01 \x03(\t\"#\n\x0e\x46riendsRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\" \n\x0f\x46riendsResponse\x12\r\n\x05users\x18\x01 \x03(\t\"Q\n\x0c\x43rashRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\x12\x1e\n\x05\x63rash\x18\x02 \x01(\x0b\x32\x0f.spacesos.Crash\x12\x0e\n\x06\x65xpose\x18\x03 \x01(\x08\"\x1f\n\rCrashResponse\x12\x0e\n\x06result\x18\x01 \x01(\t\"&\n\x11GetCrashesRequest\x12\x11\n\tsessionId\x18\x01 \x01(\t\"6\n\x12GetCrashesResponse\x12 \n\x07\x63rashes\x18\x01 \x03(\x0b\x32\x0f.spacesos.Crash\"\x19\n\x17GetLatestCrashesRequest\"B\n\x18GetLatestCrashesResponse\x12&\n\x07\x63rashes\x18\x01 \x03(\x0b\x32\x15.spacesos.PublicCrash2\xda\x04\n\x08SpaceSos\x12;\n\x08Register\x12\x15.spacesos.AuthRequest\x1a\x16.spacesos.AuthResponse\"\x00\x12\x38\n\x05Login\x12\x15.spacesos.AuthRequest\x1a\x16.spacesos.AuthResponse\"\x00\x12L\n\x0b\x41\x64\x64ToFriend\x12\x1c.spacesos.AddToFriendRequest\x1a\x1d.spacesos.AddToFriendResponse\"\x00\x12`\n\x12\x46riendshipRequests\x12#.spacesos.FriendshipRequestsRequest\x1a#.spacesos.FriendshipRequestResponse\"\x00\x12\x43\n\nGetFriends\x12\x18.spacesos.FriendsRequest\x1a\x19.spacesos.FriendsResponse\"\x00\x12:\n\x05\x43rash\x12\x16.spacesos.CrashRequest\x1a\x17.spacesos.CrashResponse\"\x00\x12I\n\nGetCrashes\x12\x1b.spacesos.GetCrashesRequest\x1a\x1c.spacesos.GetCrashesResponse\"\x00\x12[\n\x10GetLatestCrashes\x12!.spacesos.GetLatestCrashesRequest\x1a\".spacesos.GetLatestCrashesResponse\"\x00\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -453,6 +453,13 @@ _CRASHREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='expose', full_name='spacesos.CrashRequest.expose', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -466,7 +473,7 @@ _CRASHREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=711,
-  serialized_end=776,
+  serialized_end=792,
 )
 
 
@@ -496,8 +503,8 @@ _CRASHRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=778,
-  serialized_end=809,
+  serialized_start=794,
+  serialized_end=825,
 )
 
 
@@ -527,8 +534,8 @@ _GETCRASHESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=811,
-  serialized_end=849,
+  serialized_start=827,
+  serialized_end=865,
 )
 
 
@@ -558,8 +565,8 @@ _GETCRASHESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=851,
-  serialized_end=905,
+  serialized_start=867,
+  serialized_end=921,
 )
 
 
@@ -582,8 +589,8 @@ _GETLATESTCRASHESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=907,
-  serialized_end=932,
+  serialized_start=923,
+  serialized_end=948,
 )
 
 
@@ -613,8 +620,8 @@ _GETLATESTCRASHESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=934,
-  serialized_end=1000,
+  serialized_start=950,
+  serialized_end=1016,
 )
 
 _CRASH.fields_by_name['coordinates'].message_type = _COORDINATES
@@ -769,8 +776,8 @@ _SPACESOS = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=1003,
-  serialized_end=1605,
+  serialized_start=1019,
+  serialized_end=1621,
   methods=[
   _descriptor.MethodDescriptor(
     name='Register',

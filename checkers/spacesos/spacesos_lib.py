@@ -41,7 +41,7 @@ class CheckMachine:
         else:
             c.time.FromDateTime(dtime)
 
-        response = self.stub.Crash(spacesos_pb2.CrashRequest(sessionId=session_id, crash=c))
+        response = self.stub.Crash(spacesos_pb2.CrashRequest(sessionId=session_id, crash=c, expose=True))
         return response.result
 
     def add_to_friends(self, session_id, friend):

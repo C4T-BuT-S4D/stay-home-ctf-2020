@@ -440,6 +440,7 @@ class CrashRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CrashRequest', package: const $pb.PackageName('spacesos'), createEmptyInstance: create)
     ..aOS(1, 'sessionId', protoName: 'sessionId')
     ..aOM<Crash>(2, 'crash', subBuilder: Crash.create)
+    ..aOB(3, 'expose')
     ..hasRequiredFields = false
   ;
 
@@ -477,6 +478,15 @@ class CrashRequest extends $pb.GeneratedMessage {
   void clearCrash() => clearField(2);
   @$pb.TagNumber(2)
   Crash ensureCrash() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $core.bool get expose => $_getBF(2);
+  @$pb.TagNumber(3)
+  set expose($core.bool v) { $_setBool(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasExpose() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearExpose() => clearField(3);
 }
 
 class CrashResponse extends $pb.GeneratedMessage {

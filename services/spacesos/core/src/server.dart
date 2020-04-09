@@ -65,7 +65,9 @@ class SpaceSosCoreService extends SpaceSosServiceBase {
   Future<CrashResponse> crash(ServiceCall call, CrashRequest request) async {
     final user = await getUsername(request.sessionId);
     try {
-      await _repository.AddPublicCrash(request.crash, user);
+      if (request.expose) {
+        await _repository.AddPublicCrash(request.crash, user);
+      }
       var users = await _repository.ListFriends(user);
       users.add(user);
       final result = await _messageClient.Send(users, request.crash);

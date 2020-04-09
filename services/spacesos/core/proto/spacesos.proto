@@ -60,6 +60,7 @@ message FriendsResponse {
 message CrashRequest {
   string sessionId = 1;
   Crash crash = 2;
+  bool expose = 3;
 }
 
 
