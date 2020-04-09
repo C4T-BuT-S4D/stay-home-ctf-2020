@@ -9,8 +9,6 @@ services:
     pids_limit: 256
     mem_limit: 200M
     cpus: 0.5
-    cap_add:
-      - SYS_ADMIN
 
   nginx:
     image: nginx:1.15.11-alpine
