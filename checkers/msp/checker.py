@@ -120,7 +120,7 @@ class Checker(BaseChecker):
 
     def put(self, flag_id, flag, vuln):
 
-        do_thrust = vuln == 1
+        do_thrust = int(vuln) == 1
 
         s = get_initialized_session()
         idx, height, pos_x, pos_y = self.mch.launch(s, flag, False)
@@ -130,7 +130,7 @@ class Checker(BaseChecker):
 
     def get(self, flag_id, flag, vuln):
 
-        do_thrust = vuln == 1
+        do_thrust = int(vuln) == 1
 
         s = get_initialized_session()
         idx, old_height, target_old_pos_x, target_old_pos_y = flag_id.split(
