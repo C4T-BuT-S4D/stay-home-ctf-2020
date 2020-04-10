@@ -4,6 +4,7 @@ RUN mkdir -p /var/jail/dev \
 	&& mkdir -p /var/jail/etc \
 	&& mkdir -p /var/jail/lib \
 	&& mkdir -p /var/jail/lib64 \
+	&& mkdir -p /var/jail/lib32 \
 	&& mkdir -p /var/jail/usr/local/lib \
 	&& mkdir -p /var/jail/usr \
 	&& mkdir -p /var/jail/bin \
@@ -14,7 +15,10 @@ RUN mkdir -p /var/jail/dev \
 RUN cp /etc/ld.so.cache /var/jail/etc \
 	&& cp /etc/ld.so.conf /var/jail/etc \
 	&& cp /etc/nsswitch.conf /var/jail/etc \
+	&& cp /etc/resolv.conf /var/jail/etc \
 	&& cp /etc/hosts /var/jail/etc \
+	&& cp -r /lib/* /var/jail/lib \
+	&& cp -r /lib32/* /var/jail/lib32 \
 	&& cp /usr/sbin/fcgiwrap /var/jail/usr/sbin \
 	&& cp /bin/sh /var/jail/bin \
 	&& cp /bin/ls /var/jail/bin
