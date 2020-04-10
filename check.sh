@@ -5,7 +5,7 @@ VULNS=(
   [grox]=1
   [ice-and-fire]=1
   [martian]=2
-  [msp]=1
+  [msp]=2
   [planetzor]=1
   [spacesos]=1
 )
