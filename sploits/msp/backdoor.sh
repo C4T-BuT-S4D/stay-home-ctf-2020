@@ -1,13 +1,16 @@
 # create a new craft
-newcraft=$(curl -s localhost:5001/launch/ -d '{"phase": 0, "height": 5000, "antenna_focus": 0.2, "narrow_beam_response": "ping", "mass": 100}')
+
+url="$1:5001"
+
+newcraft=$(curl -s $url/launch/ -d '{"phase": 0, "height": 5000, "antenna_focus": 0.2, "narrow_beam_response": "ping", "mass": 100}')
 source=$(echo "$newcraft" | jq .id -r)
 sx=$(echo "$newcraft" | jq .position[0] -r)
 sy=$(echo "$newcraft" | jq .position[1] -r)
 
-curl localhost:5001/tm/health | jq .stats[] -r | while read target; do
+curl $url/tm/health | jq .stats[] -r | while read target; do
 
   # find target coords
-  coords=$(curl -s localhost:5001/telemetry/$target | jq '(.object.position[0]|tostring) + " " + (.object.position[1]|tostring)' -r)
+  coords=$(curl -s $url/telemetry/$target | jq '(.object.position[0]|tostring) + " " + (.object.position[1]|tostring)' -r)
   tx=$(echo "$coords" | cut -d' ' -f1)
   ty=$(echo "$coords" | cut -d' ' -f2)
 
@@ -27,6 +30,6 @@ curl localhost:5001/tm/health | jq .stats[] -r | while read target; do
 
   echo "BEAM $angle $focus"
 
-  curl -s localhost:5001/beam/$source -d '{"angle": '$angle', "focus": '$focus'}' | jq .
+  curl -s $url/beam/$source -d '{"angle": '$angle', "focus": '$focus'}' | jq .
 
 done
