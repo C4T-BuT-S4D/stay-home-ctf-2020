@@ -9,6 +9,8 @@ import random
 import os
 import string
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from spacesos_lib import *
 
 

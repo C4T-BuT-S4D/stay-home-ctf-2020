@@ -9,9 +9,10 @@ import sys
 import requests
 import string
 import os
-from planetzor_lib import *
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from planetzor_lib import *
 
 
 class Checker(BaseChecker):
