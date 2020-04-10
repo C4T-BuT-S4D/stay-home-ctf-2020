@@ -42,7 +42,7 @@ class CheckMachine:
 
         self.c.assert_eq(r.status_code, 200, "Can't register")
 
-    def login(self, s, u):
+    def login(self, s, u, status=Status.MUMBLE):
         url = f'{self.url}/login/'
 
         req = LoginRequest()
@@ -53,7 +53,7 @@ class CheckMachine:
 
         r = s.post(url, data=req)
 
-        self.c.assert_eq(r.status_code, 200, "Can't login")
+        self.c.assert_eq(r.status_code, 200, "Can't login", status=status)
 
     def me(self, s, u, status=Status.MUMBLE):
         url = f'{self.url}/me/'
