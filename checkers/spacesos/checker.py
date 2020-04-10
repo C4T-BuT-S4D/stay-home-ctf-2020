@@ -43,6 +43,21 @@ class Checker(BaseChecker):
     def _random_planet(self):
         return random.choice(self.planets)
 
+    def _random_payload_planet(self):
+        return random.choice([
+            '{}..',
+            'php://{}',
+            '{}/',
+            "' or '{0}'='{0}'--",
+            '../../{}',
+            '<script>alert("{}")</script>',
+            '<!ENTITY xxe SYSTEM \\"file:///var/www/{}\\" >]><foo>&xxe;</foo>',
+            '{}',
+            '{}',
+            '{}',
+            '{}',
+        ]).format(self._random_planet())
+
     def random_coordinates(self):
         return {
             'planet': self._random_planet(),
@@ -79,6 +94,8 @@ class Checker(BaseChecker):
             assert_in(username, self.cm.get_friends(secondSessionId), "Failed to receive user's friends")
 
             token = self.shitty_payload().format(rnd_string(32, string.ascii_uppercase + string.digits))
+            coordinates = self.random_coordinates()
+            coordinates['planet'] = self._random_payload_planet()
             res = self.cm.add_crush(sessionId, token, self.random_coordinates())
             assert_in(secondUser, res, 'Incorrect response on crash send')
             crashes = self.cm.get_latest_crushes()
@@ -99,12 +116,12 @@ class Checker(BaseChecker):
 
     def put(self, flag_id, flag, vuln):
         try:
-            username = self.random_user()
+            username = rnd_username()
             password = rnd_password()
             _, _, sessionId = self.cm.register_user(username, password)
 
             # Register second user.
-            secondUser = self.random_user()
+            secondUser = rnd_username()
             second_password = rnd_password()
             _, _, secondSessionId = self.cm.register_user(secondUser, second_password)
 

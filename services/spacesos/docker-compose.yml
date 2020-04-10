@@ -12,6 +12,14 @@ services:
     mem_limit: 300M
     cpus: 0.25
 
+  envoy:
+    build: envoy
+    ports:
+    - "3334:8080"
+    restart: always
+    depends_on:
+      - core
+
   db:
     image: mongo
     restart: always
@@ -19,6 +27,19 @@ services:
     - "./data:/data/db"
     mem_limit: 500M
     cpus: 0.25
+
+  nginx:
+    image: nginx:1.15.11-alpine
+    ports:
+      - 3335:80
+    restart: on-failure
+    cpus: 0.20
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./front/build:/dist
+    depends_on:
+      - envoy
+
 
   messenger:
     build: message_service
