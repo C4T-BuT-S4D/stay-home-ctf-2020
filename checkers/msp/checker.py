@@ -119,19 +119,26 @@ class Checker(BaseChecker):
         self.cquit(Status.OK)
 
     def put(self, flag_id, flag, vuln):
+
+        do_thrust = vuln == 1
+
         s = get_initialized_session()
         idx, height, pos_x, pos_y = self.mch.launch(s, flag, False)
-        self.mch.thrust(s, idx, CheckMachine.random_angle(), 10)
+        if do_thrust:
+            self.mch.thrust(s, idx, CheckMachine.random_angle(), 10)
         self.cquit(Status.OK, f'{idx}:{height}:{pos_x}:{pos_y}')
 
     def get(self, flag_id, flag, vuln):
+
+        do_thrust = vuln == 1
 
         s = get_initialized_session()
         idx, old_height, target_old_pos_x, target_old_pos_y = flag_id.split(
             ':')
 
-        if random.choice([False] * 5 + [True]):
-            self.mch.thrust(s, idx, CheckMachine.random_angle(), 1)
+        if do_thrust:
+            if random.choice([False] * 5 + [True]):
+                self.mch.thrust(s, idx, CheckMachine.random_angle(), 1)
 
         old_height = float(old_height)
 
@@ -145,11 +152,12 @@ class Checker(BaseChecker):
         target_pos_y = new_pos[1]
 
         # orbit height should not really change
-        if abs(
-                CheckMachine.dist(target_pos_x, target_pos_y, 0, 0) -
-                old_height) > 100:
-            self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
-                       'Object orbit shifted too much since creation')
+        if not do_thrust:
+            if abs(
+                    CheckMachine.dist(target_pos_x, target_pos_y, 0, 0) -
+                    old_height) > 100:
+                self.cquit(Status.MUMBLE, "GRAVITY FAILURE",
+                           'Object orbit shifted too much since creation')
 
         # STEP2: create a beam request
         angle = math.degrees(
