@@ -6,7 +6,7 @@ USERS=32
 echo "[*] Creating $USERS users"
 for ((i = 0; i < USERS; i++)); do
     CUID=$(( 1100 + $i ))
-    useradd -u "$CUID" "runner$CUID"
+    useradd -u "$CUID" "runner$i"
 done
 
 echo "[*] Users:"
