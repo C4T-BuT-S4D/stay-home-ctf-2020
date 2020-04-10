@@ -70,7 +70,7 @@ class Checker(BaseChecker):
 			# Check int diff
 			_stats = self.mch.get_user_stats()
 
-			if ( _stats[ 'intelligence' ] - start_int ) != 3.5:
+			if ( _stats[ 'intelligence' ] - start_int ) != 35:
 				self.cquit( Status.MUMBLE, 
 					"Incorrect intelligence changing!",
 					"Checker.read_book(): INT changing error!"
@@ -101,9 +101,6 @@ class Checker(BaseChecker):
 		self.mch.repair_home()
 
 		# test easy raid
-		# farm int
-		self.mch.read_book( 16 )
-
 		# go to raid
 		retcode, err_msg = self.mch.easy_raid()
 		
@@ -114,10 +111,6 @@ class Checker(BaseChecker):
 			)
 
 		# farm INT and potatoes
-		self.mch.go_to_next_day()
-		for i in range( 6 ):
-			self.mch.easy_raid()
-
 		self.mch.go_to_next_day()
 
 		# test medium raid
@@ -130,7 +123,7 @@ class Checker(BaseChecker):
 			)
 
 		# regen HP
-		for i in range( 4 ):
+		for i in range( 2 ):
 			ret_code, _ = self.mch.eat_potato()
 
 			if not retcode:
@@ -139,24 +132,7 @@ class Checker(BaseChecker):
 					"No potatoes, but many raids already completed!"
 				)
 
-		# farm INT and stamina in medium raids
-		self.mch.read_book( 6 )
 		self.mch.go_to_next_day()
-		
-		# farm INT
-		for j in range( 4 ):
-			self.mch.read_book( 24 )
-			self.mch.go_to_next_day()
-		
-		# farm stamina
-		for i in range( 2 ):
-			for j in range( 4 ):
-				self.mch.medium_raid()
-			
-			for j in range( 4 ):
-				self.mch.eat_potato()
-
-			self.mch.go_to_next_day()
 		
 		# test hard raid
 		retcode, _ = self.mch.hard_raid()
