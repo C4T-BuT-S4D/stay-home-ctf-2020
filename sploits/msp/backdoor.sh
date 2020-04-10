@@ -7,7 +7,7 @@ source=$(echo "$newcraft" | jq .id -r)
 sx=$(echo "$newcraft" | jq .position[0] -r)
 sy=$(echo "$newcraft" | jq .position[1] -r)
 
-curl $url/tm/health | jq .stats[] -r | while read target; do
+curl -s $url/tm/health | jq .stats[] -r | while read target; do
 
   # find target coords
   coords=$(curl -s $url/telemetry/$target | jq '(.object.position[0]|tostring) + " " + (.object.position[1]|tostring)' -r)
@@ -30,6 +30,6 @@ curl $url/tm/health | jq .stats[] -r | while read target; do
 
   echo "BEAM $angle $focus"
 
-  curl -s $url/beam/$source -d '{"angle": '$angle', "focus": '$focus'}' | jq .
+  curl -s $url/beam/$source -d '{"angle": '$angle', "focus": '$focus'}' | jq .responses[] -r
 
 done
