@@ -1,4 +1,4 @@
-# create a new craft
+#!/usr/bin/env bash
 
 url="$1:5001"
 
