@@ -11,7 +11,8 @@ apt-get update && apt-get install -y \
     make \
     autoconf \
     automake \
-    libtool
+    libtool \
+    libfcgi-dev
 
 echo "[*] Downloading hiredis..."
 wget -q https://github.com/redis/hiredis/archive/v0.14.1.tar.gz -O /hiredis-0.14.1.tar.gz 

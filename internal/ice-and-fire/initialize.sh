@@ -14,6 +14,7 @@ cat /etc/passwd
 
 echo "[*] Prepairing jail base..."
 mkdir -p /var/jail/dev \
+    && mkdir -p /var/jail/proc \
     && mkdir -p /var/jail/etc \
     && mkdir -p /var/jail/lib \
     && mkdir -p /var/jail/lib64 \

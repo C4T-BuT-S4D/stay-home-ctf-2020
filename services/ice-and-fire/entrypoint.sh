@@ -3,6 +3,7 @@
 mount -o remount,rw,hidepid=2 /proc
 mount --bind /dev /var/jail/dev
 mount --bind /proc /var/jail/proc
+mount --bind /etc/resolv.conf /var/jail/etc/resolv.conf
 echo "[*] Mounted!"
 
 echo "[*] Chrooting"
