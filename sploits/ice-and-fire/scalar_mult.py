@@ -5,9 +5,6 @@ import sys
 from checklib import *
 from iaf_lib import *
 
-if len(sys.argv) < 3:
-    print(f'Usage: {sys.argv[0]} ip username')
-
 ip = sys.argv[1]
 username = sys.argv[2]
 url = f"http://{ip}:31337/api"
