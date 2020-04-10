@@ -446,7 +446,7 @@ bool Martian::ReadBook( void )
 
 	if ( CanDoAction( READ_BOOK ) )
 	{
-		intelligence += 3.5 * count;
+		intelligence += 35 * count;
 		actions -= READ_BOOK * count;
 		std::cout << "Reading ";
 		for ( int i = 0; i < 7; i++ )
@@ -457,7 +457,7 @@ bool Martian::ReadBook( void )
 		std::cout << std::endl;
 
 		std::cout << "{+} You read the book. Intellect increased by <";
-		std::cout << 3.5 * count << ">" << std::endl; 
+		std::cout << 35 * count << ">" << std::endl; 
 	}
 	else
 	{
@@ -748,8 +748,8 @@ int EasyRaid( Martian* player )
 	{
 		std::cout << "{+} You managed to open the chest and there you found:" << std::endl;
 
-		int potatoes_cnt = 1 + ( dis( gen ) % 3 );
-		int water_cnt = 1 + ( dis( gen ) % 3 );
+		int potatoes_cnt = 8 + ( dis( gen ) % 2 );
+		int water_cnt = 8 + ( dis( gen ) % 2 );
 
 		std::cout << "potato: " << potatoes_cnt << std::endl;
 		std::cout << "drink water: " << water_cnt << std::endl;
@@ -898,7 +898,7 @@ int MediumRaid( Martian* player )
 	}
 
 	std::cout << "{+++} You killed a monster!!!" << std::endl;
-	player->AddStamina( 25.0 );
+	player->AddStamina( 350.0 );
 
 	std::cout << "{?} You got a chest, but this time you";
 	std::cout << " need to enter the password immediately";

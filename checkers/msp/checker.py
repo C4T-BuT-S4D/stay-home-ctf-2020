@@ -12,12 +12,12 @@ import random
 from base64 import b32encode
 from time import sleep
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from client import CheckMachine
 from checklib import BaseChecker, Status, get_initialized_session
 from checklib import rnd_username, rnd_password
 from checklib import cquit
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 class Checker(BaseChecker):

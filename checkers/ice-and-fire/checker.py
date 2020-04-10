@@ -90,7 +90,7 @@ class Checker(BaseChecker):
         coordinates = list(map(float, coordinates.split(',')))
         u1 = User(u=uu, p=up, coordinates=coordinates, contact=flag)
 
-        self.mch.login(s1, u1)
+        self.mch.login(s1, u1, status=Status.CORRUPT)
         self.mch.me(s1, u1, status=Status.CORRUPT)
 
         coords_noise = copy.copy(coordinates)
@@ -105,8 +105,8 @@ class Checker(BaseChecker):
 
         match = self.mch.match(s2, u1.username)
 
-        self.assert_eq(match.ok, True, "Invalid user matching")
-        self.assert_eq(match.contact.text, u1.contact, "Invalid contact on match")
+        self.assert_eq(match.ok, True, "Invalid user matching", status=Status.CORRUPT)
+        self.assert_eq(match.contact.text, u1.contact, "Invalid contact on match", status=Status.CORRUPT)
 
         self.cquit(Status.OK)
 

@@ -33,11 +33,11 @@ class CheckMachine:
 				self.port, 
 				timeout = TCP_CONNECTION_TIMEOUT 
 			)
-		except:
+		except Exception as e:
 			self.sock = None
 			self.c.cquit( Status.DOWN, 
 				'Connection error',
-				'CheckMachine.connection(): timeout connection!' 
+				'CheckMachine.connection(): timeout connection!\nException: {}'.format( e )
 			)
 
 		self.sock.settimeout( TCP_OPERATIONS_TIMEOUT )
@@ -58,11 +58,11 @@ class CheckMachine:
 				)
 
 			self.sock.send( password.encode() + b'\n' )
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't register a new user!", 
-				"Registration process timeout!" 
+				"Registration process timeout!\nException: {}".format( e ) 
 			)
 
 	def login( self, username, password ):
@@ -85,11 +85,11 @@ class CheckMachine:
 				return False, "{-} Password is invalid!"
 
 			return True, "OK"
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't login by registered user!", 
-				"Login process timeout!" 
+				"Login process timeout!\nException: {}".format( e ) 
 			)
 
 	def set_status( self, new_status ):
@@ -104,18 +104,18 @@ class CheckMachine:
 			if not b"Status is changed" in buf:
 				self.c.cquit( Status.MUMBLE, 
 					"Can't change user status!",
-					"Checker.set_status(): Status is not changed!"
+					"Checker.set_status(): Status is not changed!\nException: {}".format( e ) 
 				)
 
 			self.sock.recvuntil( b"[>] " )
 			self.sock.send( b"10\n" )
 
 			return True
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't change user status!", 
-				"Change status process timeout!" 
+				"Change status process timeout!\nException: {}".format( e ) 
 			)
 
 	def read_book( self, count ):
@@ -132,13 +132,13 @@ class CheckMachine:
 			else:
 				self.c.cquit( Status.MUMBLE,
 					"Read book return incorrect message!",
-					"Checker.read_book(): incorrect read_book answer"
+					"Checker.read_book(): incorrect read_book answer\nException: {}".format( e ) 
 				)
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't read books!", 
-				"Read book process timeout!" 
+				"Read book process timeout!\nException: {}".format( e ) 
 			)
 
 	def eat_potato( self ):
@@ -152,11 +152,11 @@ class CheckMachine:
 				return False, "{-} No potatoes!" 
 
 			return True, "OK"
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't eat potato!", 
-				"Eat potato process timeout!" 
+				"Eat potato process timeout!\nException: {}".format( e ) 
 			)
 
 	def get_user_stats( self ):
@@ -184,11 +184,11 @@ class CheckMachine:
 			stats[ 'repair_skill' ] = float( tmp_buf[ 8 ].split( b": " )[ 1 ] )
 
 			return stats
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't get user stats!", 
-				"Get stats process timeout!" 
+				"Get stats process timeout!\nException: {}".format( e ) 
 			)
 
 	def get_status( self ):
@@ -204,11 +204,11 @@ class CheckMachine:
 				self.sock.send( b"n\n" )
 
 			return status.decode()
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't get user status!", 
-				"Get status process timeout!" 
+				"Get status process timeout!\nException: {}".format( e ) 
 			)
 
 	def get_home_stats( self ):
@@ -232,11 +232,11 @@ class CheckMachine:
 			stats[ 'temp' ] = int( tmp_buf[ 2 ].split( b": " )[ 1 ] )
 
 			return stats
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't get home stats!", 
-				"Get home stats process timeout!" 
+				"Get home stats process timeout!\nException: {}".format( e ) 
 			)
 
 	def repair_home( self ):
@@ -263,11 +263,11 @@ class CheckMachine:
 				self.sock.send( b"n\n" )
 
 			return True
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't repair home!", 
-				"Repair home process timeout!" 
+				"Repair home process timeout!\nException: {}".format( e ) 
 			)
 
 	def go_to_next_day( self ):
@@ -284,11 +284,11 @@ class CheckMachine:
 					"Lol! You died!",
 					"Nigth event: " + buf.decode()[5:]
 				)
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't change day!", 
-				"Change day process timeout!" 
+				"Change day process timeout!\nException: {}".format( e ) 
 			)
 
 	def close_connect( self ):
@@ -305,7 +305,7 @@ class CheckMachine:
 			self.sock.close()
 
 			self.sock = None
-		except:
+		except Exception as e:
 			self.sock = None
 
 	def save_file( self ):
@@ -341,11 +341,11 @@ class CheckMachine:
 				)
 			else:
 				return True, "OK"
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't do easy raid!", 
-				"Easy raid process timeout!" 
+				"Easy raid process timeout!\nException: {}".format( e ) 
 			)
 	
 	def medium_raid( self ):
@@ -398,11 +398,11 @@ class CheckMachine:
 				)
 			else:
 				return True, "OK"
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't do medium raid!", 
-				"Medium raid process timeout!" 
+				"Medium raid process timeout!\nException: {}".format( e ) 
 			)
 
 	def make_valid_hard_raid_code( self, value ):
@@ -486,11 +486,11 @@ class CheckMachine:
 				)
 			else:
 				return True, "OK"
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't do hard raid!", 
-				"Hard raid process timeout!" 
+				"Hard raid process timeout!\nException: {}".format( e ) 
 			)
 
 	def view_trophy( self ):
@@ -520,11 +520,11 @@ class CheckMachine:
 			self.sock.send( b"n\n" )
 
 			return True, code
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't view trophy!", 
-				"View trophy process timeout!" 
+				"View trophy process timeout!\nException: {}".format( e ) 
 			)
 
 	def recycle_trophy( self, code ):
@@ -558,11 +558,11 @@ class CheckMachine:
 			self.sock.send( "n\n" )
 
 			return True, code
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't recycle trophy!", 
-				"Recycle trophy process timeout!" 
+				"Recycle trophy process timeout!\nException: {}".format( e ) 
 			)
 
 	def chek_runaway_hard_raid( self, data ):
@@ -592,11 +592,11 @@ class CheckMachine:
 				)
 
 			self.sock.send( data.encode() + b'\n' )
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't runaway from hard raid!", 
-				"Runaway from hard raid process timeout!" 
+				"Runaway from hard raid process timeout!\nException: {}".format( e ) 
 			)
 
 	def check_change_power_scheme( self ):
@@ -647,10 +647,10 @@ class CheckMachine:
 						"Power shceme changing error!",
 						"Power shceme changing error!"
 					)
-		except:
+		except Exception as e:
 			self.close_connect()
 			self.c.cquit( Status.MUMBLE, 
 				"Can't change power scheme!", 
-				"Change power scheme process timeout!" 
+				"Change power scheme process timeout!\nException: {}".format( e ) 
 			)
  		
