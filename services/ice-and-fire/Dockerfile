@@ -1,4 +1,4 @@
-FROM pomomondreganto/ice-and-fire
+FROM pomomondreganto/ice-and-fire:latest
 
 ADD ./Makefile /app/Makefile
 ADD ./src /app/src
