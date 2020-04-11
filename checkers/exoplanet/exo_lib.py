@@ -1,115 +1,89 @@
-import requests
-import random
+#!/usr/bin/env python3.7
+
 from checklib import *
+
 
 PORT = 17171
 
-class PlanetType:
-    Unknown = 0
-    Terrestrial = 1
-    Protoplanet = 2
-    GasGiant = 3
 
 class CheckMachine:
-    @property
-    def url(self):
-        return f'http://{self.c.host}:{self.port}'
-
     def __init__(self, checker):
-        self.c = checker
+        self.checker = checker
         self.port = PORT
 
-    def health_check(self, s):
+    @property
+    def url(self):
+        return f'http://{self.checker.host}:{self.port}'
+
+    def health_check(self, session):
         url = self.url
 
-        r = s.get(self.url)
+        response = session.get(self.url)
 
-        self.c.assert_eq(r.status_code, 200, "Can't get the main page")
+        self.checker.assert_eq(response.status_code, 200, "Can't get the main page")
 
-    def add_star(self, s, name, location):
-        url = f"{self.url}/api/stars"
+    def add_star(self, session, star):
+        url = f"{self.url}/api/stars/"
 
-        star = {
-            'name': name,
-            'location': location
-        }
+        response = session.post(url, json=star)
 
-        r = s.post(url, json=star)
+        obj = self.checker.get_json(response, "Can't add star")
+        self.checker.assert_eq(response.status_code, 201, "Can't add star")
 
-        d = self.c.get_json(r, "Can't add star")
+        self.checker.assert_eq(type(obj), type({}), 'Incorrect star model')
+        self.checker.assert_in('id', obj, 'Incorrect star model')
 
-        self.c.assert_nin("status", d, "Can't add star")
-        self.c.assert_in("id", d, 'Incorrect star model')
+        for key, value in star.items():
+            self.checker.assert_in(key, obj, "Can't add star")
+            self.checker.assert_eq(value, obj.get(key), "Can't add star")
 
-        return d
+        return obj
 
-    def add_planet(self, s, star_id, name, location, type_=PlanetType.Unknown, is_hidden=False):
+    def add_planet(self, session, planet):
         url = f'{self.url}/api/planets/'
 
-        planet = {
-            'starId': star_id,
-            'name': name,
-            'location': location,
-            'planetType': type_,
-            'isHidden': is_hidden
-        }
+        response = session.post(url, json=planet)
 
-        r = s.post(url, json=planet)
+        obj = self.checker.get_json(response, "Can't add planet")
+        self.checker.assert_eq(response.status_code, 201, "Can't add planet")
 
-        d = self.c.get_json(r, "Can't add planet")
+        self.checker.assert_eq(type(obj), type({}), 'Incorrect planet model')
+        self.checker.assert_in('id', obj, 'Incorrect planet model')
 
-        self.c.assert_nin("status", d, "Can't add planet")
-        self.c.assert_in("id", d, 'Incorrect planet model')
-        self.c.assert_in("location", d, "Can't add planet")
+        for key, value in planet.items():
+            self.checker.assert_in(key, obj, "Can't add planet")
+            self.checker.assert_eq(value, obj.get(key), "Can't add planet")
+   
+        return obj
 
-        self.c.assert_eq(location, d["location"], "Can't add planet")
+    def get_star(self, session, star_id, star={}):
+        url = f'{self.url}/api/stars/{star_id}'
 
-        return d
+        response = session.get(url)
 
-    def get_stars(self, s, star_id, planet_id):
-        url = f'{self.url}/api/stars/'
+        obj = self.checker.get_json(response, "Can't get star")
+        self.checker.assert_eq(response.status_code, 200, "Can't get star")
 
-        r = s.get(url)
+        self.checker.assert_eq(type(obj), type({}), 'Incorrect star model')
 
-        d = self.c.get_json(r, "Can't list stars")
+        for key, value in star.items():
+            self.checker.assert_in(key, obj, "Can't get star")
+            self.checker.assert_eq(value, obj.get(key), "Can't get star")
 
-        self.c.assert_eq(type(d), type([]), "Can't list stars")
+        return obj
 
-        for s in d:
-            self.c.assert_eq(type(s), type({}), "Invalid stars on list")
-            self.c.assert_in("id", s, "Invalid stars on list")
-            self.c.assert_in("planets", s, "Invalid stars on list")
-            self.c.assert_eq(type(s["planets"]), type([]), "Invalid stars on list")
-            if s["id"] == star_id:
-                self.c.assert_in(planet_id, s["planets"], "Can't find star", status=Status.CORRUPT)
-                break
-        else:
-            self.c.cquit(Status.CORRUPT, "Can't find star")
-
-    def get_planet(self, s, planet_id, flag):
+    def get_planet(self, session, planet_id, planet={}):
         url = f'{self.url}/api/planets/{planet_id}'
 
-        r = s.get(url)
+        response = session.get(url)
 
-        d = self.c.get_json(r, "Can't get planet", status=Status.CORRUPT)
+        obj = self.checker.get_json(response, "Can't get planet")
+        self.checker.assert_eq(response.status_code, 200, "Can't get planet")
 
-        self.c.assert_eq(type(d), type({}), "Can't get planet", status=Status.CORRUPT)
-        self.c.assert_nin("status", d, "Can't get planet", status=Status.CORRUPT)
-        self.c.assert_in("location", d, "Can't get planet", status=Status.CORRUPT)
+        self.checker.assert_eq(type(obj), type({}), 'Incorrect planet model')
 
-        self.c.assert_eq(d["location"], flag, "Can't get flag in planet", status=Status.CORRUPT)
+        for key, value in planet.items():
+            self.checker.assert_in(key, obj, "Can't get planet")
+            self.checker.assert_eq(value, obj.get(key), "Can't get planet")
 
-        return d
-
-    def _random_name(self, length=32):
-        return rnd_string(length)
-
-    def _random_location(self, length=32):
-        return rnd_string(length)
-
-    def _random_type(self) -> PlanetType:
-        return random.choice([
-            PlanetType.Terrestrial,
-            PlanetType.Protoplanet,
-            PlanetType.GasGiant
-        ])
+        return obj

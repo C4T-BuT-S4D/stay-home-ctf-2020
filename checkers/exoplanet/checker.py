@@ -6,13 +6,20 @@ monkey.patch_all()
 import os
 import sys
 import json
-
-from typing import List, Dict
+import enum
+import random
+import requests
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from exo_lib import *
 
+
+class PlanetType(enum.IntEnum):
+    Unknown = 0
+    Terrestrial = 1
+    Protoplanet = 2
+    GasGiant = 3
 
 
 class Checker(BaseChecker):
@@ -27,48 +34,67 @@ class Checker(BaseChecker):
             self.cquit(Status.DOWN, 'Connection error', 'Got requests connection error')
 
     def check(self):
-        s = get_initialized_session()
+        session = get_initialized_session()
 
-        self.mch.health_check(s)
+        self.mch.health_check(session)
+
+        starObj = Checker.generate_star()
+        star = self.mch.add_star(session, starObj)
+
+        planetObj = Checker.generate_planet(star['id'])
+        planet = self.mch.add_planet(session, planetObj)
+
+        self.mch.get_star(session, star['id'], starObj)
+        self.mch.get_planet(session, planet['id'], planetObj)
 
         self.cquit(Status.OK)
 
     def put(self, flag_id, flag, vuln):
-        s = get_initialized_session()
+        session = get_initialized_session()
 
-        star = self.mch.add_star(
-            s,
-            self.mch._random_name(),
-            self.mch._random_location())
+        star = self.mch.add_star(session, Checker.generate_star())
+        planet = self.mch.add_planet(session, Checker.generate_planet(star['id'], flag))
 
-        planet = self.mch.add_planet(
-            s,
-            star['id'],
-            self.mch._random_name(),
-            flag,
-            self.mch._random_type(),
-            True)
-
-        self.mch.get_stars(s, star['id'], planet['id'])
-
-        self.cquit(Status.OK, star['id'], json.dumps([s.cookies.items(), star['id'], planet['id']]))
+        self.cquit(Status.OK, planet['id'], json.dumps([session.cookies.items(), star['id'], planet['id']]))
 
     def get(self, flag_id, flag, vuln):
-        s = get_initialized_session()
+        session = get_initialized_session()
 
         cookies, star_id, planet_id = json.loads(flag_id)
 
-         # TODO
-         # CHECK THAT PLANET_ID IS IN PLANETS LIST FOR STAR
+        star = self.mch.get_star(session, star_id)
 
         for name, value in cookies:
-            s.cookies.set(name, value)
+            session.cookies.set(name, value)
 
-        planet = self.mch.get_planet(s, planet_id, flag)
+        planet = self.mch.get_planet(session, planet_id)
+
+        self.assert_eq(planet['location'], flag, "Can't get flag", status=Status.CORRUPT)
 
         self.cquit(Status.OK)
 
+    @staticmethod
+    def generate_star():
+        return {
+            'name': rnd_string(32),
+            'location': rnd_string(32)
+        }
 
+    @staticmethod
+    def generate_planet(star_id, flag=None):
+        type_ = random.choice([
+            PlanetType.Protoplanet,
+            PlanetType.Terrestrial,
+            PlanetType.GasGiant
+        ])
+
+        return {
+            'starId': star_id,
+            'name': rnd_string(32),
+            'location': flag or rnd_string(32),
+            'type': type_,
+            'isHidden': flag is not None
+        }
 
 
 if __name__ == '__main__':
