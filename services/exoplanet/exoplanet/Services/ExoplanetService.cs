@@ -60,20 +60,24 @@ namespace exoplanet.Services
         {
             star.Id = ObjectId.GenerateNewId().ToString();
 
-            await stars.InsertOneAsync(star)
+            await stars
+                .InsertOneAsync(star)
                 .ConfigureAwait(false);
         }
 
         public async Task AddPlanetAsync(Planet planet, Star star)
         {
             planet.Id = ObjectId.GenerateNewId().ToString();
-            planet.StarId = star.Id;
+            
             star.Planets.Add(planet.Id);
+            planet.StarId = star.Id;
 
-            await planets.InsertOneAsync(planet)
+            await planets
+                .InsertOneAsync(planet)
                 .ConfigureAwait(false);
 
-            await stars.ReplaceOneAsync(_star => _star.Id == star.Id, star)
+            await stars
+                .ReplaceOneAsync(_star => _star.Id == star.Id, star)
                 .ConfigureAwait(false);
         }
     }
