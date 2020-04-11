@@ -43,9 +43,10 @@ services:
 
   messenger:
     build: message_service
-    restart: always
+    user: nobody
     volumes:
-    - "./data/messages:/tmp/messages"
+        - "./data/messages:/tmp/messages"
+    restart: always
     mem_limit: 300M
     cpus: 0.25
 
