@@ -24,9 +24,9 @@ namespace exoplanet.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllStars()
+        public async Task<ActionResult> GetLastStars()
         {
-            var stars = await service.GetAllStarsAsync()
+            var stars = await service.GetLastStarsAsync()
                 .ConfigureAwait(false);
 
             return Ok(stars);
