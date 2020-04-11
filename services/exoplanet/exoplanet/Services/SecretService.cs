@@ -21,10 +21,9 @@ namespace exoplanet.Services
 
         public async Task<Secret> GetSecretAsync(string name)
         {
-            var cursor = await secrets.FindAsync(secret => secret.Name == name)
-                .ConfigureAwait(false);
-
-            return await cursor.FirstOrDefaultAsync()
+            return await secrets
+                .Find(secret => secret.Name == name)
+                .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
         }
 
