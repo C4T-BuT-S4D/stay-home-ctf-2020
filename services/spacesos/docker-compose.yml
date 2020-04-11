@@ -24,7 +24,7 @@ services:
     image: mongo
     restart: on-failure
     volumes:
-    - "./data:/data/db"
+    - "./data/db:/data/db"
     mem_limit: 500M
     cpus: 0.25
 
@@ -44,6 +44,8 @@ services:
   messenger:
     build: message_service
     restart: always
+    volumes:
+    - "./data/messages:/tmp/messages"
     mem_limit: 300M
     cpus: 0.25
 
