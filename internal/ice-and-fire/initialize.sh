@@ -1,61 +1,44 @@
 #!/bin/bash
 
-set -e
+set +e
 
-echo "[*] Installing required packages..."
-apt-get update && apt-get install -y \
-    wget \
-    pkg-config \
-    g++-multilib \
-    gcc-multilib \
-    make \
-    fcgiwrap \
-    autoconf \
-    automake \
-    libtool
+USERS=32
+echo "[*] Creating $USERS users"
+for ((i = 0; i < USERS; i++)); do
+    CUID=$(( 1100 + $i ))
+    useradd -u "$CUID" "runner$i"
+done
 
-echo "[*] Downloading hiredis..."
-wget -q https://github.com/redis/hiredis/archive/v0.14.1.tar.gz -O /hiredis-0.14.1.tar.gz 
-tar -C / -xzf /hiredis-0.14.1.tar.gz
-rm -f /hiredis-0.14.1.tar.gz
+echo "[*] Users:"
+cat /etc/passwd
 
-echo "[*] Installing hiredis..."
-cd /hiredis-0.14.1
-CFLAGS="-m32" LDFLAGS="-m32" make && make install && ldconfig
+echo "[*] Prepairing jail base..."
+mkdir -p /var/jail/dev \
+    && mkdir -p /var/jail/proc \
+    && mkdir -p /var/jail/etc \
+    && mkdir -p /var/jail/lib \
+    && mkdir -p /var/jail/lib64 \
+    && mkdir -p /var/jail/lib32 \
+    && mkdir -p /var/jail/usr/local/lib \
+    && mkdir -p /var/jail/usr \
+    && mkdir -p /var/jail/bin \
+    && mkdir -p /var/jail/usr/sbin \
+    && mkdir -p /var/jail/app \
+    && chown -R root:root /var/jail
 
-echo "[*] Downloading protobuf..."
-wget -q https://github.com/protocolbuffers/protobuf/archive/v3.11.4.tar.gz -O /protobuf-3.11.4.tar.gz
-tar -C / -xzf /protobuf-3.11.4.tar.gz 
-rm -f /protobuf-3.11.4.tar.gz
-
-echo "[*] Installing protobuf..."
-cd /protobuf-3.11.4
-./autogen.sh && ./configure --host=i686-linux-gnu "CFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-m32"
-make -j4 && make install && ldconfig
-
-echo "[*] Downloading protobuf-c..."
-wget -q https://github.com/protobuf-c/protobuf-c/archive/v1.3.3.tar.gz -O /protobuf-c-1.3.3.tar.gz 
-tar -C / -xzf /protobuf-c-1.3.3.tar.gz
-rm -rf /protobuf-c-1.3.3.tar.gz
-
-echo "[*] Installing protobuf-c..."
-cd /protobuf-c-1.3.3
-./autogen.sh && ./configure --host=i686-linux-gnu "CFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-m32"
-make -j4 && make install && ldconfig
-
-echo "[*] Cleaning up..."
-cd /
-apt-get remove -y \
-    wget \
-    pkg-config \
-    g++-multilib \
-    autoconf \
-    automake \
-    libtool 
-apt-get autoremove -y 
-rm -rf /var/lib/apt/lists/* 
-rm -rf /hiredis-0.14.1
-rm -rf /protobuf-3.11.4 
-rm -rf /protobuf-c-1.3.3
+echo "[*] Copying files..."
+cp /etc/ld.so.cache /var/jail/etc \
+    && cp /etc/ld.so.conf /var/jail/etc \
+    && cp /etc/nsswitch.conf /var/jail/etc \
+    && cp /etc/resolv.conf /var/jail/etc \
+    && cp /etc/hosts /var/jail/etc \
+    && cp /etc/passwd /var/jail/etc \
+    && cp /etc/group /var/jail/etc \
+    && cp /etc/shadow /var/jail/etc \
+    && cp -r /lib/* /var/jail/lib \
+    && cp -r /lib32/* /var/jail/lib32 \
+    && cp /usr/sbin/fcgiwrap /var/jail/usr/sbin \
+    && cp /bin/sh /var/jail/bin \
+    && cp /bin/ls /var/jail/bin
 
 echo "[+] Done!"
