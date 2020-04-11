@@ -11,6 +11,8 @@ namespace exoplanet.Services
 {
     public class ExoplanetService
     {
+        private const int LastCount = 500;
+
         private readonly IMongoCollection<Star> stars;
         private readonly IMongoCollection<Planet> planets;
 
@@ -23,12 +25,12 @@ namespace exoplanet.Services
             this.planets = database.GetCollection<Planet>(settings.PlanetsCollectionName);
         }
 
-        public async Task<List<Star>> GetAllStarsAsync()
+        public async Task<List<Star>> GetLastStarsAsync()
         {
-            var cursor = await stars.FindAsync(star => true)
-                .ConfigureAwait(false);
-            
-            return await cursor.ToListAsync()
+            return await stars
+                .Find(star => true)
+                .Limit(LastCount)
+                .ToListAsync()
                 .ConfigureAwait(false);
         }
 
@@ -37,10 +39,9 @@ namespace exoplanet.Services
             if (!ObjectId.TryParse(id, out var objectId))
                 return null;
 
-            var cursor = await stars.FindAsync(star => star.Id == id)
-                .ConfigureAwait(false);
-            
-            return await cursor.FirstOrDefaultAsync()
+            return await stars
+                .Find(star => star.Id == id)
+                .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
         }
 
@@ -49,10 +50,9 @@ namespace exoplanet.Services
             if (!ObjectId.TryParse(id, out var objectId))
                 return null;
 
-            var cursor = await planets.FindAsync(planet => planet.Id == id)
-                .ConfigureAwait(false);
-            
-            return await cursor.FirstOrDefaultAsync()
+            return await planets
+                .Find(planet => planet.Id == id)
+                .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
         }
 
