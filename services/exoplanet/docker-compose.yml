@@ -5,13 +5,13 @@ services:
     image: mongo:latest
     volumes:
       - ./data/:/data/db
-    restart: always
+    restart: on-failure
     mem_limit: 512M
     cpus: 0.25
-  
+
   exoplanet:
     build: .
-    restart: always
+    restart: on-failure
     depends_on:
       - mongo
     ports:
