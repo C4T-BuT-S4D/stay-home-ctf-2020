@@ -11,7 +11,7 @@ namespace exoplanet.Services
 {
     public class ExoplanetService
     {
-        private const int LastCount = 500;
+        private const int LastCount = 100;
 
         private readonly IMongoCollection<Star> stars;
         private readonly IMongoCollection<Planet> planets;
