@@ -22,9 +22,8 @@ namespace exoplanet.Crypto.Multiplicators
         {
             var parts = value.ToByteArray(true, false);
             
-            return Enumerable
-                .Range(0, this.table.GetLength(0))
-                .Select(i => this.table[i, parts[i]])
+            return parts
+                .Select((part, i) => this.table[i, part])
                 .Aggregate(
                     BigInteger.Zero,
                     (x, y) => x ^ y);

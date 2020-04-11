@@ -64,7 +64,7 @@ namespace exoplanet.Controllers
                 return Unauthorized();
             }
 
-            if (content.Contains(planet.Id))
+            if (content.Contains(Hasher.Hash(planet.Id)))
                 return Ok(planet);
             
             return Unauthorized();
@@ -110,7 +110,7 @@ namespace exoplanet.Controllers
             var newToken = await this.authenticator.GenerateTokenAsync(
                 star.Id,
                 star.Name,
-                content.Append(planet.Id)
+                content.Append(Hasher.Hash(planet.Id))
             ).ConfigureAwait(false);
 
             Response.Cookies.Append("token", newToken);
