@@ -55,7 +55,7 @@ class Checker(BaseChecker):
         star = self.mch.add_star(session, Checker.generate_star())
         planet = self.mch.add_planet(session, Checker.generate_planet(star['id'], flag))
 
-        self.cquit(Status.OK, planet['id'], json.dumps([session.cookies.items(), star['id'], planet['id']]))
+        self.cquit(Status.OK, star['id'], json.dumps([session.cookies.items(), star['id'], planet['id']]))
 
     def get(self, flag_id, flag, vuln):
         session = get_initialized_session()
