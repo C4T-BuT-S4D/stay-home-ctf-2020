@@ -151,8 +151,8 @@ def main():
             for fake_token in generate(planet_id):
                 planet = get_planet(planet_id, fake_token)
                 if 'error' not in planet and planet['isHidden'] == True:
-                    # print(planet)
-                    print(planet['location'])
+                    print(planet)
+                    # print(planet['name'])
                     break
 
 
