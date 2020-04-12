@@ -29,6 +29,7 @@ namespace exoplanet.Services
         {
             return await stars
                 .Find(star => true)
+                .Sort(Builders<Star>.Sort.Descending("$natural"))
                 .Limit(LastCount)
                 .ToListAsync()
                 .ConfigureAwait(false);

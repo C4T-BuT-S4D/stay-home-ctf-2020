@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Inconsolata:400,700);
 html {
-  background: #fff;
-  overflow-y: scroll; 
+  background: #eee;
+  overflow-y: scroll;
 }
 
 body {
@@ -10,7 +10,7 @@ body {
   font-weight: 400;
   max-width: 600px;
   padding: 1em;
-  margin: 5% 0; 
+  margin: 1% 0; 
 }
 ::selection{
   background: #eee
@@ -26,7 +26,7 @@ a{
 }
 a:hover,a:focus{
   background: #181818;
-  color:#fff;
+  color:#eee;
 }
 h2{
   font-size: 1em;
@@ -46,13 +46,19 @@ li{
   margin:.25em 0 0;
 }
 span{
-  display: block;
-  color:#999;
+  color:#666;
   line-height:1;
+  margin-right: 5px;
+}
+.kek{
+  font: .875em/1.6 'Inconsolata', monospace;
+  font-size: 1em;
+  COLOR: #000;
+  padding-left: 5px;
 }
 pre{
   display: block;
-  color:#999;
+  color:#666;
   line-height:1;
 }
 
@@ -66,15 +72,21 @@ input[type="text"]{
   width: 400px;
   border: none;
   font-family: inherit;
-  background: #fff;
+  background: #eee;
   padding:0 .5em;
 }
 input[type="text"]:focus{
-  background: #fff;
+  background: #eee;
   color: #000;
   outline:none;
 }
 .command{
+  display: block;
+  color: #181818;
+  font-weight: 700;
+  margin: 2em 0;
+}
+.command2{
   display: block;
   color: #181818;
   font-weight: 700;

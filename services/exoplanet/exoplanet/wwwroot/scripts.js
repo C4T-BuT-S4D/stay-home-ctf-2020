@@ -23,21 +23,33 @@ var types = [
 ]
 
 function get_last_stars(n) {
-    return $.ajax({
+    var res = $.ajax({
         url: '/api/stars/',
         type: 'GET',
         async: false,
         dataType: 'json'
-    }).responseJSON.splice(0, n);
+    });
+
+    if (res.status == 500) {
+        return {'error': 'internal server error'};
+    }
+    
+    return res.responseJSON.splice(0, n);
 }
 
 function get_star(star_id) {
-    return $.ajax({
+    var res = $.ajax({
         url: `/api/stars/${star_id}`,
         type: 'GET',
         async: false,
         dataType: 'json'
-    }).responseJSON;
+    });
+
+    if (res.status == 500) {
+        return {'error': 'internal server error'};
+    }
+
+    return res.responseJSON;
 }
 
 function get_planet(planet_id) {
@@ -46,8 +58,13 @@ function get_planet(planet_id) {
         type: 'GET',
         async: false,
         dataType: 'json'
-    }).responseJSON;
+    });
 
+    if (res.status == 500) {
+        return {'error': 'internal server error'};
+    }
+
+    res = res.responseJSON;
     res.type = types[res.type];
 
     return res;
@@ -62,6 +79,10 @@ function add_star(star) {
         data: JSON.stringify(star)
     });
 
+    if (res.status == 500) {
+        return {'error': 'internal server error'};
+    }
+
     if (res.status == 201) {
         star_id = res.responseJSON.id;
     }
@@ -70,13 +91,19 @@ function add_star(star) {
 }
 
 function add_planet(planet) {
-    return $.ajax({
+    var res = $.ajax({
         url: `/api/planets/`,
         type: 'POST',
         async: false,
         contentType: "application/json",
         data: JSON.stringify(planet)
-    }).responseJSON;
+    });
+
+    if (res.status == 500) {
+        return {'error': 'internal server error'};
+    }
+
+    return res.responseJSON;
 }
 
 $(document).ready(function() {
@@ -106,6 +133,8 @@ $(document).ready(function() {
             while (content.firstChild) {
                 content.firstChild.remove();
             }
+
+            document.getElementById('kek').innerText = destination;
 
             switch (parts[0]) {
                 case 'last':
@@ -322,7 +351,7 @@ $(document).ready(function() {
             }
 
             $('section[id="' + destination + '"]').addClass('open').siblings().removeClass('open');
-
+            
             if($.inArray(destination, sectionArray) == -1){
                 $('#error').addClass('open');
                 $('#error').siblings().removeClass('open');
@@ -331,7 +360,7 @@ $(document).ready(function() {
             $('.command').fadeIn();
             $('input[type="text"]').focus();
             $('input[type="text"]').val('');
-
+        
             $('html,body').animate({scrollTop: document.body.scrollHeight}, "fast");
 
         }
