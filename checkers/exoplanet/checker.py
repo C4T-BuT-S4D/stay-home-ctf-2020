@@ -41,11 +41,19 @@ class Checker(BaseChecker):
         starObj = Checker.generate_star()
         star = self.mch.add_star(session, starObj)
 
-        planetObj = Checker.generate_planet(star['id'])
-        planet = self.mch.add_planet(session, planetObj)
+        planetObj1 = Checker.generate_planet(star['id'])
+        planetObj2 = Checker.generate_planet(star['id'])
+        planet1 = self.mch.add_planet(session, planetObj1)
+        planet2 = self.mch.add_planet(session, planetObj2)
 
-        self.mch.get_star(session, star['id'], starObj)
-        self.mch.get_planet(session, planet['id'], planetObj)
+        star = self.mch.get_star(session, star['id'], starObj)
+
+        self.assert_in('planets', star, 'Incorrect star model')
+        self.assert_in(planet1['id'], star['planets'], "Can't get planet from star")
+        self.assert_in(planet2['id'], star['planets'], "Can't get planet from star")
+        
+        self.mch.get_planet(session, planet1['id'], planetObj1)
+        self.mch.get_planet(session, planet2['id'], planetObj2)
 
         self.cquit(Status.OK)
 
