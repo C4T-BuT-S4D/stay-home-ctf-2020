@@ -26,8 +26,9 @@ class CheckMachine:
                                         Status.MUMBLE)
 
         if 'error' in response_body or 'object' not in response_body:
-            self.c.cquit(Status.MUMBLE, "GROUND TERMINAL ERROR",
-                         '/telemetry/ error: ' + str(response))
+            self.c.cquit(
+                Status.MUMBLE, "GROUND TERMINAL ERROR",
+                '/telemetry/ error: ' + response_body.get('error', ''))
 
         return response_body['object']
 

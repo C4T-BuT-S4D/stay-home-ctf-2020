@@ -39,7 +39,7 @@ for SERVICE in $SERVICES; do
     echo "Running test $i..."
 
     echo "Running CHECK..."
-    time "$CHECKER" check 127.0.0.1 >/tmp/checker_stdout 2>/tmp/checker_stderr
+    time "$CHECKER" check $HOST >/tmp/checker_stdout 2>/tmp/checker_stderr
     A=$?
     if [ $A != 101 ]; then
       echo "CHECK failed! Got code $A"
@@ -57,7 +57,7 @@ for SERVICE in $SERVICES; do
       FLAG=$(head -c 23 /dev/urandom | base64 | tr 'a-z' 'A-Z' | tr '+/' 'AB')
 
       echo "Running PUT..."
-      time "$CHECKER" put 127.0.0.1 123 "$FLAG" "$j" >/tmp/checker_stdout 2>/tmp/checker_stderr
+      time "$CHECKER" put $HOST 123 "$FLAG" "$j" >/tmp/checker_stdout 2>/tmp/checker_stderr
       A=$?
       if [ $A != 101 ]; then
         echo "PUT failed! Got code $A"
@@ -72,7 +72,7 @@ for SERVICE in $SERVICES; do
       fi
 
       echo "Running GET..."
-      time "$CHECKER" get 127.0.0.1 "$OUT" "$FLAG" "$j" >/tmp/checker_stdout 2>/tmp/checker_stderr
+      time "$CHECKER" get $HOST "$OUT" "$FLAG" "$j" >/tmp/checker_stdout 2>/tmp/checker_stderr
       A=$?
       if [ $A != 101 ]; then
         echo "GET failed! Got code $A"
