@@ -28,20 +28,20 @@ namespace exoplanet.Controllers
         }
 
         [HttpGet("{id}", Name = nameof(GetPlanet))]
-        public async Task<ActionResult<Planet>> GetPlanet(string id)
+        public async Task<ActionResult> GetPlanet(string id)
         {
             var planet = await service
                 .GetPlanetAsync(id)
                 .ConfigureAwait(false);
 
             if (planet == null)
-                return NotFound();
+                return NotFound(Error.NotFound);
 
             if (!planet.IsHidden)
                 return Ok(planet);
 
             if (!Request.Cookies.TryGetValue("token", out var token))
-                return Unauthorized();
+                return Unauthorized(Error.NotAllowed);
             
             TokenInfo info;
 
@@ -59,14 +59,14 @@ namespace exoplanet.Controllers
                 Response.Cookies.Delete("token");
             }
             
-            return Unauthorized();
+            return Unauthorized(Error.NotAllowed);
         }
 
         [HttpPost]
         public async Task<ActionResult> AddPlanet(Planet planet)
         {
             if (!Request.Cookies.TryGetValue("token", out var token))
-                return Unauthorized();
+                return Unauthorized(Error.NotAllowed);
 
             TokenInfo info;
 
@@ -79,24 +79,24 @@ namespace exoplanet.Controllers
             catch 
             {
                 Response.Cookies.Delete("token");
-                return Unauthorized();
+                return Unauthorized(Error.NotAllowed);
             }
 
             if (planet.StarId == null)
-                return BadRequest();
+                return BadRequest(Error.Create("incorrect star id"));
 
             if (info.Owner != planet.StarId)
-                return Unauthorized();
+                return Unauthorized(Error.NotAllowed);
 
             var star = await service
                 .GetStarAsync(planet.StarId)
                 .ConfigureAwait(false);
 
             if (star == null)
-                return NotFound();
+                return NotFound(Error.NotAllowed);
 
             if (star.Planets.Count >= MaxPlanetsCount)
-                return BadRequest();
+                return BadRequest(Error.Create("maximum planets count"));
             
             await service
                 .AddPlanetAsync(planet, star)

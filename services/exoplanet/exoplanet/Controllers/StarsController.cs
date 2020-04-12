@@ -41,7 +41,7 @@ namespace exoplanet.Controllers
                 .ConfigureAwait(false);
 
             if (star == null)
-                return NotFound();
+                return NotFound(Error.NotFound);
 
             return Ok(star);
         }
