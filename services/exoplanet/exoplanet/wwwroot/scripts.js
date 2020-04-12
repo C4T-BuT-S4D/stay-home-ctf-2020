@@ -41,12 +41,16 @@ function get_star(star_id) {
 }
 
 function get_planet(planet_id) {
-    return res = $.ajax({
+    var res = $.ajax({
         url: `/api/planets/${planet_id}`,
         type: 'GET',
         async: false,
         dataType: 'json'
     }).responseJSON;
+
+    res.type = types[res.type];
+
+    return res;
 }
 
 function add_star(star) {
