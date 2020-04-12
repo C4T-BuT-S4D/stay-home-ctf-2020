@@ -17,6 +17,10 @@ if [ -z "$RUNS" ]; then
   RUNS=10
 fi
 
+if [ -z "$HOST" ]; then
+  HOST='127.0.0.1'
+fi
+
 echo "RUNS=$RUNS"
 
 print_output() {
