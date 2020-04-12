@@ -28,7 +28,7 @@ class Worker():
             self.logger.info('Clock fast-forward')
             await conn.execute('UPDATE objects SET refreshed_at = NOW()')
 
-        for i in range(multiprocessing.cpu_count()):
+        for i in range(min(multiprocessing.cpu_count(), 4)):
             asyncio.ensure_future(self._dequeue())
 
         try:
