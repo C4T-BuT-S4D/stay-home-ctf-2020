@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 url="$1:5001"
 
