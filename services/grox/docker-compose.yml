@@ -39,7 +39,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - 6666:3000
+      - 9613:3000
     pids_limit: 256
     mem_limit: 300M
     cpus: 0.25
