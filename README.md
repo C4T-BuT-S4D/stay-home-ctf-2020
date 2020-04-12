@@ -38,3 +38,15 @@ Repository contains source code of services, checkers and sploits.
 - [msp](/writeups/msp/)
 
 Coming...
+
+## Donation
+
+We organize our CTFs and trainings on a regular basis. Though our infrastructure is cost-optimized, it is not 0. So we are open for donations if you want to support us. Vulnbox costs ~3$ per team.
+
+Paypal: https://www.paypal.me/pomomondreganto
+
+Tinkoff (roubles or if you have a multi wallet card): https://www.tinkoff.ru/sl/3JBSc9Kgiy0
+
+DStream: https://donate.stream/cbsctf
+
+Bitcoin: 1F6XjKjCMvHseScedHyH2xFpLybFGAfgZP
