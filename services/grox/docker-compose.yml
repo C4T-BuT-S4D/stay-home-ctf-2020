@@ -38,8 +38,14 @@ services:
       - ./docker_volumes/key/:/key/
     depends_on:
       - postgres
-    ports:
-      - 9613:3000
     pids_limit: 256
     mem_limit: 300M
     cpus: 0.25
+  nginx:
+    image: nginx:1.15.11-alpine
+    ports:
+      - 9613:80
+    restart: on-failure
+    volumes:
+      - ./docker_config/nginx:/etc/nginx/conf.d:ro
+      - ./public:/dist

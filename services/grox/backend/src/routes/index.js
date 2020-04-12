@@ -391,6 +391,10 @@ function register_routes(router) {
             });
             return;
         }
+
+        ctx.resp(403, {
+            error: "No access"
+        });
     });
 }
 

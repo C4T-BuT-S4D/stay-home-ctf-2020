@@ -22,6 +22,15 @@ app.use(async (ctx, next) => {
 });
 
 app.use(async (ctx, next) => {
+    ctx.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+    ctx.set('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers');
+    ctx.set('Access-Control-Allow-Credentials', 'true');
+    ctx.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,POST,DELETE,PATCH');
+    // <3 love CORS
+    await next();
+})
+
+app.use(async (ctx, next) => {
     try {
         await next();
     } catch (err) {
