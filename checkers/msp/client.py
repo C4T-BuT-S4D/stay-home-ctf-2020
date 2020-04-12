@@ -26,9 +26,8 @@ class CheckMachine:
                                         Status.MUMBLE)
 
         if 'error' in response_body or 'object' not in response_body:
-            self.c.cquit(
-                Status.MUMBLE, "GROUND TERMINAL ERROR",
-                '/telemetry/ error: ' + response_body.get('error', ''))
+            self.c.cquit(Status.MUMBLE, "GROUND TERMINAL ERROR",
+                         '/telemetry/ error')
 
         return response_body['object']
 
@@ -42,8 +41,7 @@ class CheckMachine:
         response_body = self.c.get_json(response, "RELAY ERROR", Status.MUMBLE)
 
         if 'error' in response_body or 'responses' not in response_body:
-            self.c.cquit(Status.MUMBLE, "RELAY ERROR",
-                         '/beam/ error: ' + response['error'])
+            self.c.cquit(Status.MUMBLE, "RELAY ERROR", '/beam/ error')
 
         return ' '.join(response_body['responses'])
 
@@ -72,8 +70,7 @@ class CheckMachine:
                                         Status.MUMBLE)
 
         if 'error' in response_body:
-            self.c.cquit(Status.MUMBLE, "ENGINE ERROR",
-                         '/thrust/ error: ' + response['error'])
+            self.c.cquit(Status.MUMBLE, "ENGINE ERROR", '/thrust/ error')
 
     @staticmethod
     def dist(x1, y1, x2, y2):
@@ -116,8 +113,7 @@ class CheckMachine:
                                         Status.MUMBLE)
 
         if 'error' in response_body:
-            self.c.cquit(Status.MUMBLE, "LAUNCH FAILURE",
-                         '/launch/ error: ' + response['error'])
+            self.c.cquit(Status.MUMBLE, "LAUNCH FAILURE", '/launch/ error')
 
         if 'id' not in response_body:
             self.c.cquit(Status.MUMBLE, "LAUNCH FAILURE",
