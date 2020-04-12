@@ -22,14 +22,20 @@ class Webserver():
             web.post('/launch/', self.launch),
             web.post('/thrust/{id}', self.thrust),
             web.get('/{element}/health', self.health),
+            web.get('/', self.index_redirect),
             web.static('/', './ui/'),
         ])
+
+    async def index_redirect(self, request):
+        raise web.HTTPFound(location='/index.html')
 
     @web.middleware
     async def middleware(self, request, handler):
         try:
             response = await handler(request)
             return response
+        except web.HTTPFound as e:
+            return e
         except Exception as e:
             self.logger.error('Error while processing request', str(e))
             return web.json_response(dict(error=str(e)))
