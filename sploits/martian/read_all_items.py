@@ -116,7 +116,7 @@ if __name__ == "__main__":
 	#p.interactive()
 	buf = p.recvuntil( "voltage[" )
 	print re.findall( flag_regexp, buf )
-    sys.stdout.flush()
+	sys.stdout.flush()
 	#print buf
 
 	p.close()

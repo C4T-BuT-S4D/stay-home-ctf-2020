@@ -87,6 +87,6 @@ if __name__ == "__main__":
 
 	buf = p.recv()
 	print re.findall( flag_regexp, buf )
-    sys.stdout.flush()
+	sys.stdout.flush()
 
 	p.close()

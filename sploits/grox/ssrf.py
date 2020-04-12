@@ -6,7 +6,7 @@ from checklib import *
 
 ip = sys.argv[1]
 hint = sys.argv[2]
-urlg = f"http://{ip}:6666/api"
+urlg = f"http://{ip}:9613/api"
 
 def register(s, u, p):
     url = f'{urlg}/register/'

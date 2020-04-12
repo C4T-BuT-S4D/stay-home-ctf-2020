@@ -25,7 +25,7 @@ curl -s $url/tm/health | jq .stats[] -r | while read target; do
   # return degrees(atan2(source_pos_x-target_pos_x, source_pos_y-target_pos_y) + PI);
 
   angle=$(python -c "import math; print(math.degrees(math.atan2($sx-$tx, $sy-$ty) + math.pi))")
-  focus=$(python -c "import math; print(math.dist(($sx, $sy), ($tx, $ty)) * 0.9)")
+  focus=$(python -c "import math; print(math.sqrt(sum((x - y) ** 2 for (x, y) in [($sx, $sy), ($tx, $ty)])) * 0.9)")
   #focus=0
 
   echo "BEAM $angle $focus"
