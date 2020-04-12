@@ -7,19 +7,13 @@ import os
 import sys
 import json
 import enum
-import random
 import requests
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from exo_lib import *
 
-
-class PlanetType(enum.IntEnum):
-    Unknown = 0
-    Terrestrial = 1
-    Protoplanet = 2
-    GasGiant = 3
+import generators
 
 
 class Checker(BaseChecker):
@@ -77,30 +71,24 @@ class Checker(BaseChecker):
 
         planet = self.mch.get_planet(session, planet_id)
 
-        self.assert_eq(planet['location'], flag, "Can't get flag", status=Status.CORRUPT)
+        self.assert_eq(planet['name'], flag, "Can't get flag", status=Status.CORRUPT)
 
         self.cquit(Status.OK)
 
     @staticmethod
     def generate_star():
         return {
-            'name': rnd_string(32),
-            'location': rnd_string(32)
+            'name': generators.star_name(),
+            'location': generators.star_location()
         }
 
     @staticmethod
     def generate_planet(star_id, flag=None):
-        type_ = random.choice([
-            PlanetType.Protoplanet,
-            PlanetType.Terrestrial,
-            PlanetType.GasGiant
-        ])
-
         return {
             'starId': star_id,
-            'name': rnd_string(32),
-            'location': flag or rnd_string(32),
-            'type': type_,
+            'name': flag or generators.planet_name(),
+            'location': generators.planet_location(),
+            'type': generators.planet_type(),
             'isHidden': flag is not None
         }
 
