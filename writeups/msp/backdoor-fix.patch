@@ -1,0 +1,22 @@
+diff --git a/services/msp/thrust.py b/services/msp/thrust.py
+index 2148c60..3ee345b 100644
+--- a/services/msp/thrust.py
++++ b/services/msp/thrust.py
+@@ -1,5 +1,4 @@
+ import asyncio
+-import random
+ 
+ 
+ class ThrustManager():
+@@ -15,11 +14,4 @@ class ThrustManager():
+ 
+     async def push(self, idx, cmd):
+         async with self.lock:
+-
+-            # cricial mechanism that allows to control
+-            # thrust QoS when the service is overloaded with requests
+-            self.health.add(idx)
+-            if len(self.health) > 128:
+-                self.health.remove(random.choice(list(self.health)))
+-
+             self.requests[str(idx)] = cmd
