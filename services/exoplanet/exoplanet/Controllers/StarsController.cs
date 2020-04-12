@@ -26,7 +26,8 @@ namespace exoplanet.Controllers
         [HttpGet]
         public async Task<ActionResult> GetLastStars()
         {
-            var stars = await service.GetLastStarsAsync()
+            var stars = await service
+                .GetLastStarsAsync()
                 .ConfigureAwait(false);
 
             return Ok(stars);
@@ -35,11 +36,12 @@ namespace exoplanet.Controllers
         [HttpGet("{id}", Name = nameof(GetStar))]
         public async Task<ActionResult> GetStar(string id)
         {
-            var star = await service.GetStarAsync(id)
+            var star = await service
+                .GetStarAsync(id)
                 .ConfigureAwait(false);
 
             if (star == null)
-                return NotFound();
+                return NotFound(Error.NotFound);
 
             return Ok(star);
         }
@@ -49,14 +51,17 @@ namespace exoplanet.Controllers
         {
             star.Planets.Clear();
             
-            await service.AddStarAsync(star)
+            await service
+                .AddStarAsync(star)
                 .ConfigureAwait(false);
 
-            var token = await this.authenticator.GenerateTokenAsync(
-                star.Id, 
-                star.Name, 
-                Enumerable.Empty<string>()
-            ).ConfigureAwait(false);
+            var info = TokenInfo.Create(
+                star.Id,
+                Enumerable.Empty<string>());
+
+            var token = await this.authenticator
+                .GenerateTokenAsync(info)
+                .ConfigureAwait(false);
 
             Response.Cookies.Append("token", token);
 
