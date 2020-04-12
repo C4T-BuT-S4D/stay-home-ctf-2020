@@ -62,7 +62,7 @@ class Checker(BaseChecker):
                        f'Object {idx} returned telemetry without velocity')
 
         # wait a bit
-        if do_height_check:
+        if False and do_height_check:
             sleep(random.randint(5, 10))
 
             # receive a new telemetry
