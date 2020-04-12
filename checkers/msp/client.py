@@ -48,7 +48,7 @@ class CheckMachine:
 
     def health_check(self, s):
         url = f'{self.url}/worker/health'
-        response = s.get(url)
+        response = s.get(url, timeout=5)
         response_body = self.c.get_json(response, "GROUND EQUIPMENT ERROR",
                                         Status.MUMBLE)
         self.c.assert_in('result', response_body, "GROUND EQUIPMENT ERROR",

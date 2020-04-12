@@ -38,14 +38,12 @@ class Checker(BaseChecker):
         def yesno():
             return random.choice([True, False])
 
-        do_health_check = yesno()
         do_height_check = yesno()
         do_thrust_check = not do_height_check and yesno()
 
         # simple health check first
-        if do_health_check:
-            s = get_initialized_session()
-            self.mch.health_check(s)
+        s = get_initialized_session()
+        self.mch.health_check(s)
 
         # gravity check
         s = get_initialized_session()
@@ -120,6 +118,10 @@ class Checker(BaseChecker):
 
     def put(self, flag_id, flag, vuln):
 
+        # simple health check first
+        s = get_initialized_session()
+        self.mch.health_check(s)
+
         do_thrust = int(vuln) == 1
 
         s = get_initialized_session()
@@ -129,6 +131,10 @@ class Checker(BaseChecker):
         self.cquit(Status.OK, f'{idx}:{height}:{pos_x}:{pos_y}')
 
     def get(self, flag_id, flag, vuln):
+
+        # simple health check first
+        s = get_initialized_session()
+        self.mch.health_check(s)
 
         do_thrust = int(vuln) == 1
 
