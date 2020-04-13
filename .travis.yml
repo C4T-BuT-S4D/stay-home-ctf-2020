@@ -35,7 +35,8 @@ install:
   - sudo apt-get update
   - sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
   - pip install -r checkers/requirements.txt
-
+  - export SERVICES="$(ls services | xargs)"
+  - 'echo "Found services: $SERVICES"'
   - ./start.sh "$SERVICE"
 
 before_script:

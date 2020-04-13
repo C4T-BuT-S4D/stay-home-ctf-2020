@@ -11,8 +11,6 @@ VULNS=(
   [exoplanet]=1
 )
 
-SERVICES="grox exoplanet ice-and-fire martian msp planetzor spacesos"
-
 if [ -z "$RUNS" ]; then
   RUNS=10
 fi
