@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/C4T-BuT-S4D/stay-home-ctf-2020.svg?branch=master)](https://travis-ci.com/C4T-BuT-S4D/stay-home-ctf-2020)
+
 # Stay ~/ CTF 2020
 
 The contest was held on April 12, 2020.
