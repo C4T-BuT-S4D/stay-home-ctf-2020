@@ -35,7 +35,12 @@ install:
   - sudo apt-get update
   - sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential
   - pip install -r checkers/requirements.txt
-  - docker-compose -f ./services/$SERVICE/docker-compose.yml up --build -d
+
+  - if env(SERVICE) = all
+    find services -name "docker-compose.yml" -exec docker-compose -f "{}" up --build -d \;
+
+  - if env(SERVICE) != all
+    docker-compose -f "./services/$SERVICE/docker-compose.yml" up --build -d
 
 before_script:
   - sleep 60
@@ -44,7 +49,15 @@ script:
   - ./check.sh $SERVICE
 
 after_script:
-  - docker-compose -f ./services/$SERVICE/docker-compose.yml down -v
+  - if env(SERVICE) = all
+    find services -name "docker-compose.yml" -exec docker-compose -f "{}" down -v \;
+
+  - if env(SERVICE) != all
+    docker-compose -f "./services/$SERVICE/docker-compose.yml" down -v
 
 after_failure:
-  - docker-compose -f ./services/$SERVICE/docker-compose.yml logs
+  - if env(SERVICE) = all
+    find services -name "docker-compose.yml" -exec docker-compose -f "{}" logs \;
+
+  - if env(SERVICE) != all
+    docker-compose -f "./services/$SERVICE/docker-compose.yml" logs
