@@ -40,7 +40,7 @@ install:
       find services -name "docker-compose.yml" -exec docker-compose -f "{}" up --build -d \; ;
     fi
 
-  - if [[ $SERVICE == "all" ]]; then
+  - if [[ $SERVICE != "all" ]]; then
       docker-compose -f "./services/$SERVICE/docker-compose.yml" up --build -d;
     fi
 
