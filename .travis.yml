@@ -37,7 +37,7 @@ install:
   - pip install -r checkers/requirements.txt
 
   - if [[ $SERVICE == "all" ]]; then
-      find services -name "docker-compose.yml" -exec docker-compose -f "{}" up --build -d \;
+      find services -name "docker-compose.yml" -exec docker-compose -f "{}" up --build -d \; ;
     fi
 
   - if [[ $SERVICE == "all" ]]; then
@@ -52,7 +52,7 @@ script:
 
 after_script:
   - if [[ $SERVICE == "all" ]]; then
-      find services -name "docker-compose.yml" -exec docker-compose -f "{}" down -v \;
+      find services -name "docker-compose.yml" -exec docker-compose -f "{}" down -v \; ;
     fi
 
   - if [[ $SERVICE != "all" ]]; then
@@ -61,7 +61,7 @@ after_script:
 
 after_failure:
   - if [[ $SERVICE == "all" ]]; then
-      find services -name "docker-compose.yml" -exec docker-compose -f "{}" logs \;
+      find services -name "docker-compose.yml" -exec docker-compose -f "{}" logs \; ;
     fi
 
   - if [[ $SERVICE != "all" ]]; then
