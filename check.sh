@@ -18,10 +18,11 @@ if [ -z "$RUNS" ]; then
 fi
 
 if [ -z "$HOST" ]; then
-  HOST='127.0.0.1'
+  HOST=127.0.0.1
 fi
 
 echo "RUNS=$RUNS"
+echo "HOST=$HOST"
 
 print_output() {
   echo "stdout:"
@@ -32,7 +33,7 @@ print_output() {
 
 for SERVICE in $SERVICES; do
 
-  if [[ -n "$1" ]] && [[ "$1" != "$SERVICE" ]]; then
+  if [[ -n "$1" ]] && [[ "$1" != "$SERVICE" ]] && [[ "$1" != "all" ]]; then
     continue
   fi
 
