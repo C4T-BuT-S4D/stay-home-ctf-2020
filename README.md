@@ -38,6 +38,7 @@ Repository contains source code of services, checkers and sploits.
 ## Writeups
 
 - [msp](/writeups/msp/)
+- [spacesos](/writeups/spacesos/)
 
 Coming...
 
